@@ -90,6 +90,17 @@ process SNIPPY_ALIGN {
             echo "N" >> ${cluster_id}.core.full.aln
             touch ${cluster_id}.core.tab
         }
+        
+        # Rename snippy-core output files to expected names
+        if [[ -f "${cluster_id}.full.aln" ]]; then
+            mv "${cluster_id}.full.aln" "${cluster_id}.core.full.aln"
+        elif [[ -f "${cluster_id}.aln" ]]; then
+            mv "${cluster_id}.aln" "${cluster_id}.core.full.aln"
+        fi
+        
+        if [[ -f "${cluster_id}.tab" ]]; then
+            mv "${cluster_id}.tab" "${cluster_id}.core.tab"
+        fi
 
         # Ensure output files exist
         if [[ ! -f "${cluster_id}.core.full.aln" ]]; then
@@ -107,10 +118,10 @@ process SNIPPY_ALIGN {
     echo "Output alignment size: \$(wc -c < ${cluster_id}.core.full.aln) bytes"
     echo "Number of sequences: \$(grep -c '^>' ${cluster_id}.core.full.aln)"
 
-    cat <<END_VERSIONS > versions.yml
+    cat <<-END_VERSIONS > versions.yml
 "${task.process}":
     snippy: \$(snippy --version 2>&1 | head -n1 | sed 's/^/    /')
-END_VERSIONS
+	END_VERSIONS
     EOF
     """
 }
