@@ -1,0 +1,1181 @@
+Sep-02 13:06:43.857 [main] DEBUG nextflow.cli.Launcher - $> nextflow run main.nf -profile dgx_station_a100_updated,docker --input /home/cdcadmin/Downloads/bp_subset_100 --outdir /home/cdcadmin/Downloads/bp_subset_100/results_recombination_aware --recombination_aware_mode --integrate_results --mash_threshold 0.028 --max_cluster_size 50 --merge_singletons --mash_sketch_size 50000 --recombination gubbins --snp_package parsnp --run_gubbins true -resume
+Sep-02 13:06:43.938 [main] DEBUG nextflow.cli.CmdRun - N E X T F L O W  ~  version 24.04.3
+Sep-02 13:06:43.957 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; embedded=false; plugins-dir=/home/cdcadmin/.nextflow/plugins; core-plugins: nf-amazon@2.5.2,nf-azure@1.6.0,nf-cloudcache@0.4.1,nf-codecommit@0.2.0,nf-console@1.1.3,nf-ga4gh@1.3.0,nf-google@1.13.2-patch1,nf-tower@1.9.1,nf-wave@1.4.2
+Sep-02 13:06:43.966 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+Sep-02 13:06:43.967 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+Sep-02 13:06:43.969 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.10.0 in 'deployment' mode
+Sep-02 13:06:43.982 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+Sep-02 13:06:44.003 [main] DEBUG nextflow.config.ConfigBuilder - Found config local: /home/cdcadmin/wf-assembly-snps-mod/nextflow.config
+Sep-02 13:06:44.005 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /home/cdcadmin/wf-assembly-snps-mod/nextflow.config
+Sep-02 13:06:44.029 [main] DEBUG n.secret.LocalSecretsProvider - Secrets store: /home/cdcadmin/.nextflow/secrets/store.json
+Sep-02 13:06:44.032 [main] DEBUG nextflow.secret.SecretsLoader - Discovered secrets providers: [nextflow.secret.LocalSecretsProvider@28952dea] - activable => nextflow.secret.LocalSecretsProvider@28952dea
+Sep-02 13:06:44.045 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `dgx_station_a100_updated,docker`
+Sep-02 13:06:45.552 [main] DEBUG nextflow.config.ConfigBuilder - Available config profiles: [aspen_hpc, debug, test, local_workstation, docker, local_workstation_rtx4070, dgx_station_a100_updated, shifter, conda, dgx_station, singularity, rosalind_hpc, test_full]
+Sep-02 13:06:45.595 [main] DEBUG nextflow.cli.CmdRun - Applied DSL=2 from script declaration
+Sep-02 13:06:45.611 [main] DEBUG nextflow.cli.CmdRun - Launching `main.nf` [compassionate_wiles] DSL2 - revision: 21639422e8
+Sep-02 13:06:45.612 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+Sep-02 13:06:45.612 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins resolved requirement=[]
+Sep-02 13:06:45.664 [main] DEBUG nextflow.Session - Session UUID: c1062572-e19f-41b2-96ab-459397d8ddf6
+Sep-02 13:06:45.664 [main] DEBUG nextflow.Session - Run name: compassionate_wiles
+Sep-02 13:06:45.665 [main] DEBUG nextflow.Session - Executor pool size: 128
+Sep-02 13:06:45.671 [main] DEBUG nextflow.file.FilePorter - File porter settings maxRetries=3; maxTransfers=50; pollTimeout=null
+Sep-02 13:06:45.675 [main] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'FileTransfer' minSize=10; maxSize=384; workQueue=LinkedBlockingQueue[10000]; allowCoreThreadTimeout=false
+Sep-02 13:06:45.699 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 24.04.3 build 5916
+  Created: 09-07-2024 19:35 UTC (10-07-2024 02:35 ICST)
+  System: Linux 5.15.0-151-generic
+  Runtime: Groovy 4.0.21 on OpenJDK 64-Bit Server VM 17.0.10+7
+  Encoding: UTF-8 (UTF-8)
+  Process: 1771219@dgx-a100 [192.168.1.11]
+  CPUs: 128 - Mem: 503.7 GB (414.5 GB) - Swap: 0 (0)
+Sep-02 13:06:45.721 [main] DEBUG nextflow.Session - Work-dir: /home/cdcadmin/wf-assembly-snps-mod/work [ext2/ext3]
+Sep-02 13:06:45.752 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+Sep-02 13:06:45.761 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+Sep-02 13:06:45.821 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
+Sep-02 13:06:45.831 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 129; maxThreads: 1000
+Sep-02 13:06:45.935 [main] DEBUG nextflow.Session - Session start
+Sep-02 13:06:45.937 [main] DEBUG nextflow.trace.TraceFileObserver - Workflow started -- trace file: /home/cdcadmin/Downloads/bp_subset_100/results_recombination_aware/pipeline_info/execution_trace_2025-09-02_13-06-45.txt
+Sep-02 13:06:45.942 [main] DEBUG nextflow.Session - Using default localLib path: /home/cdcadmin/wf-assembly-snps-mod/lib
+Sep-02 13:06:45.945 [main] DEBUG nextflow.Session - Adding to the classpath library: /home/cdcadmin/wf-assembly-snps-mod/lib
+Sep-02 13:06:45.945 [main] DEBUG nextflow.Session - Adding to the classpath library: /home/cdcadmin/wf-assembly-snps-mod/lib/nfcore_external_java_deps.jar
+Sep-02 13:06:46.689 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+Sep-02 13:06:46.740 [main] INFO  nextflow.Nextflow - 
+
+-[2m----------------------------------------------------[0m-
+[0;34m     __         __ __ __     __            __     __  __    [0m
+[0;34m|  ||_  __  /\ (_ (_ |_ |\/||__)|  \_/ __ (_ |\ ||__)(_ [0m
+[0;34m|/\||      /--\__)__)|__|  ||__)|__ |     __)| \||   __) [0m
+
+[0;32m       Identify SNPs from genome assemblies.               [0m
+
+
+[0;35m     bacterial-genomics/wf-assembly-snps v1.0.2[0m
+-[2m----------------------------------------------------[0m-
+[1mCore Nextflow options[0m
+  [0;34mrunName                   : [0;32mcompassionate_wiles[0m
+  [0;34mcontainerEngine           : [0;32mdocker[0m
+  [0;34mlaunchDir                 : [0;32m/home/cdcadmin/wf-assembly-snps-mod[0m
+  [0;34mworkDir                   : [0;32m/home/cdcadmin/wf-assembly-snps-mod/work[0m
+  [0;34mprojectDir                : [0;32m/home/cdcadmin/wf-assembly-snps-mod[0m
+  [0;34muserName                  : [0;32mcdcadmin[0m
+  [0;34mprofile                   : [0;32mdgx_station_a100_updated,docker[0m
+  [0;34mconfigFiles               : [0;32m/home/cdcadmin/wf-assembly-snps-mod/nextflow.config[0m
+
+[1mInput/output options[0m
+  [0;34minput                     : [0;32m/home/cdcadmin/Downloads/bp_subset_100[0m
+  [0;34moutdir                    : [0;32m/home/cdcadmin/Downloads/bp_subset_100/results_recombination_aware[0m
+
+[1mAnalysis options[0m
+  [0;34mrecombination             : [0;32mgubbins[0m
+
+[1mProfile options[0m
+  [0;34mprofile_cache_dir         : [0;32m/home/cdcadmin/wf-assembly-snps-mod/assets/.cache[0m
+
+[1mScalable workflow options[0m
+  [0;34mmash_threshold            : [0;32m0.028[0m
+  [0;34mmax_cluster_size          : [0;32m50[0m
+  [0;34mgubbins_tree_builder      : [0;32miqtree[0m
+
+[1mInstitutional config options[0m
+  [0;34mconfig_profile_name       : [0;32mDGX Station A100 Updated[0m
+  [0;34mconfig_profile_description: [0;32mUpdated DGX Station A100 profile for 128 cores, 512GB RAM with overhead considerations[0m
+
+[1mMax job request options[0m
+  [0;34mmax_cpus                  : [0;32m120[0m
+  [0;34mmax_memory                : [0;32m480.GB[0m
+
+[1mGeneric options[0m
+  [0;34mtracedir                  : [0;32m/home/cdcadmin/Downloads/bp_subset_100/results_recombination_aware/pipeline_info[0m
+  [0;34mprocess_log_dir           : [0;32m/home/cdcadmin/Downloads/bp_subset_100/results_recombination_aware/pipeline_info/process_logs[0m
+  [0;34mqc_filecheck_log_dir      : [0;32m/home/cdcadmin/Downloads/bp_subset_100/results_recombination_aware/pipeline_info/qc_file_checks[0m
+
+!! Only displaying parameters that differ from the pipeline defaults !!
+-[2m----------------------------------------------------[0m-
+If you use bacterial-genomics/wf-assembly-snps for your analysis please cite:
+
+* The nf-core framework
+  https://doi.org/10.1038/s41587-020-0439-x
+
+* Software dependencies
+  https://github.com/bacterial-genomics/wf-assembly-snps/blob/main/CITATIONS.md
+-[2m----------------------------------------------------[0m-
+Sep-02 13:06:46.856 [main] WARN  nextflow.Nextflow - Found unexpected parameters:
+* --recombination_aware_mode: true
+* --mash_min_copies: 1
+* --mash_kmer_size: 21
+* --mash_sketch_size: 50000
+Sep-02 13:06:46.856 [main] INFO  nextflow.Nextflow - - [2mIgnore this warning: params.schema_ignore_params = "recombination_aware_mode,mash_min_copies,mash_kmer_size,mash_sketch_size" [0m
+Sep-02 13:06:50.218 [main] INFO  nextflow.Nextflow - Starting recombination-aware SNP analysis workflow
+Sep-02 13:06:50.219 [main] INFO  nextflow.Nextflow - Goal: Per-cluster recombination detection + tree grafting
+Sep-02 13:06:50.333 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-02 13:06:50.333 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-02 13:06:50.338 [main] DEBUG nextflow.executor.Executor - [warm up] executor > local
+Sep-02 13:06:50.342 [main] DEBUG n.processor.LocalPollingMonitor - Creating local task monitor for executor 'local' > cpus=120; memory=480 GB; capacity=128; pollInterval=100ms; dumpInterval=5m
+Sep-02 13:06:50.344 [main] DEBUG n.processor.TaskPollingMonitor - >>> barrier register (monitor: local)
+Sep-02 13:06:50.393 [main] INFO  nextflow.Nextflow - STEP 1: Clustering genomes with Mash distances
+Sep-02 13:06:50.399 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name RECOMBINATION_AWARE_SNPS:MASH_SKETCH
+Sep-02 13:06:50.401 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:MASH_SKETCH` matches process RECOMBINATION_AWARE_SNPS:MASH_SKETCH
+Sep-02 13:06:50.403 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-02 13:06:50.404 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-02 13:06:50.417 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_medium` matches labels `process_medium` for process with name RECOMBINATION_AWARE_SNPS:MASH_DIST
+Sep-02 13:06:50.418 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:MASH_DIST` matches process RECOMBINATION_AWARE_SNPS:MASH_DIST
+Sep-02 13:06:50.420 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-02 13:06:50.420 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-02 13:06:50.427 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name RECOMBINATION_AWARE_SNPS:MASH_TAB_TO_MATRIX
+Sep-02 13:06:50.432 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-02 13:06:50.432 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-02 13:06:50.438 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name RECOMBINATION_AWARE_SNPS:CLUSTER_GENOMES
+Sep-02 13:06:50.439 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:CLUSTER_GENOMES` matches process RECOMBINATION_AWARE_SNPS:CLUSTER_GENOMES
+Sep-02 13:06:50.441 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-02 13:06:50.442 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-02 13:06:50.470 [main] INFO  nextflow.Nextflow - STEP 2: Creating per-cluster whole genome alignments
+Sep-02 13:06:50.475 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name RECOMBINATION_AWARE_SNPS:SELECT_CLUSTER_REPRESENTATIVE
+Sep-02 13:06:50.478 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-02 13:06:50.478 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-02 13:06:50.489 [main] WARN  nextflow.script.ScriptBinding - Access to undefined parameter `alignment_method` -- Initialise it to a default value eg. `params.alignment_method = some_value`
+Sep-02 13:06:50.490 [main] INFO  nextflow.Nextflow - Using Snippy for per-cluster whole genome alignment
+Sep-02 13:06:50.495 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_high` matches labels `process_high` for process with name RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN
+Sep-02 13:06:50.499 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-02 13:06:50.499 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-02 13:06:50.508 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG
+Sep-02 13:06:50.511 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-02 13:06:50.511 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-02 13:06:50.517 [main] INFO  nextflow.Nextflow - STEP 3: Running Gubbins for recombination detection
+Sep-02 13:06:50.522 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_medium` matches labels `process_medium` for process with name RECOMBINATION_AWARE_SNPS:IQTREE_FAST
+Sep-02 13:06:50.523 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:IQTREE_FAST` matches process RECOMBINATION_AWARE_SNPS:IQTREE_FAST
+Sep-02 13:06:50.526 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-02 13:06:50.526 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-02 13:06:50.538 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_high` matches labels `process_high` for process with name RECOMBINATION_AWARE_SNPS:GUBBINS_CLUSTER
+Sep-02 13:06:50.539 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:GUBBINS_CLUSTER` matches process RECOMBINATION_AWARE_SNPS:GUBBINS_CLUSTER
+Sep-02 13:06:50.541 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-02 13:06:50.541 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-02 13:06:50.546 [main] INFO  nextflow.Nextflow - STEP 4: Building per-cluster final ML trees with ASC correction
+Sep-02 13:06:50.556 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_high` matches labels `process_high` for process with name RECOMBINATION_AWARE_SNPS:IQTREE_ASC
+Sep-02 13:06:50.560 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-02 13:06:50.560 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-02 13:06:50.565 [main] INFO  nextflow.Nextflow - STEP 5: Collecting cluster representatives
+Sep-02 13:06:50.580 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name RECOMBINATION_AWARE_SNPS:COLLECT_REPRESENTATIVES
+Sep-02 13:06:50.582 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-02 13:06:50.583 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-02 13:06:50.589 [main] INFO  nextflow.Nextflow - STEP 6: Building backbone tree from representatives
+Sep-02 13:06:50.592 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_high` matches labels `process_high` for process with name RECOMBINATION_AWARE_SNPS:BUILD_BACKBONE_TREE
+Sep-02 13:06:50.594 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-02 13:06:50.595 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-02 13:06:50.602 [main] INFO  nextflow.Nextflow - STEP 7: Grafting cluster subtrees onto backbone tree
+Sep-02 13:06:50.611 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_medium` matches labels `process_medium` for process with name RECOMBINATION_AWARE_SNPS:GRAFT_SUBTREES
+Sep-02 13:06:50.614 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-02 13:06:50.614 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-02 13:06:50.645 [main] DEBUG nextflow.Session - Workflow process names [dsl2]: INFILE_HANDLING_UNIX, IQTREE_FAST, MASH_SKETCH, SNP_SITES, CONVERT_GINGR_TO_FASTA_HARVESTTOOLS, MASK_RECOMBINANT_POSITIONS_BIOPYTHON, CORE_GENOME_ALIGNMENT_PARSNP, BUILD_INTEGRATED_TREE, RECOMBINATION_AWARE_SNPS:MASH_DIST, MASH_DIST, RECOMBINATION_AWARE_SNPS:BUILD_BACKBONE_TREE, RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN, FILTER_ATCG_COLUMNS, INTEGRATE_CORE_SNPS, SNIPPY_ALIGN, IQTREE_ASC, USHER_PLACE, EXTRACT_CORE_SNPS, CALCULATE_PAIRWISE_DISTANCES_SNP_DISTS, RECOMBINATION_AWARE_SNPS:IQTREE_ASC, GRAFT_TREES, RECOMBINATION_GUBBINS, RECOMBINATION_AWARE_SNPS:GUBBINS_CLUSTER, RECOMBINATION_AWARE_SNPS:MASH_TAB_TO_MATRIX, BUILD_PHYLOGENETIC_TREE_PARSNP, RECOMBINATION_CLONALFRAMEML, RECOMBINATION_AWARE_SNPS:COLLECT_REPRESENTATIVES, GRAFT_SUBTREES, MASH_TAB_TO_MATRIX, GUBBINS_CLUSTER_DIAGNOSTIC, GUBBINS_CLUSTER, RECOMBINATION_AWARE_SNPS:MASH_SKETCH, RECOMBINATION_AWARE_SNPS:IQTREE_FAST, CREATE_SNP_DISTANCE_MATRIX_SNP_DISTS, RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX, RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG, BUILD_BACKBONE_TREE, SELECT_CLUSTER_REPRESENTATIVE, RECOMBINATION_AWARE_SNPS:CLUSTER_GENOMES, REF_INFILE_HANDLING_UNIX, CONVERT_TSV_TO_EXCEL_PYTHON, CREATE_FINAL_SUMMARY, RECOMBINATION_AWARE_SNPS:GRAFT_SUBTREES, KEEP_INVARIANT_ATCG, COLLECT_REPRESENTATIVES, CONVERT_SAMPLESHEET_PYTHON, CLUSTER_GENOMES, CREATE_EXCEL_RUN_SUMMARY_PYTHON, USHER_BUILD, CREATE_MASKED_SNP_DISTANCE_MATRIX_SNP_DISTS, RECOMBINATION_AWARE_SNPS:SELECT_CLUSTER_REPRESENTATIVE, SKA_ALIGN
+Sep-02 13:06:50.667 [main] WARN  nextflow.Session - There's no process matching config selector: SKA_BUILD -- Did you mean: USHER_BUILD?
+Sep-02 13:06:50.667 [main] WARN  nextflow.Session - There's no process matching config selector: GPU_ACCELERATED
+Sep-02 13:06:50.669 [main] DEBUG nextflow.Session - Igniting dataflow network (21)
+Sep-02 13:06:50.675 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: /home/cdcadmin/Downloads/bp_subset_100/; pattern: **.{fasta,fas,fna,fsa,fa}{,.gz}; options: [checkIfExists:true]
+Sep-02 13:06:50.675 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX
+Sep-02 13:06:50.677 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH
+Sep-02 13:06:50.677 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:MASH_DIST
+Sep-02 13:06:50.677 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:MASH_TAB_TO_MATRIX
+Sep-02 13:06:50.678 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:CLUSTER_GENOMES
+Sep-02 13:06:50.678 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:SELECT_CLUSTER_REPRESENTATIVE
+Sep-02 13:06:50.678 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN
+Sep-02 13:06:50.678 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG
+Sep-02 13:06:50.678 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:IQTREE_FAST
+Sep-02 13:06:50.679 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:GUBBINS_CLUSTER
+Sep-02 13:06:50.679 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:IQTREE_ASC
+Sep-02 13:06:50.679 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:COLLECT_REPRESENTATIVES
+Sep-02 13:06:50.679 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:BUILD_BACKBONE_TREE
+Sep-02 13:06:50.679 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:GRAFT_SUBTREES
+Sep-02 13:06:50.681 [main] DEBUG nextflow.script.ScriptRunner - Parsed script files:
+  Script_bbcc8e9105e01af0: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../modules/local/mash_dist/main.nf
+  Script_b9a8232e0fa11be0: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../modules/local/create_masked_snp_distance_matrix_snp_dists/main.nf
+  Script_40bbd64f7a0ed420: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../modules/local/build_backbone_tree/main.nf
+  Script_daab3931d6dbebc6: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../modules/local/convert_tsv_to_excel_python/main.nf
+  Script_9f3033e1907b0553: /home/cdcadmin/wf-assembly-snps-mod/main.nf
+  Script_b4f561c138f71092: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../subworkflows/local/../../modules/local/build_integrated_tree/main.nf
+  Script_1d5a91c0e68cf3fc: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../modules/local/mash_sketch/main.nf
+  Script_de42343b4a60b37d: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../modules/local/create_snp_distance_matrix_snp_dists/main.nf
+  Script_b8cf3768669b3e5b: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../modules/local/ska_align/main.nf
+  Script_bdfe511ac4c90ab8: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../subworkflows/local/recombination.nf
+  Script_92a8fd2e65506f13: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../modules/local/create_excel_run_summary_python/main.nf
+  Script_a1f0b44ee6f8826f: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../subworkflows/local/../../modules/local/extract_core_snps/main.nf
+  Script_0d58fc7282995415: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../subworkflows/local/../../modules/local/cluster_genomes/main.nf
+  Script_57a40bc439141954: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../modules/local/select_cluster_representative/main.nf
+  Script_cdc219c241584917: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../modules/local/core_genome_alignment_parsnp/main.nf
+  Script_8ca59baef4465cd0: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../subworkflows/local/integrate_results.nf
+  Script_8f3222acc5105b8e: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../subworkflows/local/clustering.nf
+  Script_53b40eb3093c3510: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../subworkflows/local/input_check.nf
+  Script_cba8f4ef57428eda: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../modules/local/collect_representatives/main.nf
+  Script_6ef5bdac66e9e392: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../modules/local/build_phylogenetic_tree_parsnp/main.nf
+  Script_076cfc891361d3be: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../modules/local/gubbins_cluster_diagnostic/main.nf
+  Script_5070cd236642fe2f: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../modules/local/graft_subtrees/main.nf
+  Script_270ab81c7dc66582: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../modules/local/mash_tab_to_matrix/main.nf
+  Script_cf92b0cfd5970f35: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../subworkflows/local/../../modules/local/convert_samplesheet_python/main.nf
+  Script_d3e379f9c47039c6: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../subworkflows/local/../../modules/local/snp_sites/main.nf
+  Script_d83d90a8eb394fc0: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../modules/local/keep_invariant_atcg/main.nf
+  Script_3567d160693dd61f: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../modules/local/snippy_align/main.nf
+  Script_d024c62fed4aecd0: /home/cdcadmin/wf-assembly-snps-mod/./workflows/assembly_snps_scalable.nf
+  Script_a6271bb39939ccb8: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../subworkflows/local/../../modules/local/create_final_summary/main.nf
+  Script_58c44428f42afda1: /home/cdcadmin/wf-assembly-snps-mod/./workflows/recombination_aware_snps.nf
+  Script_b86bc69fb8228a3e: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../subworkflows/local/../../modules/local/recombination_clonalframeml/main.nf
+  Script_5b5197ce8a0c66dc: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../modules/local/iqtree_fast/main.nf
+  Script_53027aa9816972db: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../modules/local/calculate_pairwise_distances_snp_dists/main.nf
+  Script_3710c6c0a9c48c8b: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../subworkflows/local/../../modules/local/usher_build/main.nf
+  Script_3e09054bde8c3c7b: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../modules/local/iqtree_asc/main.nf
+  Script_c7e04632065b0c3c: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../subworkflows/local/../../modules/local/recombination_gubbins/main.nf
+  Script_4fa35410fba01909: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../subworkflows/local/usher_placement.nf
+  Script_65ed891bd0e407ab: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../subworkflows/local/../../modules/local/usher_place/main.nf
+  Script_4b0643d93d55c105: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../subworkflows/local/../../modules/local/graft_trees/main.nf
+  Script_4232238f5de0333e: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../subworkflows/local/../../modules/local/integrate_core_snps/main.nf
+  Script_30224b4410519b3a: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../modules/local/mask_recombinant_positions_biopython/main.nf
+  Script_d97613bdf9c0d9be: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../modules/local/convert_gingr_to_fasta_harvesttools/main.nf
+  Script_bc114141908d07be: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../modules/local/filter_atcg_columns/main.nf
+  Script_7241b409eebe9ea3: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../modules/local/gubbins_cluster/main.nf
+  Script_cf1907f7a901597f: /home/cdcadmin/wf-assembly-snps-mod/./workflows/assembly_snps.nf
+  Script_b712480f57627fb6: /home/cdcadmin/wf-assembly-snps-mod/./workflows/../modules/local/infile_handling_unix/main.nf
+Sep-02 13:06:50.681 [main] DEBUG nextflow.script.ScriptRunner - > Awaiting termination 
+Sep-02 13:06:50.681 [main] DEBUG nextflow.Session - Session await
+Sep-02 13:06:51.176 [Actor Thread 55] INFO  nextflow.processor.TaskProcessor - [52/16b92f] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0178-4_S3-SPAdes)
+Sep-02 13:06:51.176 [Actor Thread 82] INFO  nextflow.processor.TaskProcessor - [2d/0e0af9] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0003-4_S3_L001-SPAdes)
+Sep-02 13:06:51.176 [Actor Thread 123] INFO  nextflow.processor.TaskProcessor - [c3/475032] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0028-1_S8_L001-SPAdes)
+Sep-02 13:06:51.176 [Actor Thread 28] INFO  nextflow.processor.TaskProcessor - [a1/dedb4b] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0016_S10_L001-SPAdes)
+Sep-02 13:06:51.176 [Actor Thread 98] INFO  nextflow.processor.TaskProcessor - [e3/7c8ce4] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (Burkholderia_pseudomallei_ABCPW_30_GCF_000774495_1_Australia)
+Sep-02 13:06:51.176 [Actor Thread 38] INFO  nextflow.processor.TaskProcessor - [91/f9bb20] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0155-2_S5_L001-SPAdes)
+Sep-02 13:06:51.176 [Actor Thread 34] INFO  nextflow.processor.TaskProcessor - [a3/e16388] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0103-2_S3_L001-SPAdes)
+Sep-02 13:06:51.176 [Actor Thread 10] INFO  nextflow.processor.TaskProcessor - [e4/cb7152] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0093-5_S5_L001-SPAdes)
+Sep-02 13:06:51.176 [Actor Thread 122] INFO  nextflow.processor.TaskProcessor - [70/ff26b8] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963566085_1)
+Sep-02 13:06:51.176 [Actor Thread 32] INFO  nextflow.processor.TaskProcessor - [0c/055fdb] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0179-2_S4-SPAdes)
+Sep-02 13:06:51.176 [Actor Thread 2] INFO  nextflow.processor.TaskProcessor - [18/8ad8d3] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0076-0_S10_L001-SPAdes)
+Sep-02 13:06:51.176 [Actor Thread 107] INFO  nextflow.processor.TaskProcessor - [43/d74db5] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0045-5_S5_L001-SPAdes)
+Sep-02 13:06:51.176 [Actor Thread 102] INFO  nextflow.processor.TaskProcessor - [c3/879823] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0163-6_S2-SPAdes)
+Sep-02 13:06:51.176 [Actor Thread 95] INFO  nextflow.processor.TaskProcessor - [85/e2681a] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0184-2_S9-SPAdes)
+Sep-02 13:06:51.176 [Actor Thread 27] INFO  nextflow.processor.TaskProcessor - [91/250c36] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0121-4_S1_L001-SPAdes)
+Sep-02 13:06:51.176 [Actor Thread 100] INFO  nextflow.processor.TaskProcessor - [01/4eb0fd] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0009-1_S9_L001-SPAdes)
+Sep-02 13:06:51.176 [Actor Thread 61] INFO  nextflow.processor.TaskProcessor - [a5/ce5832] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0082-8_S5_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 71] INFO  nextflow.processor.TaskProcessor - [23/b79f8d] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0071-1_S5_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 70] INFO  nextflow.processor.TaskProcessor - [12/89bc23] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0043-0_S3_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 110] INFO  nextflow.processor.TaskProcessor - [f1/c09857] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS013354)
+Sep-02 13:06:51.177 [Actor Thread 73] INFO  nextflow.processor.TaskProcessor - [85/e5277c] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0053-9_S3_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 26] INFO  nextflow.processor.TaskProcessor - [02/2141ff] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0164-4_S3-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 66] INFO  nextflow.processor.TaskProcessor - [14/4add32] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0002_S11_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 101] INFO  nextflow.processor.TaskProcessor - [15/f75671] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0167-7_S2-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 94] INFO  nextflow.processor.TaskProcessor - [78/5145ee] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963565125_1)
+Sep-02 13:06:51.177 [Actor Thread 104] INFO  nextflow.processor.TaskProcessor - [08/684c7a] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0048-9_S8_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 62] INFO  nextflow.processor.TaskProcessor - [67/96695f] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012330)
+Sep-02 13:06:51.177 [Actor Thread 20] INFO  nextflow.processor.TaskProcessor - [24/0c3944] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0013_S7_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 30] INFO  nextflow.processor.TaskProcessor - [55/6ee994] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963569795_1)
+Sep-02 13:06:51.177 [Actor Thread 53] INFO  nextflow.processor.TaskProcessor - [01/60826b] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0012_S6_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 114] INFO  nextflow.processor.TaskProcessor - [42/823968] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0073-7_S7_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 16] INFO  nextflow.processor.TaskProcessor - [d1/c4ce93] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0170-1_S5-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 5] INFO  nextflow.processor.TaskProcessor - [1b/d90b30] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (Burkholderia_pseudomallei_43S_S63_GCF_014713085_1_Laos)
+Sep-02 13:06:51.177 [Actor Thread 37] INFO  nextflow.processor.TaskProcessor - [bb/5a8aee] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0061-2_S6_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 31] INFO  nextflow.processor.TaskProcessor - [bb/917624] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963566635_1)
+Sep-02 13:06:51.177 [Actor Thread 48] INFO  nextflow.processor.TaskProcessor - [6d/1794f3] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0177-6_S2-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 51] INFO  nextflow.processor.TaskProcessor - [da/bde02f] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0086-9_S9_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 65] INFO  nextflow.processor.TaskProcessor - [9a/55d0a2] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0132-1_S2_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 60] INFO  nextflow.processor.TaskProcessor - [20/861bab] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963568885_1)
+Sep-02 13:06:51.177 [Actor Thread 108] INFO  nextflow.processor.TaskProcessor - [40/7ecbf9] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963570575_1)
+Sep-02 13:06:51.177 [Actor Thread 85] INFO  nextflow.processor.TaskProcessor - [ae/ab87b3] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0026_S8-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 68] INFO  nextflow.processor.TaskProcessor - [2c/d5d290] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0056-2_S1_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 79] INFO  nextflow.processor.TaskProcessor - [f1/030249] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963562655_1)
+Sep-02 13:06:51.177 [Actor Thread 92] INFO  nextflow.processor.TaskProcessor - [b8/7e7471] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0005-9_S5_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 57] INFO  nextflow.processor.TaskProcessor - [aa/473413] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0112-3_S3_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 115] INFO  nextflow.processor.TaskProcessor - [ae/f15e84] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0157-8_S7_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 63] INFO  nextflow.processor.TaskProcessor - [8b/568b3d] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0010_S4_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 84] INFO  nextflow.processor.TaskProcessor - [2e/4ff441] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0019_S5-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 52] INFO  nextflow.processor.TaskProcessor - [71/ded850] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS013348)
+Sep-02 13:06:51.177 [Actor Thread 117] INFO  nextflow.processor.TaskProcessor - [74/a0fe3e] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0096-8_S8_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 40] INFO  nextflow.processor.TaskProcessor - [e1/e4a10d] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0100-8_S1_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 50] INFO  nextflow.processor.TaskProcessor - [03/101f18] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0004_S9_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 6] INFO  nextflow.processor.TaskProcessor - [11/3249c3] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0024-0_S4_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 46] INFO  nextflow.processor.TaskProcessor - [38/729fe8] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0015_S9_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 111] INFO  nextflow.processor.TaskProcessor - [d2/37e333] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0109-9_S9_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 58] INFO  nextflow.processor.TaskProcessor - [b0/ea0aaa] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0138-8_S8_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 17] INFO  nextflow.processor.TaskProcessor - [0e/e67608] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0010-9_S10_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 67] INFO  nextflow.processor.TaskProcessor - [db/98d775] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0068-7_S2_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 9] INFO  nextflow.processor.TaskProcessor - [1f/3bc223] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963562795_1)
+Sep-02 13:06:51.177 [Actor Thread 72] INFO  nextflow.processor.TaskProcessor - [13/b04d79] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0098-4_S10_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 112] INFO  nextflow.processor.TaskProcessor - [5b/cefac0] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0039-8_S9_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 80] INFO  nextflow.processor.TaskProcessor - [e9/08ba5b] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0050-5_S10_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 89] INFO  nextflow.processor.TaskProcessor - [b3/2ee761] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0172-7_S7-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 88] INFO  nextflow.processor.TaskProcessor - [3b/a3a71e] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0114-9_S5_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 90] INFO  nextflow.processor.TaskProcessor - [2f/00eadd] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0044-8_S4_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 77] INFO  nextflow.processor.TaskProcessor - [81/2b3fe1] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0094-3_S6_L001-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 93] INFO  nextflow.processor.TaskProcessor - [19/b841e4] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963566765_1)
+Sep-02 13:06:51.177 [Actor Thread 113] INFO  nextflow.processor.TaskProcessor - [69/a2a994] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012303)
+Sep-02 13:06:51.177 [Actor Thread 83] INFO  nextflow.processor.TaskProcessor - [f4/fc91db] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (Burkholderia_pseudomallei_619s005_GCF_001207785_2_Malaysia)
+Sep-02 13:06:51.177 [Actor Thread 13] INFO  nextflow.processor.TaskProcessor - [1b/1f126a] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0185-9_S10-SPAdes)
+Sep-02 13:06:51.177 [Actor Thread 47] INFO  nextflow.processor.TaskProcessor - [6b/54f141] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0182-6_S7-SPAdes)
+Sep-02 13:06:51.206 [Actor Thread 11] INFO  nextflow.processor.TaskProcessor - [9f/3d95f3] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0003_S8_L001-SPAdes)
+Sep-02 13:06:51.206 [Actor Thread 39] INFO  nextflow.processor.TaskProcessor - [b2/586d72] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963568785_1)
+Sep-02 13:06:51.206 [Actor Thread 1] INFO  nextflow.processor.TaskProcessor - [dd/6702a4] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963560945_1)
+Sep-02 13:06:51.206 [Actor Thread 54] INFO  nextflow.processor.TaskProcessor - [a1/6b2b67] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0162-8_S1-SPAdes)
+Sep-02 13:06:51.206 [Actor Thread 75] INFO  nextflow.processor.TaskProcessor - [d8/d4075e] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0113-1_S4_L001-SPAdes)
+Sep-02 13:06:51.206 [Actor Thread 124] INFO  nextflow.processor.TaskProcessor - [f2/02fb82] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0018_S12_L001-SPAdes)
+Sep-02 13:06:51.206 [Actor Thread 105] INFO  nextflow.processor.TaskProcessor - [97/37a37e] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012370)
+Sep-02 13:06:51.206 [Actor Thread 56] INFO  nextflow.processor.TaskProcessor - [a9/e8b31b] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0084-4_S7_L001-SPAdes)
+Sep-02 13:06:51.206 [Actor Thread 78] INFO  nextflow.processor.TaskProcessor - [6a/0c7e4e] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0014-1_S5_L001-SPAdes)
+Sep-02 13:06:51.206 [Actor Thread 96] INFO  nextflow.processor.TaskProcessor - [1c/6111d5] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0191-7_S6-SPAdes)
+Sep-02 13:06:51.206 [Actor Thread 126] INFO  nextflow.processor.TaskProcessor - [98/018617] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0020-8_S11_L001-SPAdes)
+Sep-02 13:06:51.208 [Actor Thread 127] INFO  nextflow.processor.TaskProcessor - [a7/c2fe4b] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0075-2_S9_L001-SPAdes)
+Sep-02 13:06:51.208 [Actor Thread 22] INFO  nextflow.processor.TaskProcessor - [4c/e9c133] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963569365_1)
+Sep-02 13:06:51.206 [Actor Thread 19] INFO  nextflow.processor.TaskProcessor - [8c/f9e376] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0069-5_S3_L001-SPAdes)
+Sep-02 13:06:51.208 [Actor Thread 25] INFO  nextflow.processor.TaskProcessor - [dd/34819f] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0097-6_S9_L001-SPAdes)
+Sep-02 13:06:51.206 [Actor Thread 24] INFO  nextflow.processor.TaskProcessor - [88/30ef37] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0181-8_S6-SPAdes)
+Sep-02 13:06:51.206 [Actor Thread 128] INFO  nextflow.processor.TaskProcessor - [4f/804ff8] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963563065_1)
+Sep-02 13:06:51.206 [Actor Thread 4] INFO  nextflow.processor.TaskProcessor - [1d/e39bb4] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963569685_1)
+Sep-02 13:06:51.206 [Actor Thread 45] INFO  nextflow.processor.TaskProcessor - [d5/8a570b] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0135-4_S5_L001-SPAdes)
+Sep-02 13:06:51.206 [Actor Thread 129] INFO  nextflow.processor.TaskProcessor - [fa/8396b2] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963567935_1)
+Sep-02 13:06:51.208 [Actor Thread 3] INFO  nextflow.processor.TaskProcessor - [80/ad47a9] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0149-5_S9_L001-SPAdes)
+Sep-02 13:06:51.206 [Actor Thread 130] INFO  nextflow.processor.TaskProcessor - [30/0f24fb] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0105-7_S5_L001-SPAdes)
+Sep-02 13:06:51.208 [Actor Thread 36] INFO  nextflow.processor.TaskProcessor - [1e/25df05] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963561835_1)
+Sep-02 13:06:51.206 [Actor Thread 42] INFO  nextflow.processor.TaskProcessor - [5b/fd9a33] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0120-6_S11_L001-SPAdes)
+Sep-02 13:06:51.206 [Actor Thread 118] INFO  nextflow.processor.TaskProcessor - [81/aaaa79] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963566625_1)
+Sep-02 13:06:51.206 [Actor Thread 97] INFO  nextflow.processor.TaskProcessor - [fa/be92cb] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963565395_1)
+Sep-02 13:06:51.206 [Actor Thread 76] INFO  nextflow.processor.TaskProcessor - [15/3d94d7] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0183-4_S8-SPAdes)
+Sep-02 13:06:51.208 [Actor Thread 86] INFO  nextflow.processor.TaskProcessor - [06/775b9b] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0102-4_S2_L001-SPAdes)
+Sep-02 13:06:51.208 [Actor Thread 120] INFO  nextflow.processor.TaskProcessor - [8c/480cbe] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0017_S11_L001-SPAdes)
+Sep-02 13:06:51.208 [Actor Thread 21] INFO  nextflow.processor.TaskProcessor - [07/38efd7] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0022-4_S2_L001-SPAdes)
+Sep-02 13:06:51.208 [Actor Thread 14] INFO  nextflow.processor.TaskProcessor - [de/75e6e4] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0176-8_S1-SPAdes)
+Sep-02 13:06:51.208 [Actor Thread 91] INFO  nextflow.processor.TaskProcessor - [d3/f452f1] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0108-1_S8_L001-SPAdes)
+Sep-02 13:06:51.208 [Actor Thread 121] INFO  nextflow.processor.TaskProcessor - [d8/4d26ea] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0074-5_S8_L001-SPAdes)
+Sep-02 13:06:51.208 [Actor Thread 64] INFO  nextflow.processor.TaskProcessor - [04/e30d6e] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963563475_1)
+Sep-02 13:06:51.208 [Actor Thread 7] INFO  nextflow.processor.TaskProcessor - [92/9b434f] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0029-9_S9_L001-SPAdes)
+Sep-02 13:06:51.208 [Actor Thread 81] INFO  nextflow.processor.TaskProcessor - [6f/70348f] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963561075_1)
+Sep-02 13:06:51.208 [Actor Thread 59] INFO  nextflow.processor.TaskProcessor - [ae/ffc049] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0019-0_S10_L001-SPAdes)
+Sep-02 13:06:51.208 [Actor Thread 116] INFO  nextflow.processor.TaskProcessor - [aa/21b657] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963561435_1)
+Sep-02 13:06:51.208 [Actor Thread 43] INFO  nextflow.processor.TaskProcessor - [cf/4c33aa] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0119-8_S10_L001-SPAdes)
+Sep-02 13:06:51.209 [Actor Thread 35] INFO  nextflow.processor.TaskProcessor - [cf/b04424] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0165-1_S4-SPAdes)
+Sep-02 13:06:51.209 [Actor Thread 15] INFO  nextflow.processor.TaskProcessor - [1b/754e6e] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0145-3_S5_L001-SPAdes)
+Sep-02 13:06:51.209 [Actor Thread 103] INFO  nextflow.processor.TaskProcessor - [c3/3a8453] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0036-4_S6_L001-SPAdes)
+Sep-02 13:06:51.209 [Actor Thread 12] INFO  nextflow.processor.TaskProcessor - [8c/665016] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0072-9_S6_L001-SPAdes)
+Sep-02 13:06:51.209 [Actor Thread 8] INFO  nextflow.processor.TaskProcessor - [df/383999] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0161-0_S11_L001-SPAdes)
+Sep-02 13:06:51.209 [Actor Thread 125] INFO  nextflow.processor.TaskProcessor - [4b/109176] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963571055_1)
+Sep-02 13:06:51.209 [Actor Thread 29] INFO  nextflow.processor.TaskProcessor - [86/951d2e] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963560915_1)
+Sep-02 13:06:51.209 [Actor Thread 74] INFO  nextflow.processor.TaskProcessor - [52/72d263] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0166-9_S1-SPAdes)
+Sep-02 13:06:51.209 [Actor Thread 41] INFO  nextflow.processor.TaskProcessor - [09/4129dd] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0067-9_S1_L001-SPAdes)
+Sep-02 13:06:51.209 [Actor Thread 44] INFO  nextflow.processor.TaskProcessor - [a8/5eee77] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963566855_1)
+Sep-02 13:06:51.209 [Actor Thread 99] INFO  nextflow.processor.TaskProcessor - [7d/6a75d6] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0002-6_S2_L001-SPAdes)
+Sep-02 13:06:51.209 [Actor Thread 69] INFO  nextflow.processor.TaskProcessor - [23/97a4e7] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0016-6_S7_L001-SPAdes)
+Sep-02 13:06:51.209 [Actor Thread 23] INFO  nextflow.processor.TaskProcessor - [6c/61481e] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0055-4_S5_L001-SPAdes)
+Sep-02 13:06:51.209 [Actor Thread 119] INFO  nextflow.processor.TaskProcessor - [37/38c6ed] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0021-6_S1_L001-SPAdes)
+Sep-02 13:06:51.209 [Actor Thread 49] INFO  nextflow.processor.TaskProcessor - [9d/494d93] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0087-7_S10_L001-SPAdes)
+Sep-02 13:06:51.209 [Actor Thread 87] INFO  nextflow.processor.TaskProcessor - [ba/0d22b5] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963563155_1)
+Sep-02 13:06:51.209 [Actor Thread 131] INFO  nextflow.processor.TaskProcessor - [78/8c07aa] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0130-5_S10_L001-SPAdes)
+Sep-02 13:06:51.216 [Actor Thread 18] INFO  nextflow.processor.TaskProcessor - [37/7d5e27] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0197-4_S2-SPAdes)
+Sep-02 13:06:51.244 [Actor Thread 70] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'PublishDir' minSize=10; maxSize=384; workQueue=LinkedBlockingQueue[10000]; allowCoreThreadTimeout=false
+Sep-02 13:06:51.277 [Actor Thread 172] INFO  nextflow.processor.TaskProcessor - [26/b196ad] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0167-7_S2-SPAdes)
+Sep-02 13:06:51.277 [Actor Thread 132] INFO  nextflow.processor.TaskProcessor - [16/b32bd2] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (Burkholderia_pseudomallei_619s005_GCF_001207785_2_Malaysia)
+Sep-02 13:06:51.277 [Actor Thread 164] INFO  nextflow.processor.TaskProcessor - [9a/60ca35] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0100-8_S1_L001-SPAdes)
+Sep-02 13:06:51.277 [Actor Thread 154] INFO  nextflow.processor.TaskProcessor - [54/627f8f] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0015_S9_L001-SPAdes)
+Sep-02 13:06:51.277 [Actor Thread 153] INFO  nextflow.processor.TaskProcessor - [91/6e122d] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963568885_1)
+Sep-02 13:06:51.277 [Actor Thread 168] INFO  nextflow.processor.TaskProcessor - [3c/ea47f9] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0003-4_S3_L001-SPAdes)
+Sep-02 13:06:51.278 [Actor Thread 173] INFO  nextflow.processor.TaskProcessor - [8d/40fe98] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS013354)
+Sep-02 13:06:51.278 [Actor Thread 133] INFO  nextflow.processor.TaskProcessor - [44/6b1359] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0050-5_S10_L001-SPAdes)
+Sep-02 13:06:51.278 [Actor Thread 152] INFO  nextflow.processor.TaskProcessor - [05/ebd878] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0024-0_S4_L001-SPAdes)
+Sep-02 13:06:51.278 [Actor Thread 165] INFO  nextflow.processor.TaskProcessor - [72/1ca8aa] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0096-8_S8_L001-SPAdes)
+Sep-02 13:06:51.278 [Actor Thread 145] INFO  nextflow.processor.TaskProcessor - [fe/14e122] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963568785_1)
+Sep-02 13:06:51.278 [Actor Thread 155] INFO  nextflow.processor.TaskProcessor - [3d/4656ed] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0109-9_S9_L001-SPAdes)
+Sep-02 13:06:51.278 [Actor Thread 149] INFO  nextflow.processor.TaskProcessor - [89/df4272] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963570575_1)
+Sep-02 13:06:51.278 [Actor Thread 139] INFO  nextflow.processor.TaskProcessor - [5a/4cf5df] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS013348)
+Sep-02 13:06:51.279 [Actor Thread 134] INFO  nextflow.processor.TaskProcessor - [aa/463253] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012303)
+Sep-02 13:06:51.279 [Actor Thread 148] INFO  nextflow.processor.TaskProcessor - [49/3e4108] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0182-6_S7-SPAdes)
+Sep-02 13:06:51.280 [Actor Thread 159] INFO  nextflow.processor.TaskProcessor - [88/75acbe] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0103-2_S3_L001-SPAdes)
+Sep-02 13:06:51.280 [Actor Thread 144] INFO  nextflow.processor.TaskProcessor - [72/10a77d] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963566765_1)
+Sep-02 13:06:51.283 [Actor Thread 150] INFO  nextflow.processor.TaskProcessor - [d5/fd2307] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0039-8_S9_L001-SPAdes)
+Sep-02 13:06:51.287 [Actor Thread 143] INFO  nextflow.processor.TaskProcessor - [f8/c332f9] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0044-8_S4_L001-SPAdes)
+Sep-02 13:06:51.287 [Actor Thread 151] INFO  nextflow.processor.TaskProcessor - [b0/a690ba] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963562795_1)
+Sep-02 13:06:51.287 [Actor Thread 160] INFO  nextflow.processor.TaskProcessor - [30/3da562] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0155-2_S5_L001-SPAdes)
+Sep-02 13:06:51.283 [Actor Thread 138] INFO  nextflow.processor.TaskProcessor - [19/6aa8e2] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0094-3_S6_L001-SPAdes)
+Sep-02 13:06:51.283 [Actor Thread 161] INFO  nextflow.processor.TaskProcessor - [18/0e1a4a] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (Burkholderia_pseudomallei_ABCPW_30_GCF_000774495_1_Australia)
+Sep-02 13:06:51.283 [Actor Thread 140] INFO  nextflow.processor.TaskProcessor - [6d/ea4557] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0026_S8-SPAdes)
+Sep-02 13:06:51.282 [Actor Thread 158] INFO  nextflow.processor.TaskProcessor - [29/7736b6] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0004_S9_L001-SPAdes)
+Sep-02 13:06:51.283 [Actor Thread 166] INFO  nextflow.processor.TaskProcessor - [bf/5ee861] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0019_S5-SPAdes)
+Sep-02 13:06:51.284 [Actor Thread 146] INFO  nextflow.processor.TaskProcessor - [8d/bd9bbc] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0185-9_S10-SPAdes)
+Sep-02 13:06:51.284 [Actor Thread 169] INFO  nextflow.processor.TaskProcessor - [4e/18ec48] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0178-4_S3-SPAdes)
+Sep-02 13:06:51.285 [Actor Thread 162] INFO  nextflow.processor.TaskProcessor - [74/c880c4] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0093-5_S5_L001-SPAdes)
+Sep-02 13:06:51.285 [Actor Thread 170] INFO  nextflow.processor.TaskProcessor - [64/58cb49] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0086-9_S9_L001-SPAdes)
+Sep-02 13:06:51.292 [Actor Thread 13] INFO  nextflow.processor.TaskProcessor - [b3/5e84a2] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0016_S10_L001-SPAdes)
+Sep-02 13:06:51.286 [Actor Thread 6] INFO  nextflow.processor.TaskProcessor - [e7/771836] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0071-1_S5_L001-SPAdes)
+Sep-02 13:06:51.286 [Actor Thread 167] INFO  nextflow.processor.TaskProcessor - [a6/55f746] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0043-0_S3_L001-SPAdes)
+Sep-02 13:06:51.287 [Actor Thread 177] INFO  nextflow.processor.TaskProcessor - [e1/c22c23] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0132-1_S2_L001-SPAdes)
+Sep-02 13:06:51.287 [Actor Thread 163] INFO  nextflow.processor.TaskProcessor - [30/24a82f] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0028-1_S8_L001-SPAdes)
+Sep-02 13:06:51.287 [Actor Thread 156] INFO  nextflow.processor.TaskProcessor - [7e/355363] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0010-9_S10_L001-SPAdes)
+Sep-02 13:06:51.288 [Actor Thread 157] INFO  nextflow.processor.TaskProcessor - [41/b68a60] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0068-7_S2_L001-SPAdes)
+Sep-02 13:06:51.288 [Actor Thread 179] INFO  nextflow.processor.TaskProcessor - [8d/074ffc] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963566635_1)
+Sep-02 13:06:51.293 [Actor Thread 123] INFO  nextflow.processor.TaskProcessor - [54/358276] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0157-8_S7_L001-SPAdes)
+Sep-02 13:06:51.293 [Actor Thread 147] INFO  nextflow.processor.TaskProcessor - [b0/256b25] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0114-9_S5_L001-SPAdes)
+Sep-02 13:06:51.296 [Actor Thread 89] INFO  nextflow.processor.TaskProcessor - [82/ae9916] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0048-9_S8_L001-SPAdes)
+Sep-02 13:06:51.298 [Actor Thread 108] INFO  nextflow.processor.TaskProcessor - [e7/fc8bf2] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0010_S4_L001-SPAdes)
+Sep-02 13:06:51.298 [Actor Thread 141] INFO  nextflow.processor.TaskProcessor - [85/8f4358] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0172-7_S7-SPAdes)
+Sep-02 13:06:51.298 [Actor Thread 137] INFO  nextflow.processor.TaskProcessor - [9e/477186] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0098-4_S10_L001-SPAdes)
+Sep-02 13:06:51.299 [Actor Thread 142] INFO  nextflow.processor.TaskProcessor - [b0/84cc0d] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0138-8_S8_L001-SPAdes)
+Sep-02 13:06:51.301 [Actor Thread 98] INFO  nextflow.processor.TaskProcessor - [a5/d75026] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963573225_1)
+Sep-02 13:06:51.305 [Actor Thread 84] INFO  nextflow.processor.TaskProcessor - [61/bdd77d] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0038-0_S8_L001-SPAdes)
+Sep-02 13:06:51.306 [Actor Thread 85] INFO  nextflow.processor.TaskProcessor - [9d/740c1d] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0001_S6_L001-SPAdes)
+Sep-02 13:06:51.306 [Actor Thread 39] INFO  nextflow.processor.TaskProcessor - [54/6b713d] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0026-5_S6_L001-SPAdes)
+Sep-02 13:06:51.308 [Actor Thread 181] INFO  nextflow.processor.TaskProcessor - [a4/da3a91] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0184-2_S9-SPAdes)
+Sep-02 13:06:51.311 [Actor Thread 135] INFO  nextflow.processor.TaskProcessor - [b8/b6e4cf] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0121-4_S1_L001-SPAdes)
+Sep-02 13:06:51.311 [Actor Thread 115] INFO  nextflow.processor.TaskProcessor - [b7/ff541d] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0045-5_S5_L001-SPAdes)
+Sep-02 13:06:51.313 [Actor Thread 72] INFO  nextflow.processor.TaskProcessor - [13/874f6c] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963561215_1)
+Sep-02 13:06:51.315 [Actor Thread 58] INFO  nextflow.processor.TaskProcessor - [44/814ca9] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0009-1_S9_L001-SPAdes)
+Sep-02 13:06:51.315 [Actor Thread 70] INFO  nextflow.processor.TaskProcessor - [a5/524771] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963570025_1)
+Sep-02 13:06:51.316 [Actor Thread 52] INFO  nextflow.processor.TaskProcessor - [f4/36554f] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (Burkholderia_pseudomallei_284_GCF_025847905_1_Viet_Nam)
+Sep-02 13:06:51.317 [Actor Thread 184] INFO  nextflow.processor.TaskProcessor - [ef/9b8bc9] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0005-9_S5_L001-SPAdes)
+Sep-02 13:06:51.317 [Actor Thread 178] INFO  nextflow.processor.TaskProcessor - [b1/96f5aa] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0073-7_S7_L001-SPAdes)
+Sep-02 13:06:51.317 [Actor Thread 77] INFO  nextflow.processor.TaskProcessor - [08/e54085] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963568705_1)
+Sep-02 13:06:51.318 [Actor Thread 90] INFO  nextflow.processor.TaskProcessor - [98/4dca8b] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012306)
+Sep-02 13:06:51.320 [Actor Thread 180] INFO  nextflow.processor.TaskProcessor - [41/185a61] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0062-0_S7_L001-SPAdes)
+Sep-02 13:06:51.321 [Actor Thread 65] INFO  nextflow.processor.TaskProcessor - [03/97bc79] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (Burkholderia_pseudomallei_4811_GCF_003268075_1_Viet_Nam)
+Sep-02 13:06:51.322 [Actor Thread 82] INFO  nextflow.processor.TaskProcessor - [b8/51643c] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0007-5_S7_L001-SPAdes)
+Sep-02 13:06:51.325 [Actor Thread 186] INFO  nextflow.processor.TaskProcessor - [7a/0b5c78] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0013_S7_L001-SPAdes)
+Sep-02 13:06:51.324 [Actor Thread 112] INFO  nextflow.processor.TaskProcessor - [dd/1a6056] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0002_S11_L001-SPAdes)
+Sep-02 13:06:51.325 [Actor Thread 197] INFO  nextflow.processor.TaskProcessor - [29/e5e69c] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (Burkholderia_pseudomallei_43S_S63_GCF_014713085_1_Laos)
+Sep-02 13:06:51.325 [Actor Thread 46] INFO  nextflow.processor.TaskProcessor - [3d/8f5de4] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0004-2_S4_L001-SPAdes)
+Sep-02 13:06:51.325 [Actor Thread 50] INFO  nextflow.processor.TaskProcessor - [e1/d805cb] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0140-4_S10_L001-SPAdes)
+Sep-02 13:06:51.327 [Actor Thread 175] INFO  nextflow.processor.TaskProcessor - [9b/9d8afd] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0063-8_S8_L001-SPAdes)
+Sep-02 13:06:51.327 [Actor Thread 93] INFO  nextflow.processor.TaskProcessor - [7f/6c3bb1] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0117-2_S8_L001-SPAdes)
+Sep-02 13:06:51.327 [Actor Thread 51] INFO  nextflow.processor.TaskProcessor - [85/519862] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0141-2_S1_L001-SPAdes)
+Sep-02 13:06:51.328 [Actor Thread 182] INFO  nextflow.processor.TaskProcessor - [58/812685] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0179-2_S4-SPAdes)
+Sep-02 13:06:51.334 [Actor Thread 20] INFO  nextflow.processor.TaskProcessor - [95/e5a529] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0170-1_S5-SPAdes)
+Sep-02 13:06:51.335 [Actor Thread 34] INFO  nextflow.processor.TaskProcessor - [ec/36af7d] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0064-6_S9_L001-SPAdes)
+Sep-02 13:06:51.335 [Actor Thread 63] INFO  nextflow.processor.TaskProcessor - [6a/61b42a] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012330)
+Sep-02 13:06:51.336 [Actor Thread 88] INFO  nextflow.processor.TaskProcessor - [4b/dc1713] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0021_S7-SPAdes)
+Sep-02 13:06:51.335 [Actor Thread 31] INFO  nextflow.processor.TaskProcessor - [12/fd0b13] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0187-5_S2-SPAdes)
+Sep-02 13:06:51.337 [Actor Thread 67] INFO  nextflow.processor.TaskProcessor - [4c/c0ddcd] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0122-2_S2_L001-SPAdes)
+Sep-02 13:06:51.339 [Actor Thread 28] INFO  nextflow.processor.TaskProcessor - [47/f95ade] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012363)
+Sep-02 13:06:51.341 [Actor Thread 17] INFO  nextflow.processor.TaskProcessor - [3f/349a07] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0124-8_S4_L001-SPAdes)
+Sep-02 13:06:51.342 [Actor Thread 198] INFO  nextflow.processor.TaskProcessor - [ff/8080b5] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0112-3_S3_L001-SPAdes)
+Sep-02 13:06:51.343 [Actor Thread 5] INFO  nextflow.processor.TaskProcessor - [73/9bc606] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0177-6_S2-SPAdes)
+Sep-02 13:06:51.344 [Actor Thread 187] INFO  nextflow.processor.TaskProcessor - [8e/4ee007] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0017-4_S8_L001-SPAdes)
+Sep-02 13:06:51.344 [Actor Thread 136] INFO  nextflow.processor.TaskProcessor - [43/5de390] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963569645_1)
+Sep-02 13:06:51.346 [Actor Thread 183] INFO  nextflow.processor.TaskProcessor - [4d/3a150f] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963562615_1)
+Sep-02 13:06:51.346 [Actor Thread 95] INFO  nextflow.processor.TaskProcessor - [ad/a114a0] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0023-2_S3_L001-SPAdes)
+Sep-02 13:06:51.346 [Actor Thread 188] INFO  nextflow.processor.TaskProcessor - [0e/3d33bf] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0164-4_S3-SPAdes)
+Sep-02 13:06:51.347 [Actor Thread 117] INFO  nextflow.processor.TaskProcessor - [36/1f11a6] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0147-9_S7_L001-SPAdes)
+Sep-02 13:06:51.347 [Actor Thread 55] INFO  nextflow.processor.TaskProcessor - [ae/8960ab] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0047-1_S7_L001-SPAdes)
+Sep-02 13:06:51.347 [Actor Thread 104] INFO  nextflow.processor.TaskProcessor - [13/38ced9] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0160-2_S10_L001-SPAdes)
+Sep-02 13:06:51.347 [Actor Thread 38] INFO  nextflow.processor.TaskProcessor - [9c/257949] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0070-3_S4_L001-SPAdes)
+Sep-02 13:06:51.348 [Actor Thread 176] INFO  nextflow.processor.TaskProcessor - [9d/17effd] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963566495_1)
+Sep-02 13:06:51.348 [Actor Thread 190] INFO  nextflow.processor.TaskProcessor - [2a/311e50] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0025-7_S5_L001-SPAdes)
+Sep-02 13:06:51.348 [Actor Thread 108] INFO  nextflow.processor.TaskProcessor - [20/712261] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0012_S6_L001-SPAdes)
+Sep-02 13:06:51.349 [Actor Thread 66] INFO  nextflow.processor.TaskProcessor - [7b/b4b0c4] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0007_S1_L001-SPAdes)
+Sep-02 13:06:51.350 [Actor Thread 174] INFO  nextflow.processor.TaskProcessor - [43/660e87] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0171-9-R_S12-SPAdes)
+Sep-02 13:06:51.350 [Actor Thread 10] INFO  nextflow.processor.TaskProcessor - [03/a4f047] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0175-0_S10-SPAdes)
+Sep-02 13:06:51.351 [Actor Thread 201] INFO  nextflow.processor.TaskProcessor - [6f/9ee96b] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0061-2_S6_L001-SPAdes)
+Sep-02 13:06:51.351 [Actor Thread 205] INFO  nextflow.processor.TaskProcessor - [38/f234eb] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963565125_1)
+Sep-02 13:06:51.351 [Actor Thread 111] INFO  nextflow.processor.TaskProcessor - [c4/c82dce] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0058-8_S3_L001-SPAdes)
+Sep-02 13:06:51.352 [Actor Thread 196] INFO  nextflow.processor.TaskProcessor - [09/34a886] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0076-0_S10_L001-SPAdes)
+Sep-02 13:06:51.352 [Actor Thread 123] INFO  nextflow.processor.TaskProcessor - [e0/23993b] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0056-2_S1_L001-SPAdes)
+Sep-02 13:06:51.352 [Actor Thread 206] INFO  nextflow.processor.TaskProcessor - [96/51db4c] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0082-8_S5_L001-SPAdes)
+Sep-02 13:06:51.354 [Actor Thread 189] INFO  nextflow.processor.TaskProcessor - [69/5bbf39] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0131-3_S1_L001-SPAdes)
+Sep-02 13:06:51.354 [Actor Thread 185] INFO  nextflow.processor.TaskProcessor - [70/4e8da9] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012316)
+Sep-02 13:06:51.355 [Actor Thread 192] INFO  nextflow.processor.TaskProcessor - [9e/d9f292] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0033-1_S3_L001-SPAdes)
+Sep-02 13:06:51.357 [Actor Thread 101] INFO  nextflow.processor.TaskProcessor - [0c/e0237b] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0158-6_S8_L001-SPAdes)
+Sep-02 13:06:51.357 [Actor Thread 203] INFO  nextflow.processor.TaskProcessor - [82/9a94c6] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0001-8_S1_L001-SPAdes)
+Sep-02 13:06:51.358 [Actor Thread 32] INFO  nextflow.processor.TaskProcessor - [2c/f33212] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS013364)
+Sep-02 13:06:51.358 [Actor Thread 147] INFO  nextflow.processor.TaskProcessor - [78/504963] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963562655_1)
+Sep-02 13:06:51.362 [Actor Thread 194] INFO  nextflow.processor.TaskProcessor - [41/fb4cac] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963569795_1)
+Sep-02 13:06:51.363 [Actor Thread 107] INFO  nextflow.processor.TaskProcessor - [11/20c48b] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0199-0_S4-SPAdes)
+Sep-02 13:06:51.363 [Actor Thread 40] INFO  nextflow.processor.TaskProcessor - [30/94a137] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0013-3_S4_L001-SPAdes)
+Sep-02 13:06:51.363 [Actor Thread 100] INFO  nextflow.processor.TaskProcessor - [de/3e99bb] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0012-5_S3_L001-SPAdes)
+Sep-02 13:06:51.363 [Actor Thread 208] INFO  nextflow.processor.TaskProcessor - [42/844739] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0079-4_S2_L001-SPAdes)
+Sep-02 13:06:51.364 [Actor Thread 80] INFO  nextflow.processor.TaskProcessor - [f8/03cc38] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0111-5_S2_L001-SPAdes)
+Sep-02 13:06:51.364 [Actor Thread 114] INFO  nextflow.processor.TaskProcessor - [1f/da8e23] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0053-9_S3_L001-SPAdes)
+Sep-02 13:06:51.364 [Actor Thread 209] INFO  nextflow.processor.TaskProcessor - [7a/300043] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0163-6_S2-SPAdes)
+Sep-02 13:06:51.365 [Actor Thread 171] INFO  nextflow.processor.TaskProcessor - [5c/4063ba] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0201-4_S6-SPAdes)
+Sep-02 13:06:51.365 [Actor Thread 71] INFO  nextflow.processor.TaskProcessor - [5d/1d341d] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0092-7_S4_L001-SPAdes)
+Sep-02 13:06:51.366 [Actor Thread 47] INFO  nextflow.processor.TaskProcessor - [f6/f8d2be] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0146-1_S6_L001-SPAdes)
+Sep-02 13:06:51.367 [Actor Thread 92] INFO  nextflow.processor.TaskProcessor - [f4/be24bc] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0200-6_S5-SPAdes)
+Sep-02 13:06:51.367 [Actor Thread 26] INFO  nextflow.processor.TaskProcessor - [02/17631b] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963566085_1)
+Sep-02 13:06:51.367 [Actor Thread 27] INFO  nextflow.processor.TaskProcessor - [a7/d925ef] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0151-1_S1_L001-SPAdes)
+Sep-02 13:06:51.369 [Actor Thread 60] INFO  nextflow.processor.TaskProcessor - [a3/22555f] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (Burkholderia_pseudomallei_ABCPW_107_GCF_000773235_1_Australia)
+Sep-02 13:06:51.369 [Actor Thread 110] INFO  nextflow.processor.TaskProcessor - [fb/0cfc61] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0006-7_S6_L001-SPAdes)
+Sep-02 13:06:51.370 [Actor Thread 83] INFO  nextflow.processor.TaskProcessor - [80/a5658b] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (Burkholderia_pseudomallei_53W_S72_GCF_014712895_1_Laos)
+Sep-02 13:06:51.370 [Actor Thread 113] INFO  nextflow.processor.TaskProcessor - [a6/95e417] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS013346)
+Sep-02 13:06:51.371 [Actor Thread 57] INFO  nextflow.processor.TaskProcessor - [77/148a07] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963562695_1)
+Sep-02 13:06:51.371 [Actor Thread 9] INFO  nextflow.processor.TaskProcessor - [f4/bb4c8c] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0193-3_S8-SPAdes)
+Sep-02 13:06:51.374 [Actor Thread 48] INFO  nextflow.processor.TaskProcessor - [f8/9c71d1] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0189-1_S4-SPAdes)
+Sep-02 13:06:51.374 [Actor Thread 79] INFO  nextflow.processor.TaskProcessor - [09/c2a511] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS013343)
+Sep-02 13:06:51.374 [Actor Thread 68] INFO  nextflow.processor.TaskProcessor - [52/ec9ac5] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0090-1_S2_L001-SPAdes)
+Sep-02 13:06:51.374 [Actor Thread 195] INFO  nextflow.processor.TaskProcessor - [a8/278be0] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012332)
+Sep-02 13:06:51.376 [Actor Thread 73] INFO  nextflow.processor.TaskProcessor - [35/84a92f] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0133-9_S3_L001-SPAdes)
+Sep-02 13:06:51.378 [Actor Thread 94] INFO  nextflow.processor.TaskProcessor - [c9/21da87] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963561975_1)
+Sep-02 13:06:51.379 [Actor Thread 146] INFO  nextflow.processor.TaskProcessor - [4d/dce3ed] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0091-9_S3_L001-SPAdes)
+Sep-02 13:06:51.379 [Actor Thread 62] INFO  nextflow.processor.TaskProcessor - [6c/f65c40] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0089-3_S1_L001-SPAdes)
+Sep-02 13:06:51.380 [Actor Thread 37] INFO  nextflow.processor.TaskProcessor - [c2/9a4b23] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0057-0_S2_L001-SPAdes)
+Sep-02 13:06:51.380 [Actor Thread 2] INFO  nextflow.processor.TaskProcessor - [93/3353d1] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0173-5_S8-SPAdes)
+Sep-02 13:06:51.381 [Actor Thread 158] INFO  nextflow.processor.TaskProcessor - [b5/87cc24] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0153-7_S3_L001-SPAdes)
+Sep-02 13:06:51.383 [Actor Thread 204] INFO  nextflow.processor.TaskProcessor - [cc/1b36bf] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0027-3_S7_L001-SPAdes)
+Sep-02 13:06:51.383 [Actor Thread 53] INFO  nextflow.processor.TaskProcessor - [30/c1694e] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0088-5_S11_L001-SPAdes)
+Sep-02 13:06:51.396 [Actor Thread 151] INFO  nextflow.processor.TaskProcessor - [ac/da2919] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0145-3_S5_L001-SPAdes)
+Sep-02 13:06:51.396 [Actor Thread 154] INFO  nextflow.processor.TaskProcessor - [e0/266103] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0036-4_S6_L001-SPAdes)
+Sep-02 13:06:51.396 [Actor Thread 133] INFO  nextflow.processor.TaskProcessor - [66/13585e] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0197-4_S2-SPAdes)
+Sep-02 13:06:51.398 [Actor Thread 144] INFO  nextflow.processor.TaskProcessor - [f2/c5ff0b] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0161-0_S11_L001-SPAdes)
+Sep-02 13:06:51.398 [Actor Thread 173] INFO  nextflow.processor.TaskProcessor - [68/196f1d] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963571055_1)
+Sep-02 13:06:51.399 [Actor Thread 139] INFO  nextflow.processor.TaskProcessor - [39/48b997] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963560915_1)
+Sep-02 13:06:51.399 [Actor Thread 200] INFO  nextflow.processor.TaskProcessor - [32/ec537f] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0072-9_S6_L001-SPAdes)
+Sep-02 13:06:51.402 [Actor Thread 160] INFO  nextflow.processor.TaskProcessor - [41/e4d33d] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0067-9_S1_L001-SPAdes)
+Sep-02 13:06:51.403 [Actor Thread 132] INFO  nextflow.processor.TaskProcessor - [1a/9441e5] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0055-4_S5_L001-SPAdes)
+Sep-02 13:06:51.403 [Actor Thread 164] INFO  nextflow.processor.TaskProcessor - [e5/7ed4d6] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963566855_1)
+Sep-02 13:06:51.403 [Actor Thread 165] INFO  nextflow.processor.TaskProcessor - [46/7161be] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0016-6_S7_L001-SPAdes)
+Sep-02 13:06:51.403 [Actor Thread 152] INFO  nextflow.processor.TaskProcessor - [99/8b2f55] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0021-6_S1_L001-SPAdes)
+Sep-02 13:06:51.403 [Actor Thread 155] INFO  nextflow.processor.TaskProcessor - [54/2554ae] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0002-6_S2_L001-SPAdes)
+Sep-02 13:06:51.407 [Actor Thread 168] INFO  nextflow.processor.TaskProcessor - [76/798334] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0009_S3_L001-SPAdes)
+Sep-02 13:06:51.409 [Actor Thread 134] INFO  nextflow.processor.TaskProcessor - [70/171c2e] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963571475_1)
+Sep-02 13:06:51.410 [Actor Thread 153] INFO  nextflow.processor.TaskProcessor - [e8/8d0c12] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0030-7_S10_L001-SPAdes)
+Sep-02 13:06:51.411 [Actor Thread 15] INFO  nextflow.processor.TaskProcessor - [c1/5b0ba1] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963561855_1)
+Sep-02 13:06:51.421 [Actor Thread 29] INFO  nextflow.processor.TaskProcessor - [d5/4706ac] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012365)
+Sep-02 13:06:51.422 [Actor Thread 69] INFO  nextflow.processor.TaskProcessor - [af/909d35] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012362)
+Sep-02 13:06:51.422 [Actor Thread 99] INFO  nextflow.processor.TaskProcessor - [b4/9a8831] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012307)
+Sep-02 13:06:51.422 [Actor Thread 41] INFO  nextflow.processor.TaskProcessor - [c6/4b5861] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0127-1_S7_L001-SPAdes)
+Sep-02 13:06:51.422 [Actor Thread 23] INFO  nextflow.processor.TaskProcessor - [30/538829] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0095-0_S7_L001-SPAdes)
+Sep-02 13:06:51.423 [Actor Thread 8] INFO  nextflow.processor.TaskProcessor - [a0/0fcc8f] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0137-0_S7_L001-SPAdes)
+Sep-02 13:06:51.423 [Actor Thread 149] INFO  nextflow.processor.TaskProcessor - [07/64216f] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0019-0_S10_L001-SPAdes)
+Sep-02 13:06:51.424 [Actor Thread 125] INFO  nextflow.processor.TaskProcessor - [1f/a876d5] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0087-7_S10_L001-SPAdes)
+Sep-02 13:06:51.424 [Actor Thread 148] INFO  nextflow.processor.TaskProcessor - [aa/ac6e54] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0136-2_S6_L001-SPAdes)
+Sep-02 13:06:51.424 [Actor Thread 44] INFO  nextflow.processor.TaskProcessor - [55/14bf40] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS013352)
+Sep-02 13:06:51.424 [Actor Thread 119] INFO  nextflow.processor.TaskProcessor - [63/e8cb54] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0051-3_S1_L001-SPAdes)
+Sep-02 13:06:51.427 [Actor Thread 159] INFO  nextflow.processor.TaskProcessor - [f5/01a49b] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963561435_1)
+Sep-02 13:06:51.427 [Actor Thread 172] INFO  nextflow.processor.TaskProcessor - [69/b711d3] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963561075_1)
+Sep-02 13:06:51.433 [Actor Thread 30] INFO  nextflow.processor.TaskProcessor - [c0/c7c0fa] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0166-9_S1-SPAdes)
+Sep-02 13:06:51.435 [Actor Thread 145] INFO  nextflow.processor.TaskProcessor - [ba/05b447] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0119-8_S10_L001-SPAdes)
+Sep-02 13:06:51.435 [Actor Thread 138] INFO  nextflow.processor.TaskProcessor - [40/79e8e4] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0165-1_S4-SPAdes)
+Sep-02 13:06:51.436 [Actor Thread 150] INFO  nextflow.processor.TaskProcessor - [f2/078733] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0105-7_S5_L001-SPAdes)
+Sep-02 13:06:51.438 [Actor Thread 43] INFO  nextflow.processor.TaskProcessor - [20/dece2d] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0176-8_S1-SPAdes)
+Sep-02 13:06:51.439 [Actor Thread 140] INFO  nextflow.processor.TaskProcessor - [17/c9aef5] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963563155_1)
+Sep-02 13:06:51.440 [Actor Thread 6] INFO  nextflow.processor.TaskProcessor - [6d/825c9c] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0074-5_S8_L001-SPAdes)
+Sep-02 13:06:51.440 [Actor Thread 12] INFO  nextflow.processor.TaskProcessor - [1c/12a51d] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0130-5_S10_L001-SPAdes)
+Sep-02 13:06:51.440 [Actor Thread 169] INFO  nextflow.processor.TaskProcessor - [18/a28ec4] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0018_S12_L001-SPAdes)
+Sep-02 13:06:51.443 [Actor Thread 103] INFO  nextflow.processor.TaskProcessor - [3a/26e9bf] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012370)
+Sep-02 13:06:51.444 [Actor Thread 81] INFO  nextflow.processor.TaskProcessor - [dd/8b41a1] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0017_S11_L001-SPAdes)
+Sep-02 13:06:51.444 [Actor Thread 166] INFO  nextflow.processor.TaskProcessor - [e1/93c3a7] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0108-1_S8_L001-SPAdes)
+Sep-02 13:06:51.446 [Actor Thread 18] INFO  nextflow.processor.TaskProcessor - [b9/b953ef] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963565395_1)
+Sep-02 13:06:51.447 [Actor Thread 61] INFO  nextflow.processor.TaskProcessor - [67/f80a7d] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963563475_1)
+Sep-02 13:06:51.450 [Actor Thread 124] INFO  nextflow.processor.TaskProcessor - [38/2faf6d] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963566625_1)
+Sep-02 13:06:51.455 [Actor Thread 167] INFO  nextflow.processor.TaskProcessor - [c1/98b79b] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0183-4_S8-SPAdes)
+Sep-02 13:06:51.455 [Actor Thread 143] INFO  nextflow.processor.TaskProcessor - [c5/b6d95a] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0195-8_S10-SPAdes)
+Sep-02 13:06:51.459 [Actor Thread 106] INFO  nextflow.processor.TaskProcessor - [8b/bc4625] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963564305_1)
+Sep-02 13:06:51.462 [Actor Thread 211] INFO  nextflow.processor.TaskProcessor - [57/e4dfa4] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963567935_1)
+Sep-02 13:06:51.462 [Actor Thread 14] INFO  nextflow.processor.TaskProcessor - [f9/1e9715] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0181-8_S6-SPAdes)
+Sep-02 13:06:51.464 [Actor Thread 212] INFO  nextflow.processor.TaskProcessor - [04/56c7e6] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0135-4_S5_L001-SPAdes)
+Sep-02 13:06:51.464 [Actor Thread 49] INFO  nextflow.processor.TaskProcessor - [30/50f051] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963560675_1)
+Sep-02 13:06:51.464 [Actor Thread 131] INFO  nextflow.processor.TaskProcessor - [fb/be024a] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0029-9_S9_L001-SPAdes)
+Sep-02 13:06:51.465 [Actor Thread 157] INFO  nextflow.processor.TaskProcessor - [c7/d4da00] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0115-6_S6_L001-SPAdes)
+Sep-02 13:06:51.465 [Actor Thread 210] INFO  nextflow.processor.TaskProcessor - [d9/bcb4f9] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0015-8_S6_L001-SPAdes)
+Sep-02 13:06:51.465 [Actor Thread 156] INFO  nextflow.processor.TaskProcessor - [8e/896e19] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963560585_1)
+Sep-02 13:06:51.466 [Actor Thread 35] INFO  nextflow.processor.TaskProcessor - [5c/0b4ab1] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0075-2_S9_L001-SPAdes)
+Sep-02 13:06:51.466 [Actor Thread 59] INFO  nextflow.processor.TaskProcessor - [72/0fa4c6] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0011-7_S2_L001-SPAdes)
+Sep-02 13:06:51.466 [Actor Thread 120] INFO  nextflow.processor.TaskProcessor - [07/313403] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0102-4_S2_L001-SPAdes)
+Sep-02 13:06:51.467 [Actor Thread 91] INFO  nextflow.processor.TaskProcessor - [e2/c56beb] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963569685_1)
+Sep-02 13:06:51.467 [Actor Thread 97] INFO  nextflow.processor.TaskProcessor - [71/9454e6] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0084-4_S7_L001-SPAdes)
+Sep-02 13:06:51.468 [Actor Thread 116] INFO  nextflow.processor.TaskProcessor - [95/9d5d86] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0022-4_S2_L001-SPAdes)
+Sep-02 13:06:51.470 [Actor Thread 121] INFO  nextflow.processor.TaskProcessor - [65/7eada2] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0110-7_S10_L001-SPAdes)
+Sep-02 13:06:51.472 [Actor Thread 202] INFO  nextflow.processor.TaskProcessor - [6f/f17862] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0149-5_S9_L001-SPAdes)
+Sep-02 13:06:51.472 [Actor Thread 162] INFO  nextflow.processor.TaskProcessor - [8a/2d1394] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963564375_1)
+Sep-02 13:06:51.472 [Actor Thread 170] INFO  nextflow.processor.TaskProcessor - [a8/e729f3] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963566475_1)
+Sep-02 13:06:51.472 [Actor Thread 122] INFO  nextflow.processor.TaskProcessor - [d6/afd194] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0042-2_S2_L001-SPAdes)
+Sep-02 13:06:51.473 [Actor Thread 177] INFO  nextflow.processor.TaskProcessor - [6f/347bce] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963569365_1)
+Sep-02 13:06:51.473 [Actor Thread 218] INFO  nextflow.processor.TaskProcessor - [6b/9a4693] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0014-1_S5_L001-SPAdes)
+Sep-02 13:06:51.474 [Actor Thread 130] INFO  nextflow.processor.TaskProcessor - [0e/5a7f58] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963561835_1)
+Sep-02 13:06:51.477 [Actor Thread 219] INFO  nextflow.processor.TaskProcessor - [da/21802b] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0097-6_S9_L001-SPAdes)
+Sep-02 13:06:51.477 [Actor Thread 161] INFO  nextflow.processor.TaskProcessor - [78/4fab9d] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0143-8_S3_L001-SPAdes)
+Sep-02 13:06:51.477 [Actor Thread 207] INFO  nextflow.processor.TaskProcessor - [6a/d51b0f] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0188-3_S3-SPAdes)
+Sep-02 13:06:51.478 [Actor Thread 127] INFO  nextflow.processor.TaskProcessor - [d3/540f77] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0020-8_S11_L001-SPAdes)
+Sep-02 13:06:51.483 [Actor Thread 179] INFO  nextflow.processor.TaskProcessor - [37/95ecc8] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0099-2_S11_L001-SPAdes)
+Sep-02 13:06:51.480 [Actor Thread 86] INFO  nextflow.processor.TaskProcessor - [40/0d68e3] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012312)
+Sep-02 13:06:51.481 [Actor Thread 4] INFO  nextflow.processor.TaskProcessor - [e0/2fe854] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0065-3_S10_L001-SPAdes)
+Sep-02 13:06:51.481 [Actor Thread 129] INFO  nextflow.processor.TaskProcessor - [1f/434410] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963570105_1)
+Sep-02 13:06:51.483 [Actor Thread 24] INFO  nextflow.processor.TaskProcessor - [32/bbe451] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963571975_1)
+Sep-02 13:06:51.483 [Actor Thread 45] INFO  nextflow.processor.TaskProcessor - [a8/548ce7] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0129-7_S9_L001-SPAdes)
+Sep-02 13:06:51.484 [Actor Thread 105] INFO  nextflow.processor.TaskProcessor - [e6/4ebbf0] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0037-2_S7_L001-SPAdes)
+Sep-02 13:06:51.485 [Actor Thread 214] INFO  nextflow.processor.TaskProcessor - [f6/77fe05] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0120-6_S11_L001-SPAdes)
+Sep-02 13:06:51.485 [Actor Thread 64] INFO  nextflow.processor.TaskProcessor - [18/c9da2d] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963566695_1)
+Sep-02 13:06:51.487 [Actor Thread 21] INFO  nextflow.processor.TaskProcessor - [e4/53a9f9] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0003_S8_L001-SPAdes)
+Sep-02 13:06:51.488 [Actor Thread 56] INFO  nextflow.processor.TaskProcessor - [3b/baddd7] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0041-4_S1_L001-SPAdes)
+Sep-02 13:06:51.488 [Actor Thread 102] INFO  nextflow.processor.TaskProcessor - [79/ab5571] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012358)
+Sep-02 13:06:51.489 [Actor Thread 78] INFO  nextflow.processor.TaskProcessor - [f5/56e060] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0116-4_S7_L001-SPAdes)
+Sep-02 13:06:51.489 [Actor Thread 76] INFO  nextflow.processor.TaskProcessor - [c9/00a0a7] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963565565_1)
+Sep-02 13:06:51.493 [Actor Thread 13] INFO  nextflow.processor.TaskProcessor - [53/0215e4] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0134-7_S4_L001-SPAdes)
+Sep-02 13:06:51.494 [Actor Thread 74] INFO  nextflow.processor.TaskProcessor - [e6/a9a870] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0069-5_S3_L001-SPAdes)
+Sep-02 13:06:51.494 [Actor Thread 163] INFO  nextflow.processor.TaskProcessor - [f2/2de6cd] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963568055_1)
+Sep-02 13:06:51.494 [Actor Thread 230] INFO  nextflow.processor.TaskProcessor - [ab/a7fd96] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963560945_1)
+Sep-02 13:06:51.494 [Actor Thread 7] INFO  nextflow.processor.TaskProcessor - [2f/66f331] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0154-5_S4_L001-SPAdes)
+Sep-02 13:06:51.495 [Actor Thread 118] INFO  nextflow.processor.TaskProcessor - [c8/841268] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963563065_1)
+Sep-02 13:06:51.495 [Actor Thread 199] INFO  nextflow.processor.TaskProcessor - [49/13efd1] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0202-2_S7-SPAdes)
+Sep-02 13:06:51.496 [Actor Thread 213] INFO  nextflow.processor.TaskProcessor - [7a/ddd8c4] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963565485_1)
+Sep-02 13:06:51.497 [Actor Thread 215] INFO  nextflow.processor.TaskProcessor - [b2/6e6747] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0162-8_S1-SPAdes)
+Sep-02 13:06:51.498 [Actor Thread 228] INFO  nextflow.processor.TaskProcessor - [f9/32caa0] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0113-1_S4_L001-SPAdes)
+Sep-02 13:06:51.500 [Actor Thread 217] INFO  nextflow.processor.TaskProcessor - [d2/6dd594] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0080-2_S3_L001-SPAdes)
+Sep-02 13:06:51.502 [Actor Thread 22] INFO  nextflow.processor.TaskProcessor - [5d/347000] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0191-7_S6-SPAdes)
+Sep-02 13:06:51.504 [Actor Thread 96] INFO  nextflow.processor.TaskProcessor - [9c/5e651c] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0195-8_S10-SPAdes)
+Sep-02 13:06:51.504 [Actor Thread 3] INFO  nextflow.processor.TaskProcessor - [f2/7fdc04] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0046-3_S6_L001-SPAdes)
+Sep-02 13:06:51.505 [Actor Thread 126] INFO  nextflow.processor.TaskProcessor - [f3/399233] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0049-7_S9_L001-SPAdes)
+Sep-02 13:06:51.508 [Actor Thread 36] INFO  nextflow.processor.TaskProcessor - [be/a27c6f] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0081-0_S4_L001-SPAdes)
+Sep-02 13:06:51.509 [Actor Thread 11] INFO  nextflow.processor.TaskProcessor - [f7/dfeae9] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0152-9_S2_L001-SPAdes)
+Sep-02 13:06:51.509 [Actor Thread 54] INFO  nextflow.processor.TaskProcessor - [c0/b5df47] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0123-0_S3_L001-SPAdes)
+Sep-02 13:06:51.512 [Actor Thread 25] INFO  nextflow.processor.TaskProcessor - [99/5c0e82] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012313)
+Sep-02 13:06:51.512 [Actor Thread 231] INFO  nextflow.processor.TaskProcessor - [86/4c885c] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0005_S10_L001-SPAdes)
+Sep-02 13:06:51.512 [Actor Thread 30] INFO  nextflow.processor.TaskProcessor - [3c/9da96d] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0051-3_S1_L001-SPAdes)
+Sep-02 13:06:51.527 [Actor Thread 18] INFO  nextflow.processor.TaskProcessor - [01/a59523] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963563715_1)
+Sep-02 13:06:51.528 [Actor Thread 138] INFO  nextflow.processor.TaskProcessor - [3a/626e08] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS013352)
+Sep-02 13:06:51.529 [Actor Thread 143] INFO  nextflow.processor.TaskProcessor - [84/a4f8b4] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963572615_1)
+Sep-02 13:06:51.529 [Actor Thread 150] INFO  nextflow.processor.TaskProcessor - [6b/58a60c] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0136-2_S6_L001-SPAdes)
+Sep-02 13:06:51.531 [Actor Thread 61] INFO  nextflow.processor.TaskProcessor - [3d/eab138] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0150-3_S10_L001-SPAdes)
+Sep-02 13:06:51.532 [Actor Thread 149] INFO  nextflow.processor.TaskProcessor - [2f/04f689] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0127-1_S7_L001-SPAdes)
+Sep-02 13:06:51.533 [Actor Thread 221] INFO  nextflow.processor.TaskProcessor - [73/0dc615] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (Burkholderia_pseudomallei_50W_S69_GCF_014712935_1_Laos)
+Sep-02 13:06:51.535 [Actor Thread 172] INFO  nextflow.processor.TaskProcessor - [4a/af235b] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0137-0_S7_L001-SPAdes)
+Sep-02 13:06:51.535 [Actor Thread 87] INFO  nextflow.processor.TaskProcessor - [26/47c765] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0168-5_S3-SPAdes)
+Sep-02 13:06:51.536 [Actor Thread 43] INFO  nextflow.processor.TaskProcessor - [3a/4c3f60] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012307)
+Sep-02 13:06:51.536 [Actor Thread 226] INFO  nextflow.processor.TaskProcessor - [9a/fda38b] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0101-6_S1_L001-SPAdes)
+Sep-02 13:06:51.539 [Actor Thread 227] INFO  nextflow.processor.TaskProcessor - [f3/bc0bb7] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012362)
+Sep-02 13:06:51.539 [Actor Thread 12] INFO  nextflow.processor.TaskProcessor - [7d/05d2a2] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0095-0_S7_L001-SPAdes)
+Sep-02 13:06:51.541 [Actor Thread 191] INFO  nextflow.processor.TaskProcessor - [d0/a38ec1] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012365)
+Sep-02 13:06:51.542 [Actor Thread 140] INFO  nextflow.processor.TaskProcessor - [b8/d83701] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963561855_1)
+Sep-02 13:06:51.542 [Actor Thread 159] INFO  nextflow.processor.TaskProcessor - [ba/bfe2e3] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0030-7_S10_L001-SPAdes)
+Sep-02 13:06:51.543 [Actor Thread 145] INFO  nextflow.processor.TaskProcessor - [82/661589] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0139-6_S9_L001-SPAdes)
+Sep-02 13:06:51.543 [Actor Thread 119] INFO  nextflow.processor.TaskProcessor - [58/2fe471] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0196-6_S1-SPAdes)
+Sep-02 13:06:51.544 [Actor Thread 99] INFO  nextflow.processor.TaskProcessor - [53/27d531] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0009_S3_L001-SPAdes)
+Sep-02 13:06:51.544 [Actor Thread 223] INFO  nextflow.processor.TaskProcessor - [9f/3c569d] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963571475_1)
+Sep-02 13:06:51.548 [Actor Thread 44] INFO  nextflow.processor.TaskProcessor - [43/d009c1] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0125-5_S5_L001-SPAdes)
+Sep-02 13:06:51.556 [Actor Thread 16] INFO  nextflow.processor.TaskProcessor - [54/f4f08c] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (Burkholderia_pseudomallei_52W_S71_GCF_014712835_1_Laos)
+Sep-02 13:06:51.556 [Actor Thread 8] INFO  nextflow.processor.TaskProcessor - [26/4379a6] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963573095_1)
+Sep-02 13:06:51.556 [Actor Thread 69] INFO  nextflow.processor.TaskProcessor - [e1/de4ca9] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012320)
+Sep-02 13:06:51.556 [Actor Thread 41] INFO  nextflow.processor.TaskProcessor - [b5/32d30e] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963566175_1)
+Sep-02 13:06:51.556 [Actor Thread 1] INFO  nextflow.processor.TaskProcessor - [cb/b2c812] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0011_S5_L001-SPAdes)
+Sep-02 13:06:51.559 [Actor Thread 152] INFO  nextflow.processor.TaskProcessor - [4d/8aad29] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0027-3_S7_L001-SPAdes)
+Sep-02 13:06:51.559 [Actor Thread 224] INFO  nextflow.processor.TaskProcessor - [f8/c85ef5] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0180-0_S5-SPAdes)
+Sep-02 13:06:51.560 [Actor Thread 144] INFO  nextflow.processor.TaskProcessor - [31/c83a9c] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0153-7_S3_L001-SPAdes)
+Sep-02 13:06:51.559 [Actor Thread 133] INFO  nextflow.processor.TaskProcessor - [0e/b3bb21] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0173-5_S8-SPAdes)
+Sep-02 13:06:51.560 [Actor Thread 200] INFO  nextflow.processor.TaskProcessor - [9f/47f519] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0088-5_S11_L001-SPAdes)
+Sep-02 13:06:51.561 [Actor Thread 168] INFO  nextflow.processor.TaskProcessor - [72/9fa1c7] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (Burkholderia_pseudomallei_47W_S67_GCF_014712955_1_Laos)
+Sep-02 13:06:51.564 [Actor Thread 232] INFO  nextflow.processor.TaskProcessor - [6b/e38624] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0159-4_S9_L001-SPAdes)
+Sep-02 13:06:51.566 [Actor Thread 134] INFO  nextflow.processor.TaskProcessor - [dc/f2be07] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0118-0_S9_L001-SPAdes)
+Sep-02 13:06:51.566 [Actor Thread 154] INFO  nextflow.processor.TaskProcessor - [19/45853c] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963561975_1)
+Sep-02 13:06:51.566 [Actor Thread 148] INFO  nextflow.processor.TaskProcessor - [9b/742cde] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0148-7_S8_L001-SPAdes)
+Sep-02 13:06:51.566 [Actor Thread 139] INFO  nextflow.processor.TaskProcessor - [11/3a0c0a] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0057-0_S2_L001-SPAdes)
+Sep-02 13:06:51.567 [Actor Thread 153] INFO  nextflow.processor.TaskProcessor - [79/09e428] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0133-9_S3_L001-SPAdes)
+Sep-02 13:06:51.567 [Actor Thread 151] INFO  nextflow.processor.TaskProcessor - [fd/45d056] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0089-3_S1_L001-SPAdes)
+Sep-02 13:06:51.567 [Actor Thread 160] INFO  nextflow.processor.TaskProcessor - [16/cea16d] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0091-9_S3_L001-SPAdes)
+Sep-02 13:06:51.569 [Actor Thread 204] INFO  nextflow.processor.TaskProcessor - [4f/8209f1] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS013343)
+Sep-02 13:06:51.569 [Actor Thread 229] INFO  nextflow.processor.TaskProcessor - [7c/471d7f] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012332)
+Sep-02 13:06:51.571 [Actor Thread 164] INFO  nextflow.processor.TaskProcessor - [74/f67c6c] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0189-1_S4-SPAdes)
+Sep-02 13:06:51.573 [Actor Thread 158] INFO  nextflow.processor.TaskProcessor - [73/5bb7f8] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0156-0_S6_L001-SPAdes)
+Sep-02 13:06:51.574 [Actor Thread 23] INFO  nextflow.processor.TaskProcessor - [ae/95bddb] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0090-1_S2_L001-SPAdes)
+Sep-02 13:06:51.575 [Actor Thread 169] INFO  nextflow.processor.TaskProcessor - [4d/0390a7] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963562695_1)
+Sep-02 13:06:51.575 [Actor Thread 103] INFO  nextflow.processor.TaskProcessor - [08/6cb48d] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0193-3_S8-SPAdes)
+Sep-02 13:06:51.577 [Actor Thread 173] INFO  nextflow.processor.TaskProcessor - [5c/0e0f3b] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (Burkholderia_pseudomallei_53W_S72_GCF_014712895_1_Laos)
+Sep-02 13:06:51.577 [Actor Thread 75] INFO  nextflow.processor.TaskProcessor - [12/802ead] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963563635_1)
+Sep-02 13:06:51.579 [Actor Thread 29] INFO  nextflow.processor.TaskProcessor - [f8/8e543c] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS013346)
+Sep-02 13:06:51.581 [Actor Thread 132] INFO  nextflow.processor.TaskProcessor - [e9/7a1f97] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0006-7_S6_L001-SPAdes)
+Sep-02 13:06:51.582 [Actor Thread 155] INFO  nextflow.processor.TaskProcessor - [52/1852bb] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0107-3_S7_L001-SPAdes)
+Sep-02 13:06:51.582 [Actor Thread 53] INFO  nextflow.processor.TaskProcessor - [16/c6c9bf] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0060-4_S5_L001-SPAdes)
+Sep-02 13:06:51.585 [Actor Thread 62] INFO  nextflow.processor.TaskProcessor - [8b/5bccd9] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0014_S8_L001-SPAdes)
+Sep-02 13:06:51.586 [Actor Thread 73] INFO  nextflow.processor.TaskProcessor - [a4/64f802] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0078-6_S1_L001-SPAdes)
+Sep-02 13:06:51.586 [Actor Thread 165] INFO  nextflow.processor.TaskProcessor - [76/f9c594] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0200-6_S5-SPAdes)
+Sep-02 13:06:51.587 [Actor Thread 146] INFO  nextflow.processor.TaskProcessor - [12/a45126] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0052-1_S2_L001-SPAdes)
+Sep-02 13:06:51.588 [Actor Thread 37] INFO  nextflow.processor.TaskProcessor - [d2/dbe7b8] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (Burkholderia_pseudomallei_91W_S76_GCF_014712775_1_Laos)
+Sep-02 13:06:51.589 [Actor Thread 2] INFO  nextflow.processor.TaskProcessor - [ed/b6a706] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0146-1_S6_L001-SPAdes)
+Sep-02 13:06:51.589 [Actor Thread 15] INFO  nextflow.processor.TaskProcessor - [9d/fabce2] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0151-1_S1_L001-SPAdes)
+Sep-02 13:06:51.589 [Actor Thread 125] INFO  nextflow.processor.TaskProcessor - [c6/c7d99c] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (Burkholderia_pseudomallei_ABCPW_107_GCF_000773235_1_Australia)
+Sep-02 13:06:51.590 [Actor Thread 68] INFO  nextflow.processor.TaskProcessor - [17/7cb3ac] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963571005_1)
+Sep-02 13:06:51.590 [Actor Thread 79] INFO  nextflow.processor.TaskProcessor - [de/53cb45] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (Burkholderia_pseudomallei_1701_GCF_003268105_1_Viet_Nam)
+Sep-02 13:06:51.590 [Actor Thread 225] INFO  nextflow.processor.TaskProcessor - [ec/ebfe21] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0092-7_S4_L001-SPAdes)
+Sep-02 13:06:51.591 [Actor Thread 222] INFO  nextflow.processor.TaskProcessor - [41/ae3df6] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0201-4_S6-SPAdes)
+Sep-02 13:06:51.591 [Actor Thread 195] INFO  nextflow.processor.TaskProcessor - [10/31abf1] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (Burkholderia_pseudomallei_2002721684_GCF_002110925_1_USA_Texas)
+Sep-02 13:06:51.592 [Actor Thread 94] INFO  nextflow.processor.TaskProcessor - [67/1659a3] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0008-3_S8_L001-SPAdes)
+Sep-02 13:06:51.594 [Actor Thread 166] INFO  nextflow.processor.TaskProcessor - [16/146a83] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0035-6_S5_L001-SPAdes)
+Sep-02 13:06:51.595 [Actor Thread 57] INFO  nextflow.processor.TaskProcessor - [05/0b2fa1] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0018-2_S9_L001-SPAdes)
+Sep-02 13:06:51.595 [Actor Thread 81] INFO  nextflow.processor.TaskProcessor - [94/90119c] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963563635_1)
+Sep-02 13:06:51.598 [Actor Thread 19] INFO  nextflow.processor.TaskProcessor - [6e/7b6a10] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0111-5_S2_L001-SPAdes)
+Sep-02 13:06:51.598 [Actor Thread 48] INFO  nextflow.processor.TaskProcessor - [f7/3bbc16] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963561915_1)
+Sep-02 13:06:51.600 [Actor Thread 193] INFO  nextflow.processor.TaskProcessor - [68/56de3c] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0013-3_S4_L001-SPAdes)
+Sep-02 13:06:51.600 [Actor Thread 124] INFO  nextflow.processor.TaskProcessor - [fa/31b077] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0085-1_S8_L001-SPAdes)
+Sep-02 13:06:51.601 [Actor Thread 113] INFO  nextflow.processor.TaskProcessor - [73/8cc8dc] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0186-7_S1-SPAdes)
+Sep-02 13:06:51.603 [Actor Thread 220] INFO  nextflow.processor.TaskProcessor - [3b/970238] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0012-5_S3_L001-SPAdes)
+Sep-02 13:06:51.604 [Actor Thread 114] INFO  nextflow.processor.TaskProcessor - [df/b27b7f] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0079-4_S2_L001-SPAdes)
+Sep-02 13:06:51.606 [Actor Thread 83] INFO  nextflow.processor.TaskProcessor - [60/7c6179] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0199-0_S4-SPAdes)
+Sep-02 13:06:51.607 [Actor Thread 128] INFO  nextflow.processor.TaskProcessor - [6f/b563e5] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0142-0_S2_L001-SPAdes)
+Sep-02 13:06:51.609 [Actor Thread 194] INFO  nextflow.processor.TaskProcessor - [98/8df341] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS013364)
+Sep-02 13:06:51.610 [Actor Thread 233] INFO  nextflow.processor.TaskProcessor - [6a/41fd83] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0158-6_S8_L001-SPAdes)
+Sep-02 13:06:51.611 [Actor Thread 92] INFO  nextflow.processor.TaskProcessor - [22/ab11a9] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0169-3_S4-SPAdes)
+Sep-02 13:06:51.611 [Actor Thread 60] INFO  nextflow.processor.TaskProcessor - [35/c984f3] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0024_S10-SPAdes)
+Sep-02 13:06:51.614 [Actor Thread 47] INFO  nextflow.processor.TaskProcessor - [9c/581955] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012309)
+Sep-02 13:06:51.614 [Actor Thread 27] INFO  nextflow.processor.TaskProcessor - [ad/d6aa60] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0034-9_S4_L001-SPAdes)
+Sep-02 13:06:51.614 [Actor Thread 216] INFO  nextflow.processor.TaskProcessor - [c5/9290e0] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0001-8_S1_L001-SPAdes)
+Sep-02 13:06:51.616 [Actor Thread 6] INFO  nextflow.processor.TaskProcessor - [76/de9f30] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0033-1_S3_L001-SPAdes)
+Sep-02 13:06:51.617 [Actor Thread 110] INFO  nextflow.processor.TaskProcessor - [ff/27ad0e] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963569325_1)
+Sep-02 13:06:51.617 [Actor Thread 80] INFO  nextflow.processor.TaskProcessor - [6e/b35e3a] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0031-5_S1_L001-SPAdes)
+Sep-02 13:06:51.617 [Actor Thread 75] INFO  nextflow.processor.TaskProcessor - [64/0c1066] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963565015_1)
+Sep-02 13:06:51.617 [Actor Thread 209] INFO  nextflow.processor.TaskProcessor - [a9/6f15a5] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0131-3_S1_L001-SPAdes)
+Sep-02 13:06:51.617 [Actor Thread 171] INFO  nextflow.processor.TaskProcessor - [a2/1efe1a] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963560735_1)
+Sep-02 13:06:51.618 [Actor Thread 100] INFO  nextflow.processor.TaskProcessor - [ef/1b1732] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (SRR12527885_contigs)
+Sep-02 13:06:51.619 [Actor Thread 234] INFO  nextflow.processor.TaskProcessor - [b8/3b2f69] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0083-6_S6_L001-SPAdes)
+Sep-02 13:06:51.619 [Actor Thread 26] INFO  nextflow.processor.TaskProcessor - [83/c0c391] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0085-1_S8_L001-SPAdes)
+Sep-02 13:06:51.619 [Actor Thread 107] INFO  nextflow.processor.TaskProcessor - [23/ce0f94] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (Burkholderia_pseudomallei_51W_S70_GCF_014712915_1_Laos)
+Sep-02 13:06:51.619 [Actor Thread 208] INFO  nextflow.processor.TaskProcessor - [9a/75f53d] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0144-6_S4_L001-SPAdes)
+Sep-02 13:06:51.620 [Actor Thread 239] INFO  nextflow.processor.TaskProcessor - [12/27a732] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012316)
+Sep-02 13:06:51.623 [Actor Thread 167] INFO  nextflow.processor.TaskProcessor - [cb/84fcfc] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0022_S8-SPAdes)
+Sep-02 13:06:51.624 [Actor Thread 71] INFO  nextflow.processor.TaskProcessor - [6b/646821] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0058-8_S3_L001-SPAdes)
+Sep-02 13:06:51.624 [Actor Thread 32] INFO  nextflow.processor.TaskProcessor - [b5/898ccb] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0066-1_S11_L001-SPAdes)
+Sep-02 13:06:51.628 [Actor Thread 203] INFO  nextflow.processor.TaskProcessor - [a3/8f4c48] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0104-0_S4_L001-SPAdes)
+Sep-02 13:06:51.630 [Actor Thread 147] INFO  nextflow.processor.TaskProcessor - [4b/acd97c] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0175-0_S10-SPAdes)
+Sep-02 13:06:51.630 [Actor Thread 192] INFO  nextflow.processor.TaskProcessor - [33/f63e09] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0040-6_S10_L001-SPAdes)
+Sep-02 13:06:51.631 [Actor Thread 123] INFO  nextflow.processor.TaskProcessor - [b9/cac791] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0070-3_S4_L001-SPAdes)
+Sep-02 13:06:51.631 [Actor Thread 205] INFO  nextflow.processor.TaskProcessor - [a9/b023bd] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0007_S1_L001-SPAdes)
+Sep-02 13:06:51.632 [Actor Thread 185] INFO  nextflow.processor.TaskProcessor - [ba/9f5f8f] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963562965_1)
+Sep-02 13:06:51.632 [Actor Thread 101] INFO  nextflow.processor.TaskProcessor - [8f/ea8d5b] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963566495_1)
+Sep-02 13:06:51.633 [Actor Thread 9] INFO  nextflow.processor.TaskProcessor - [4e/30f6f5] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963567325_1)
+Sep-02 13:06:51.633 [Actor Thread 238] INFO  nextflow.processor.TaskProcessor - [a0/448ab4] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0171-9-R_S12-SPAdes)
+Sep-02 13:06:51.635 [Actor Thread 189] INFO  nextflow.processor.TaskProcessor - [14/6cebf6] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963563525_1)
+Sep-02 13:06:51.637 [Actor Thread 201] INFO  nextflow.processor.TaskProcessor - [68/b92026] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0160-2_S10_L001-SPAdes)
+Sep-02 13:06:51.638 [Actor Thread 42] INFO  nextflow.processor.TaskProcessor - [97/e7be83] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0025-7_S5_L001-SPAdes)
+Sep-02 13:06:51.640 [Actor Thread 235] INFO  nextflow.processor.TaskProcessor - [d0/e9c87e] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0047-1_S7_L001-SPAdes)
+Sep-02 13:06:51.642 [Actor Thread 196] INFO  nextflow.processor.TaskProcessor - [ad/4d5cd7] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0054-7_S4_L001-SPAdes)
+Sep-02 13:06:51.642 [Actor Thread 66] INFO  nextflow.processor.TaskProcessor - [51/f063f3] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0106-5_S6_L001-SPAdes)
+Sep-02 13:06:51.642 [Actor Thread 111] INFO  nextflow.processor.TaskProcessor - [16/511598] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (Burkholderia_pseudomallei_2010007509_GCF_002111145_1_USA_Arizona_ex_Costa_Rica)
+Sep-02 13:06:51.643 [Actor Thread 237] INFO  nextflow.processor.TaskProcessor - [92/c8ade3] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0147-9_S7_L001-SPAdes)
+Sep-02 13:06:51.646 [Actor Thread 236] INFO  nextflow.processor.TaskProcessor - [d2/805c89] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0006_S11_L001-SPAdes)
+Sep-02 13:06:51.646 [Actor Thread 174] INFO  nextflow.processor.TaskProcessor - [82/aaca49] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0059-6_S4_L001-SPAdes)
+Sep-02 13:06:51.646 [Actor Thread 124] INFO  nextflow.processor.TaskProcessor - [78/97440e] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0023-2_S3_L001-SPAdes)
+Sep-02 13:06:51.648 [Actor Thread 246] INFO  nextflow.processor.TaskProcessor - [52/a4dea2] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963569645_1)
+Sep-02 13:06:51.648 [Actor Thread 188] INFO  nextflow.processor.TaskProcessor - [ce/c8a1b3] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963562615_1)
+Sep-02 13:06:51.649 [Actor Thread 190] INFO  nextflow.processor.TaskProcessor - [2b/4031a5] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0032-3_S2_L001-SPAdes)
+Sep-02 13:06:51.649 [Actor Thread 38] INFO  nextflow.processor.TaskProcessor - [3f/b042b9] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0192-5_S7-SPAdes)
+Sep-02 13:06:51.651 [Actor Thread 108] INFO  nextflow.processor.TaskProcessor - [63/9bfbee] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0124-8_S4_L001-SPAdes)
+Sep-02 13:06:51.651 [Actor Thread 243] INFO  nextflow.processor.TaskProcessor - [56/59e4f5] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0017-4_S8_L001-SPAdes)
+Sep-02 13:06:51.653 [Actor Thread 104] INFO  nextflow.processor.TaskProcessor - [91/127a93] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0128-9_S8_L001-SPAdes)
+Sep-02 13:06:51.653 [Actor Thread 117] INFO  nextflow.processor.TaskProcessor - [a8/8848ee] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0077-8_S11_L001-SPAdes)
+Sep-02 13:06:51.655 [Actor Thread 95] INFO  nextflow.processor.TaskProcessor - [a2/ecf6a1] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012363)
+Sep-02 13:06:51.656 [Actor Thread 198] INFO  nextflow.processor.TaskProcessor - [f7/813f4c] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0122-2_S2_L001-SPAdes)
+Sep-02 13:06:51.658 [Actor Thread 183] INFO  nextflow.processor.TaskProcessor - [9a/3888dc] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (Burkholderia_pseudomallei_4702_GCF_009827035_1_Viet_Nam)
+Sep-02 13:06:51.658 [Actor Thread 5] INFO  nextflow.processor.TaskProcessor - [54/9d2f94] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0021_S7-SPAdes)
+Sep-02 13:06:51.658 [Actor Thread 242] INFO  nextflow.processor.TaskProcessor - [c9/032861] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0126-3_S6_L001-SPAdes)
+Sep-02 13:06:51.659 [Actor Thread 40] INFO  nextflow.processor.TaskProcessor - [91/41e113] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0190-9_S5-SPAdes)
+Sep-02 13:06:51.660 [Actor Thread 244] INFO  nextflow.processor.TaskProcessor - [44/84141c] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0187-5_S2-SPAdes)
+Sep-02 13:06:51.663 [Actor Thread 245] INFO  nextflow.processor.TaskProcessor - [e8/e1c12c] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0064-6_S9_L001-SPAdes)
+Sep-02 13:06:51.664 [Actor Thread 241] INFO  nextflow.processor.TaskProcessor - [d2/8b133c] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0141-2_S1_L001-SPAdes)
+Sep-02 13:06:51.664 [Actor Thread 136] INFO  nextflow.processor.TaskProcessor - [55/51749d] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0174-3_S9-SPAdes)
+Sep-02 13:06:51.665 [Actor Thread 187] INFO  nextflow.processor.TaskProcessor - [cf/80c29d] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963564975_1)
+Sep-02 13:06:51.666 [Actor Thread 28] INFO  nextflow.processor.TaskProcessor - [96/0dbedd] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0117-2_S8_L001-SPAdes)
+Sep-02 13:06:51.666 [Actor Thread 10] INFO  nextflow.processor.TaskProcessor - [b0/6fa93f] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (Burkholderia_pseudomallei_2011756296_GCF_002110985_1_USA_Puerto_Rico)
+Sep-02 13:06:51.667 [Actor Thread 17] INFO  nextflow.processor.TaskProcessor - [4a/7b5bf6] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0140-4_S10_L001-SPAdes)
+Sep-02 13:06:51.668 [Actor Thread 206] INFO  nextflow.processor.TaskProcessor - [dc/5eac1c] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0063-8_S8_L001-SPAdes)
+Sep-02 13:06:51.673 [Actor Thread 55] INFO  nextflow.processor.TaskProcessor - [db/eeae68] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0004-2_S4_L001-SPAdes)
+Sep-02 13:06:51.674 [Actor Thread 182] INFO  nextflow.processor.TaskProcessor - [9f/998ea5] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0007-5_S7_L001-SPAdes)
+Sep-02 13:06:51.676 [Actor Thread 93] INFO  nextflow.processor.TaskProcessor - [49/9dfcea] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0062-0_S7_L001-SPAdes)
+Sep-02 13:06:51.677 [Actor Thread 63] INFO  nextflow.processor.TaskProcessor - [b4/c759d8] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963568705_1)
+Sep-02 13:06:51.677 [Actor Thread 197] INFO  nextflow.processor.TaskProcessor - [53/b66150] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (Burkholderia_pseudomallei_4811_GCF_003268075_1_Viet_Nam)
+Sep-02 13:06:51.680 [Actor Thread 247] INFO  nextflow.processor.TaskProcessor - [06/04d2b3] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012306)
+Sep-02 13:06:51.681 [Actor Thread 82] INFO  nextflow.processor.TaskProcessor - [b6/d7e1a4] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (Burkholderia_pseudomallei_284_GCF_025847905_1_Viet_Nam)
+Sep-02 13:06:51.683 [Actor Thread 31] INFO  nextflow.processor.TaskProcessor - [62/76a775] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963570025_1)
+Sep-02 13:06:51.686 [Actor Thread 90] INFO  nextflow.processor.TaskProcessor - [5e/96d72a] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963561215_1)
+Sep-02 13:06:51.688 [Actor Thread 135] INFO  nextflow.processor.TaskProcessor - [25/18d905] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0001_S6_L001-SPAdes)
+Sep-02 13:06:51.688 [Actor Thread 178] INFO  nextflow.processor.TaskProcessor - [a2/690c62] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0026-5_S6_L001-SPAdes)
+Sep-02 13:06:51.690 [Actor Thread 65] INFO  nextflow.processor.TaskProcessor - [53/7d3977] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963573225_1)
+Sep-02 13:06:51.690 [Actor Thread 77] INFO  nextflow.processor.TaskProcessor - [39/f7b4a8] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0038-0_S8_L001-SPAdes)
+Sep-02 13:06:51.706 [Actor Thread 17] INFO  nextflow.processor.TaskProcessor - [c5/cae9ab] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0126-3_S6_L001-SPAdes)
+Sep-02 13:06:51.706 [Actor Thread 93] INFO  nextflow.processor.TaskProcessor - [e7/f6cf50] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (Burkholderia_pseudomallei_2011756296_GCF_002110985_1_USA_Puerto_Rico)
+Sep-02 13:06:51.706 [Actor Thread 197] INFO  nextflow.processor.TaskProcessor - [a6/dfad9f] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0174-3_S9-SPAdes)
+Sep-02 13:06:51.706 [Actor Thread 63] INFO  nextflow.processor.TaskProcessor - [48/7e2e51] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963564975_1)
+Sep-02 13:06:51.707 [Actor Thread 181] INFO  nextflow.processor.TaskProcessor - [db/c61560] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (Burkholderia_pseudomallei_4702_GCF_009827035_1_Viet_Nam)
+Sep-02 13:06:51.707 [Actor Thread 28] INFO  nextflow.processor.TaskProcessor - [32/493af6] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0190-9_S5-SPAdes)
+Sep-02 13:06:51.714 [Actor Thread 245] INFO  nextflow.processor.TaskProcessor - [4b/655bac] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0128-9_S8_L001-SPAdes)
+Sep-02 13:06:51.716 [Actor Thread 98] INFO  nextflow.processor.TaskProcessor - [1e/4fce71] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0077-8_S11_L001-SPAdes)
+Sep-02 13:06:51.717 [Actor Thread 242] INFO  nextflow.processor.TaskProcessor - [6e/6013a1] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0192-5_S7-SPAdes)
+Sep-02 13:06:51.720 [Actor Thread 95] INFO  nextflow.processor.TaskProcessor - [83/26daa3] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0032-3_S2_L001-SPAdes)
+Sep-02 13:06:51.721 [Actor Thread 117] INFO  nextflow.processor.TaskProcessor - [b6/47f1f2] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0059-6_S4_L001-SPAdes)
+Sep-02 13:06:51.721 [Actor Thread 55] INFO  nextflow.processor.TaskProcessor - [26/30422d] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0006_S11_L001-SPAdes)
+Sep-02 13:06:51.724 [Actor Thread 190] INFO  nextflow.processor.TaskProcessor - [36/322fd7] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0054-7_S4_L001-SPAdes)
+Sep-02 13:06:51.724 [Actor Thread 183] INFO  nextflow.processor.TaskProcessor - [e8/894733] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (Burkholderia_pseudomallei_2010007509_GCF_002111145_1_USA_Arizona_ex_Costa_Rica)
+Sep-02 13:06:51.726 [Actor Thread 246] INFO  nextflow.processor.TaskProcessor - [9f/c0a51f] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0106-5_S6_L001-SPAdes)
+Sep-02 13:06:51.729 [Actor Thread 40] INFO  nextflow.processor.TaskProcessor - [e6/532fcd] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963563525_1)
+Sep-02 13:06:51.730 [Actor Thread 38] INFO  nextflow.processor.TaskProcessor - [7c/d17431] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963567325_1)
+Sep-02 13:06:51.735 [Actor Thread 42] INFO  nextflow.processor.TaskProcessor - [8a/4656a2] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963562965_1)
+Sep-02 13:06:51.735 [Actor Thread 236] INFO  nextflow.processor.TaskProcessor - [56/c8f4f5] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0040-6_S10_L001-SPAdes)
+Sep-02 13:06:51.738 [Actor Thread 101] INFO  nextflow.processor.TaskProcessor - [23/1c68d8] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0066-1_S11_L001-SPAdes)
+Sep-02 13:06:51.739 [Actor Thread 196] INFO  nextflow.processor.TaskProcessor - [db/f50cbc] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0104-0_S4_L001-SPAdes)
+Sep-02 13:06:51.741 [Actor Thread 243] INFO  nextflow.processor.TaskProcessor - [8f/03401b] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0022_S8-SPAdes)
+Sep-02 13:06:51.742 [Actor Thread 185] INFO  nextflow.processor.TaskProcessor - [d2/b363d4] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0144-6_S4_L001-SPAdes)
+Sep-02 13:06:51.746 [Actor Thread 239] INFO  nextflow.processor.TaskProcessor - [98/f65079] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0083-6_S6_L001-SPAdes)
+Sep-02 13:06:51.746 [Actor Thread 192] INFO  nextflow.processor.TaskProcessor - [fc/319ac5] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (Burkholderia_pseudomallei_51W_S70_GCF_014712915_1_Laos)
+Sep-02 13:06:51.746 [Actor Thread 9] INFO  nextflow.processor.TaskProcessor - [5e/acc005] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (SRR12527885_contigs)
+Sep-02 13:06:51.749 [Actor Thread 203] INFO  nextflow.processor.TaskProcessor - [01/505630] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963560735_1)
+Sep-02 13:06:51.750 [Actor Thread 167] INFO  nextflow.processor.TaskProcessor - [12/05b25d] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963565015_1)
+Sep-02 13:06:51.752 [Actor Thread 107] INFO  nextflow.processor.TaskProcessor - [ef/55867b] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963569325_1)
+Sep-02 13:06:51.755 [Actor Thread 209] INFO  nextflow.processor.TaskProcessor - [8b/f386fe] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0031-5_S1_L001-SPAdes)
+Sep-02 13:06:51.756 [Actor Thread 234] INFO  nextflow.processor.TaskProcessor - [55/37825d] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012309)
+Sep-02 13:06:51.757 [Actor Thread 100] INFO  nextflow.processor.TaskProcessor - [67/7a72b5] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0034-9_S4_L001-SPAdes)
+Sep-02 13:06:51.758 [Actor Thread 26] INFO  nextflow.processor.TaskProcessor - [0a/b82c3d] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0024_S10-SPAdes)
+Sep-02 13:06:51.758 [Actor Thread 216] INFO  nextflow.processor.TaskProcessor - [ae/cddf21] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0169-3_S4-SPAdes)
+Sep-02 13:06:51.763 [Actor Thread 147] INFO  nextflow.processor.TaskProcessor - [d7/1ee6fb] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0142-0_S2_L001-SPAdes)
+Sep-02 13:06:51.766 [Actor Thread 92] INFO  nextflow.processor.TaskProcessor - [36/0d5c73] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0186-7_S1-SPAdes)
+Sep-02 13:06:51.770 [Actor Thread 114] INFO  nextflow.processor.TaskProcessor - [06/84234d] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963561915_1)
+Sep-02 13:06:51.771 [Actor Thread 194] INFO  nextflow.processor.TaskProcessor - [1b/fa24a2] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0035-6_S5_L001-SPAdes)
+Sep-02 13:06:51.772 [Actor Thread 60] INFO  nextflow.processor.TaskProcessor - [21/f632d4] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0018-2_S9_L001-SPAdes)
+Sep-02 13:06:51.774 [Actor Thread 80] INFO  nextflow.processor.TaskProcessor - [21/875d78] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0008-3_S8_L001-SPAdes)
+Sep-02 13:06:51.775 [Actor Thread 81] INFO  nextflow.processor.TaskProcessor - [05/b1a3d2] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (Burkholderia_pseudomallei_2002721684_GCF_002110925_1_USA_Texas)
+Sep-02 13:06:51.775 [Actor Thread 83] INFO  nextflow.processor.TaskProcessor - [99/a95168] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0078-6_S1_L001-SPAdes)
+Sep-02 13:06:51.780 [Actor Thread 113] INFO  nextflow.processor.TaskProcessor - [e7/4bbd0c] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0052-1_S2_L001-SPAdes)
+Sep-02 13:06:51.780 [Actor Thread 220] INFO  nextflow.processor.TaskProcessor - [50/06586a] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (Burkholderia_pseudomallei_91W_S76_GCF_014712775_1_Laos)
+Sep-02 13:06:51.786 [Actor Thread 193] INFO  nextflow.processor.TaskProcessor - [cf/71e9e4] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (Burkholderia_pseudomallei_1701_GCF_003268105_1_Viet_Nam)
+Sep-02 13:06:51.786 [Actor Thread 73] INFO  nextflow.processor.TaskProcessor - [b9/4ca129] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963571005_1)
+Sep-02 13:06:51.786 [Actor Thread 165] INFO  nextflow.processor.TaskProcessor - [69/535227] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0014_S8_L001-SPAdes)
+Sep-02 13:06:51.789 [Actor Thread 37] INFO  nextflow.processor.TaskProcessor - [19/f9d7f2] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0060-4_S5_L001-SPAdes)
+Sep-02 13:06:51.789 [Actor Thread 2] INFO  nextflow.processor.TaskProcessor - [67/3ebe30] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0107-3_S7_L001-SPAdes)
+Sep-02 13:06:51.796 [Actor Thread 169] INFO  nextflow.processor.TaskProcessor - [0f/270cbe] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0156-0_S6_L001-SPAdes)
+Sep-02 13:06:51.807 [Actor Thread 225] INFO  nextflow.processor.TaskProcessor - [6f/fc03f1] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0118-0_S9_L001-SPAdes)
+Sep-02 13:06:51.807 [Actor Thread 154] INFO  nextflow.processor.TaskProcessor - [a9/3d79d2] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0148-7_S8_L001-SPAdes)
+Sep-02 13:06:51.809 [Actor Thread 204] INFO  nextflow.processor.TaskProcessor - [65/0d0a4a] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (Burkholderia_pseudomallei_47W_S67_GCF_014712955_1_Laos)
+Sep-02 13:06:51.810 [Actor Thread 139] INFO  nextflow.processor.TaskProcessor - [72/7ac23a] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0159-4_S9_L001-SPAdes)
+Sep-02 13:06:51.816 [Actor Thread 15] INFO  nextflow.processor.TaskProcessor - [19/8f6b46] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0180-0_S5-SPAdes)
+Sep-02 13:06:51.817 [Actor Thread 144] INFO  nextflow.processor.TaskProcessor - [a3/e0a0d7] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0011_S5_L001-SPAdes)
+Sep-02 13:06:51.820 [Actor Thread 148] INFO  nextflow.processor.TaskProcessor - [a9/f08df7] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012320)
+Sep-02 13:06:51.820 [Actor Thread 134] INFO  nextflow.processor.TaskProcessor - [a2/cde0ad] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963573095_1)
+Sep-02 13:06:51.820 [Actor Thread 168] INFO  nextflow.processor.TaskProcessor - [d3/c0d3c6] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963566175_1)
+Sep-02 13:06:51.821 [Actor Thread 158] INFO  nextflow.processor.TaskProcessor - [f3/0d60db] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (Burkholderia_pseudomallei_52W_S71_GCF_014712835_1_Laos)
+Sep-02 13:06:51.822 [Actor Thread 200] INFO  nextflow.processor.TaskProcessor - [fd/4435d1] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0125-5_S5_L001-SPAdes)
+Sep-02 13:06:51.827 [Actor Thread 8] INFO  nextflow.processor.TaskProcessor - [1d/90c508] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0139-6_S9_L001-SPAdes)
+Sep-02 13:06:51.830 [Actor Thread 69] INFO  nextflow.processor.TaskProcessor - [72/f1ab1a] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0196-6_S1-SPAdes)
+Sep-02 13:06:51.836 [Actor Thread 119] INFO  nextflow.processor.TaskProcessor - [dc/8dab56] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0101-6_S1_L001-SPAdes)
+Sep-02 13:06:51.839 [Actor Thread 145] INFO  nextflow.processor.TaskProcessor - [93/a171e7] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (Burkholderia_pseudomallei_50W_S69_GCF_014712935_1_Laos)
+Sep-02 13:06:51.839 [Actor Thread 191] INFO  nextflow.processor.TaskProcessor - [27/b0f4a6] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0168-5_S3-SPAdes)
+Sep-02 13:06:51.843 [Actor Thread 159] INFO  nextflow.processor.TaskProcessor - [b7/12bf86] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0150-3_S10_L001-SPAdes)
+Sep-02 13:06:51.847 [Actor Thread 87] INFO  nextflow.processor.TaskProcessor - [7f/9f8116] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963572615_1)
+Sep-02 13:06:51.848 [Actor Thread 221] INFO  nextflow.processor.TaskProcessor - [ef/76c4db] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963563715_1)
+Sep-02 13:06:51.848 [Actor Thread 140] INFO  nextflow.processor.TaskProcessor - [e3/ecda66] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0005_S10_L001-SPAdes)
+Sep-02 13:06:51.853 [Actor Thread 30] INFO  nextflow.processor.TaskProcessor - [48/e9c72a] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0152-9_S2_L001-SPAdes)
+Sep-02 13:06:51.853 [Actor Thread 149] INFO  nextflow.processor.TaskProcessor - [f1/2e27b5] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012313)
+Sep-02 13:06:51.854 [Actor Thread 227] INFO  nextflow.processor.TaskProcessor - [e9/5d37e7] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0123-0_S3_L001-SPAdes)
+Sep-02 13:06:51.855 [Actor Thread 164] INFO  nextflow.processor.TaskProcessor - [46/48f915] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0081-0_S4_L001-SPAdes)
+Sep-02 13:06:51.858 [Actor Thread 18] INFO  nextflow.processor.TaskProcessor - [65/f8f212] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0046-3_S6_L001-SPAdes)
+Sep-02 13:06:51.860 [Actor Thread 223] INFO  nextflow.processor.TaskProcessor - [e3/c350d8] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0049-7_S9_L001-SPAdes)
+Sep-02 13:06:51.861 [Actor Thread 224] INFO  nextflow.processor.TaskProcessor - [b6/1119fc] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0080-2_S3_L001-SPAdes)
+Sep-02 13:06:51.865 [Actor Thread 22] INFO  nextflow.processor.TaskProcessor - [d4/cca857] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963565485_1)
+Sep-02 13:06:51.866 [Actor Thread 231] INFO  nextflow.processor.TaskProcessor - [92/a39d9f] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0202-2_S7-SPAdes)
+Sep-02 13:06:51.869 [Actor Thread 54] INFO  nextflow.processor.TaskProcessor - [36/3e8e47] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0154-5_S4_L001-SPAdes)
+Sep-02 13:06:51.873 [Actor Thread 217] INFO  nextflow.processor.TaskProcessor - [c5/1451de] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0134-7_S4_L001-SPAdes)
+Sep-02 13:06:51.873 [Actor Thread 138] INFO  nextflow.processor.TaskProcessor - [e4/3a3fee] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963568055_1)
+Sep-02 13:06:51.875 [Actor Thread 230] INFO  nextflow.processor.TaskProcessor - [c1/694b59] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012358)
+Sep-02 13:06:51.875 [Actor Thread 228] INFO  nextflow.processor.TaskProcessor - [de/cf2e91] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963565565_1)
+Sep-02 13:06:51.879 [Actor Thread 7] INFO  nextflow.processor.TaskProcessor - [f3/7a246e] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0116-4_S7_L001-SPAdes)
+Sep-02 13:06:51.880 [Actor Thread 118] INFO  nextflow.processor.TaskProcessor - [b9/02f16f] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0041-4_S1_L001-SPAdes)
+Sep-02 13:06:51.881 [Actor Thread 13] INFO  nextflow.processor.TaskProcessor - [48/8ab6fc] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963566695_1)
+Sep-02 13:06:51.885 [Actor Thread 163] INFO  nextflow.processor.TaskProcessor - [be/af125e] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012312)
+Sep-02 13:06:51.885 [Actor Thread 74] INFO  nextflow.processor.TaskProcessor - [51/58f2e6] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0037-2_S7_L001-SPAdes)
+Sep-02 13:06:51.886 [Actor Thread 102] INFO  nextflow.processor.TaskProcessor - [81/cb95d7] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0129-7_S9_L001-SPAdes)
+Sep-02 13:06:51.889 [Actor Thread 199] INFO  nextflow.processor.TaskProcessor - [de/580937] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963571975_1)
+Sep-02 13:06:51.889 [Actor Thread 76] INFO  nextflow.processor.TaskProcessor - [f4/d72ee6] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963570105_1)
+Sep-02 13:06:51.893 [Actor Thread 3] INFO  nextflow.processor.TaskProcessor - [42/b369be] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0099-2_S11_L001-SPAdes)
+Sep-02 13:06:51.893 [Actor Thread 214] INFO  nextflow.processor.TaskProcessor - [e9/8d3f33] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0065-3_S10_L001-SPAdes)
+Sep-02 13:06:51.895 [Actor Thread 11] INFO  nextflow.processor.TaskProcessor - [b4/f8085b] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0188-3_S3-SPAdes)
+Sep-02 13:06:51.896 [Actor Thread 24] INFO  nextflow.processor.TaskProcessor - [87/892ffa] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0143-8_S3_L001-SPAdes)
+Sep-02 13:06:51.902 [Actor Thread 56] INFO  nextflow.processor.TaskProcessor - [99/3e31b3] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0042-2_S2_L001-SPAdes)
+Sep-02 13:06:51.904 [Actor Thread 179] INFO  nextflow.processor.TaskProcessor - [cf/a37e04] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963564375_1)
+Sep-02 13:06:51.904 [Actor Thread 130] INFO  nextflow.processor.TaskProcessor - [8a/4fbe81] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963566475_1)
+Sep-02 13:06:51.907 [Actor Thread 218] INFO  nextflow.processor.TaskProcessor - [56/1ce138] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0110-7_S10_L001-SPAdes)
+Sep-02 13:06:51.916 [Actor Thread 120] INFO  nextflow.processor.TaskProcessor - [ba/c28118] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963560585_1)
+Sep-02 13:06:51.916 [Actor Thread 97] INFO  nextflow.processor.TaskProcessor - [59/24d910] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0011-7_S2_L001-SPAdes)
+Sep-02 13:06:51.917 [Actor Thread 219] INFO  nextflow.processor.TaskProcessor - [5b/afaf81] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0115-6_S6_L001-SPAdes)
+Sep-02 13:06:51.923 [Actor Thread 207] INFO  nextflow.processor.TaskProcessor - [16/b4000f] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0015-8_S6_L001-SPAdes)
+Sep-02 13:06:51.924 [Actor Thread 45] INFO  nextflow.processor.TaskProcessor - [da/e02ec1] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963560675_1)
+Sep-02 13:06:51.926 [Actor Thread 170] INFO  nextflow.processor.TaskProcessor - [d4/4a135f] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963564305_1)
+Sep-02 13:06:52.003 [Actor Thread 210] DEBUG nextflow.sort.BigSort - Sort completed -- entries: 322; slices: 1; internal sort time: 0.036 s; external sort time: 0.04 s; total time: 0.076 s
+Sep-02 13:06:52.004 [Actor Thread 210] DEBUG nextflow.file.FileCollector - >> temp file exists? false
+Sep-02 13:06:52.005 [Actor Thread 210] DEBUG nextflow.file.FileCollector - Missed collect-file cache -- cause: java.nio.file.NoSuchFileException: /home/cdcadmin/wf-assembly-snps-mod/work/collect-file/1153f82a3f509292995273d8ead4f38a
+Sep-02 13:06:52.034 [Actor Thread 210] DEBUG nextflow.file.FileCollector - Saved collect-files list to: /home/cdcadmin/wf-assembly-snps-mod/work/collect-file/1153f82a3f509292995273d8ead4f38a
+Sep-02 13:06:52.043 [Actor Thread 210] DEBUG nextflow.file.FileCollector - Deleting file collector temp dir: /tmp/nxf-10617773165787551475
+Sep-02 13:06:52.052 [Actor Thread 207] INFO  nextflow.processor.TaskProcessor - [70/645e29] Cached process > RECOMBINATION_AWARE_SNPS:MASH_DIST (pairwise_distances)
+Sep-02 13:06:52.063 [Actor Thread 178] INFO  nextflow.processor.TaskProcessor - [66/697a59] Cached process > RECOMBINATION_AWARE_SNPS:MASH_TAB_TO_MATRIX (mash_tab_to_matrix)
+Sep-02 13:06:52.085 [Actor Thread 31] INFO  nextflow.processor.TaskProcessor - [da/f3bef5] Cached process > RECOMBINATION_AWARE_SNPS:CLUSTER_GENOMES (clustering)
+Sep-02 13:06:52.158 [Actor Thread 90] INFO  nextflow.processor.TaskProcessor - [f4/797340] Cached process > RECOMBINATION_AWARE_SNPS:SELECT_CLUSTER_REPRESENTATIVE (cluster_cluster_6)
+Sep-02 13:06:52.158 [Actor Thread 135] INFO  nextflow.processor.TaskProcessor - [ba/795164] Cached process > RECOMBINATION_AWARE_SNPS:SELECT_CLUSTER_REPRESENTATIVE (cluster_cluster_0)
+Sep-02 13:06:52.160 [Actor Thread 210] INFO  nextflow.processor.TaskProcessor - [0e/110c95] Cached process > RECOMBINATION_AWARE_SNPS:SELECT_CLUSTER_REPRESENTATIVE (cluster_cluster_5)
+Sep-02 13:06:52.161 [Actor Thread 65] INFO  nextflow.processor.TaskProcessor - [73/b0327f] Cached process > RECOMBINATION_AWARE_SNPS:SELECT_CLUSTER_REPRESENTATIVE (cluster_cluster_2)
+Sep-02 13:06:52.161 [Actor Thread 3] INFO  nextflow.processor.TaskProcessor - [98/6fe54e] Cached process > RECOMBINATION_AWARE_SNPS:SELECT_CLUSTER_REPRESENTATIVE (cluster_cluster_3)
+Sep-02 13:06:52.161 [Actor Thread 31] INFO  nextflow.processor.TaskProcessor - [59/196599] Cached process > RECOMBINATION_AWARE_SNPS:SELECT_CLUSTER_REPRESENTATIVE (cluster_cluster_1)
+Sep-02 13:06:52.162 [Actor Thread 45] INFO  nextflow.processor.TaskProcessor - [01/256eaa] Cached process > RECOMBINATION_AWARE_SNPS:SELECT_CLUSTER_REPRESENTATIVE (cluster_cluster_4)
+Sep-02 13:06:52.194 [Actor Thread 65] INFO  nextflow.processor.TaskProcessor - [b4/d2aaeb] Cached process > RECOMBINATION_AWARE_SNPS:COLLECT_REPRESENTATIVES (collect_reps)
+Sep-02 13:06:52.196 [Actor Thread 93] INFO  nextflow.processor.TaskProcessor - [fd/140dc8] Cached process > RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN (cluster_cluster_1)
+Sep-02 13:06:52.196 [Actor Thread 197] INFO  nextflow.processor.TaskProcessor - [a2/61f723] Cached process > RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN (cluster_cluster_6)
+Sep-02 13:06:52.197 [Actor Thread 245] INFO  nextflow.processor.TaskProcessor - [24/7d0a5e] Cached process > RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN (cluster_cluster_0)
+Sep-02 13:06:52.198 [Actor Thread 135] INFO  nextflow.processor.TaskProcessor - [3f/decd4a] Cached process > RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN (cluster_cluster_2)
+Sep-02 13:06:52.198 [Actor Thread 242] INFO  nextflow.processor.TaskProcessor - [21/c3ffa6] Cached process > RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN (cluster_cluster_4)
+Sep-02 13:06:52.199 [Actor Thread 210] WARN  nextflow.script.ScriptBinding - Access to undefined parameter `backbone_method` -- Initialise it to a default value eg. `params.backbone_method = some_value`
+Sep-02 13:06:52.199 [Actor Thread 98] INFO  nextflow.processor.TaskProcessor - [76/8fcf34] Cached process > RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN (cluster_cluster_3)
+Sep-02 13:06:52.267 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-02 13:06:52.269 [Task submitter] INFO  nextflow.Session - [ea/7bd82b] Submitted process > RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN (cluster_cluster_5)
+Sep-02 13:06:52.276 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-02 13:06:52.277 [Task submitter] INFO  nextflow.Session - [f6/ee8ac3] Submitted process > RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG (cluster_cluster_2)
+Sep-02 13:06:52.282 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-02 13:06:52.283 [Task submitter] INFO  nextflow.Session - [be/85ff9b] Submitted process > RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG (cluster_cluster_6)
+Sep-02 13:06:52.287 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-02 13:06:52.287 [Task submitter] INFO  nextflow.Session - [fb/70b3f4] Submitted process > RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG (cluster_cluster_4)
+Sep-02 13:06:52.291 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-02 13:06:52.291 [Task submitter] INFO  nextflow.Session - [e1/062a95] Submitted process > RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG (cluster_cluster_0)
+Sep-02 13:06:52.297 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-02 13:06:52.297 [Task submitter] INFO  nextflow.Session - [7c/611878] Submitted process > RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG (cluster_cluster_3)
+Sep-02 13:06:52.301 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-02 13:06:52.302 [Task submitter] INFO  nextflow.Session - [d9/b64d6c] Submitted process > RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG (cluster_cluster_1)
+Sep-02 13:06:52.305 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-02 13:06:52.306 [Task submitter] INFO  nextflow.Session - [44/56f45b] Submitted process > RECOMBINATION_AWARE_SNPS:BUILD_BACKBONE_TREE (backbone_tree)
+Sep-02 13:06:53.772 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 666; name: RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG (cluster_cluster_2); status: COMPLETED; exit: 0; error: -; workDir: /home/cdcadmin/wf-assembly-snps-mod/work/f6/ee8ac3d178644088208124b23580a8]
+Sep-02 13:06:53.773 [Task monitor] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'TaskFinalizer' minSize=10; maxSize=384; workQueue=LinkedBlockingQueue[10000]; allowCoreThreadTimeout=false
+Sep-02 13:06:53.845 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-02 13:06:53.845 [Task submitter] INFO  nextflow.Session - [a6/208474] Submitted process > RECOMBINATION_AWARE_SNPS:IQTREE_FAST (cluster_cluster_2)
+Sep-02 13:06:54.079 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 668; name: RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG (cluster_cluster_6); status: COMPLETED; exit: 0; error: -; workDir: /home/cdcadmin/wf-assembly-snps-mod/work/be/85ff9b98c5041ca50eb3b4cf5435f4]
+Sep-02 13:06:54.091 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-02 13:06:54.091 [Task submitter] INFO  nextflow.Session - [88/43e925] Submitted process > RECOMBINATION_AWARE_SNPS:IQTREE_FAST (cluster_cluster_6)
+Sep-02 13:06:54.223 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 665; name: RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG (cluster_cluster_4); status: COMPLETED; exit: 0; error: -; workDir: /home/cdcadmin/wf-assembly-snps-mod/work/fb/70b3f466aa02d371b0ea96956f991e]
+Sep-02 13:06:54.233 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-02 13:06:54.233 [Task submitter] INFO  nextflow.Session - [1a/bbaa0c] Submitted process > RECOMBINATION_AWARE_SNPS:IQTREE_FAST (cluster_cluster_4)
+Sep-02 13:06:54.298 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 664; name: RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG (cluster_cluster_0); status: COMPLETED; exit: 0; error: -; workDir: /home/cdcadmin/wf-assembly-snps-mod/work/e1/062a95707f065fd5050bc799630008]
+Sep-02 13:06:54.309 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-02 13:06:54.309 [Task submitter] INFO  nextflow.Session - [a7/2463fa] Submitted process > RECOMBINATION_AWARE_SNPS:IQTREE_FAST (cluster_cluster_0)
+Sep-02 13:06:54.407 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 669; name: RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG (cluster_cluster_3); status: COMPLETED; exit: 0; error: -; workDir: /home/cdcadmin/wf-assembly-snps-mod/work/7c/611878a7f22d3e4e0bb877aed0625a]
+Sep-02 13:06:54.527 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 667; name: RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG (cluster_cluster_1); status: COMPLETED; exit: 0; error: -; workDir: /home/cdcadmin/wf-assembly-snps-mod/work/d9/b64d6c1a2a9c694a82ac8452fb045f]
+Sep-02 13:06:55.290 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 663; name: RECOMBINATION_AWARE_SNPS:BUILD_BACKBONE_TREE (backbone_tree); status: COMPLETED; exit: 2; error: -; workDir: /home/cdcadmin/wf-assembly-snps-mod/work/44/56f45ba41ec29339a30d8aa54938c0]
+Sep-02 13:06:55.294 [TaskFinalizer-7] DEBUG nextflow.processor.TaskProcessor - Handling unexpected condition for
+  task: name=RECOMBINATION_AWARE_SNPS:BUILD_BACKBONE_TREE (backbone_tree); work-dir=/home/cdcadmin/wf-assembly-snps-mod/work/44/56f45ba41ec29339a30d8aa54938c0
+  error [nextflow.exception.ProcessFailedException]: Process `RECOMBINATION_AWARE_SNPS:BUILD_BACKBONE_TREE (backbone_tree)` terminated with an error exit status (2)
+Sep-02 13:06:55.295 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-02 13:06:55.295 [Task submitter] INFO  nextflow.Session - [1f/554cb0] Submitted process > RECOMBINATION_AWARE_SNPS:IQTREE_FAST (cluster_cluster_3)
+Sep-02 13:06:55.308 [TaskFinalizer-7] ERROR nextflow.processor.TaskProcessor - Error executing process > 'RECOMBINATION_AWARE_SNPS:BUILD_BACKBONE_TREE (backbone_tree)'
+
+Caused by:
+  Process `RECOMBINATION_AWARE_SNPS:BUILD_BACKBONE_TREE (backbone_tree)` terminated with an error exit status (2)
+
+
+Command executed:
+
+  echo "Building backbone tree from cluster representatives"
+      echo "Method: parsnp"
+      
+      # Count representatives
+      rep_count=$(grep -c "^>" representatives.fa)
+      echo "Number of representatives: $rep_count"
+      
+      if [ $rep_count -lt 3 ]; then
+          echo "WARNING: Only $rep_count representatives found. Cannot build meaningful backbone tree."
+          echo "Creating minimal backbone tree"
+          
+          # Create star tree
+          rep_names=$(grep "^>" representatives.fa | sed 's/>//' | tr '\n' ',' | sed 's/,$//')
+          echo "($rep_names);" > backbone.treefile
+          cp representatives.fa backbone_alignment.fa
+          
+          echo "Minimal backbone tree created with $rep_count representatives" > backbone_report.txt
+          
+          cat <<END_VERSIONS > versions.yml
+          "RECOMBINATION_AWARE_SNPS:BUILD_BACKBONE_TREE":
+              parsnp: $(parsnp --version | sed 's/^/    /')
+          END_VERSIONS
+          
+          exit 0
+      fi
+      
+      if [ "parsnp" = "parsnp" ]; then
+          echo "Using Parsnp for backbone tree construction"
+          
+          # Create directory for representatives
+          mkdir -p representatives
+          
+          # Split multi-FASTA into individual files for Parsnp
+          awk '/^>/ {if(filename) close(filename); filename="representatives/"substr($0,2)".fa"} {print > filename}' representatives.fa
+          
+          # Select first representative as reference
+          ref_file=$(ls representatives/*.fa | head -n1)
+          echo "Using reference: $ref_file"
+          
+          # Run Parsnp
+          parsnp \
+              --sequences representatives/ \
+              --reference $ref_file \
+              --output-dir parsnp_backbone \
+              --use-fasttree \
+              --threads 16 \
+              --verbose || {
+              echo "WARNING: Parsnp failed. Creating distance-based tree."
+              
+              # Fallback to distance-based tree using mash distances
+              if [ -f "mash_matrix.tsv" ]; then
+                  echo "Creating distance-based tree from Mash distances"
+                  python3 << 'EOF'
+  import pandas as pd
+  import numpy as np
+  
+  # Read mash distances
+  try:
+      distances_df = pd.read_csv("mash_matrix.tsv", sep='\t', index_col=0)
+      
+      # Get representative names
+      with open("representatives.fa", 'r') as f:
+          rep_names = [line.strip()[1:] for line in f if line.startswith('>')]
+      
+      # Filter distance matrix to representatives only
+      available_reps = [rep for rep in rep_names if rep in distances_df.index]
+      
+      if len(available_reps) >= 3:
+          rep_distances = distances_df.loc[available_reps, available_reps]
+          
+          # Simple UPGMA-like clustering to create tree
+          # This is a simplified approach - in practice you'd use proper phylogenetic methods
+          tree_str = "(" + ",".join(available_reps) + ");"
+          
+          with open("backbone.treefile", 'w') as f:
+              f.write(tree_str)
+          
+          print(f"Created distance-based tree with {len(available_reps)} representatives")
+      else:
+          # Create star tree
+          tree_str = "(" + ",".join(rep_names) + ");"
+          with open("backbone.treefile", 'w') as f:
+              f.write(tree_str)
+          
+          print(f"Created star tree with {len(rep_names)} representatives")
+  
+  except Exception as e:
+      print(f"Error creating distance-based tree: {e}")
+      # Create star tree as final fallback
+      with open("representatives.fa", 'r') as f:
+          rep_names = [line.strip()[1:] for line in f if line.startswith('>')]
+      
+      tree_str = "(" + ",".join(rep_names) + ");"
+      with open("backbone.treefile", 'w') as f:
+          f.write(tree_str)
+      
+      print(f"Created fallback star tree with {len(rep_names)} representatives")
+  EOF
+              }
+          }
+          
+          # Extract results from Parsnp if successful
+          if [ -f "parsnp_backbone/parsnp.tree" ]; then
+              cp parsnp_backbone/parsnp.tree backbone.treefile
+              echo "Parsnp backbone tree construction successful"
+          fi
+          
+          if [ -f "parsnp_backbone/parsnp.xmfa" ]; then
+              # Convert XMFA to FASTA (simplified)
+              harvesttools -i parsnp_backbone/parsnp.ggr -M backbone_alignment.fa || {
+                  echo "Warning: Could not extract alignment, using input representatives"
+                  cp representatives.fa backbone_alignment.fa
+              }
+          else
+              cp representatives.fa backbone_alignment.fa
+          fi
+          
+      elif [ "parsnp" = "fasttree" ]; then
+          echo "Using FastTree for backbone tree construction"
+          
+          # Need alignment first - use simple approach
+          cp representatives.fa backbone_alignment.fa
+          
+          # Run FastTree
+          fasttree -nt backbone_alignment.fa > backbone.treefile || {
+              echo "WARNING: FastTree failed. Creating star tree."
+              rep_names=$(grep "^>" representatives.fa | sed 's/>//' | tr '\n' ',' | sed 's/,$//')
+              echo "($rep_names);" > backbone.treefile
+          }
+          
+      else
+          echo "Unknown backbone method: parsnp. Using star tree."
+          rep_names=$(grep "^>" representatives.fa | sed 's/>//' | tr '\n' ',' | sed 's/,$//')
+          echo "($rep_names);" > backbone.treefile
+          cp representatives.fa backbone_alignment.fa
+      fi
+      
+      # Ensure output files exist
+      if [ ! -f "backbone.treefile" ]; then
+          echo "Creating fallback star tree"
+          rep_names=$(grep "^>" representatives.fa | sed 's/>//' | tr '\n' ',' | sed 's/,$//')
+          echo "($rep_names);" > backbone.treefile
+      fi
+      
+      if [ ! -f "backbone_alignment.fa" ]; then
+          cp representatives.fa backbone_alignment.fa
+      fi
+      
+      # Create report
+      echo "BACKBONE TREE CONSTRUCTION REPORT" > backbone_report.txt
+      echo "=================================" >> backbone_report.txt
+      echo "Method: parsnp" >> backbone_report.txt
+      echo "Number of representatives: $rep_count" >> backbone_report.txt
+      echo "Tree file: backbone.treefile" >> backbone_report.txt
+      echo "Alignment file: backbone_alignment.fa" >> backbone_report.txt
+      
+      if [ -f "backbone.treefile" ] && [ -s "backbone.treefile" ]; then
+          echo "Status: SUCCESS" >> backbone_report.txt
+      else
+          echo "Status: PARTIAL (fallback tree created)" >> backbone_report.txt
+      fi
+      
+      echo "Backbone tree construction completed"
+  
+      cat <<END_VERSIONS > versions.yml
+      "RECOMBINATION_AWARE_SNPS:BUILD_BACKBONE_TREE":
+          parsnp: $(parsnp --version | sed 's/^/    /')
+          fasttree: $(fasttree -expert 2>&1 | head -1 | sed 's/^/    /')
+          harvesttools: $(harvesttools --version | sed 's/^/    /')
+      END_VERSIONS
+
+Command exit status:
+  2
+
+Command output:
+  Building backbone tree from cluster representatives
+  Method: parsnp
+  Number of representatives: 1061
+
+Command error:
+  Building backbone tree from cluster representatives
+  Method: parsnp
+  Number of representatives: 1061
+  .command.sh: line 171: warning: here-document at line 20 delimited by end-of-file (wanted `END_VERSIONS')
+  .command.sh: line 172: syntax error: unexpected end of file
+
+Work dir:
+  /home/cdcadmin/wf-assembly-snps-mod/work/44/56f45ba41ec29339a30d8aa54938c0
+
+Tip: you can replicate the issue by changing to the process work dir and entering the command `bash .command.run`
+Sep-02 13:06:55.314 [TaskFinalizer-7] INFO  nextflow.Session - Execution cancelled -- Finishing pending tasks before exit
+Sep-02 13:06:55.326 [main] DEBUG nextflow.Session - Session await > all processes finished
+Sep-02 13:06:55.376 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 671; name: RECOMBINATION_AWARE_SNPS:IQTREE_FAST (cluster_cluster_6); status: COMPLETED; exit: 0; error: -; workDir: /home/cdcadmin/wf-assembly-snps-mod/work/88/43e925a47f802856af7774761b5029]
+Sep-02 13:06:55.459 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 670; name: RECOMBINATION_AWARE_SNPS:IQTREE_FAST (cluster_cluster_2); status: COMPLETED; exit: 0; error: -; workDir: /home/cdcadmin/wf-assembly-snps-mod/work/a6/2084747fb3b57643e138bb911874c2]
+Sep-02 13:06:55.650 [Actor Thread 170] DEBUG nextflow.sort.BigSort - Sort completed -- entries: 667; slices: 1; internal sort time: 0.286 s; external sort time: 0.037 s; total time: 0.323 s
+Sep-02 13:06:55.650 [Actor Thread 170] DEBUG nextflow.file.FileCollector - >> temp file exists? false
+Sep-02 13:06:55.650 [Actor Thread 170] DEBUG nextflow.file.FileCollector - Missed collect-file cache -- cause: java.nio.file.NoSuchFileException: /home/cdcadmin/wf-assembly-snps-mod/work/collect-file/40277151ca585e14246394dd5ec4cb27
+Sep-02 13:06:55.693 [Actor Thread 170] DEBUG nextflow.file.FileCollector - Saved collect-files list to: /home/cdcadmin/wf-assembly-snps-mod/work/collect-file/40277151ca585e14246394dd5ec4cb27
+Sep-02 13:06:55.695 [Actor Thread 170] DEBUG nextflow.file.FileCollector - Deleting file collector temp dir: /tmp/nxf-9247450996963819658
+Sep-02 13:06:55.943 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 672; name: RECOMBINATION_AWARE_SNPS:IQTREE_FAST (cluster_cluster_4); status: COMPLETED; exit: 0; error: -; workDir: /home/cdcadmin/wf-assembly-snps-mod/work/1a/bbaa0cad2b8604b4789d2f045be85a]
+Sep-02 13:06:56.012 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 673; name: RECOMBINATION_AWARE_SNPS:IQTREE_FAST (cluster_cluster_0); status: COMPLETED; exit: 0; error: -; workDir: /home/cdcadmin/wf-assembly-snps-mod/work/a7/2463faa3e99cab71e31203ec52ad54]
+Sep-02 13:06:56.120 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 674; name: RECOMBINATION_AWARE_SNPS:IQTREE_FAST (cluster_cluster_3); status: COMPLETED; exit: 0; error: -; workDir: /home/cdcadmin/wf-assembly-snps-mod/work/1f/554cb02b86cd341f2062b64f7bc5f6]
+Sep-02 13:11:50.514 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor local > tasks to be completed: 1 -- submitted tasks are shown below
+~> TaskHandler[id: 657; name: RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN (cluster_cluster_5); status: RUNNING; exit: -; error: -; workDir: /home/cdcadmin/wf-assembly-snps-mod/work/ea/7bd82bdd684988eb9015be0e1de64a]
+Sep-02 13:11:55.156 [Task submitter] DEBUG n.processor.TaskPollingMonitor - %% executor local > tasks in the submission queue: 1 -- tasks to be submitted are shown below
+~> TaskHandler[id: 675; name: RECOMBINATION_AWARE_SNPS:IQTREE_FAST (cluster_cluster_1); status: NEW; exit: -; error: -; workDir: /home/cdcadmin/wf-assembly-snps-mod/work/8f/e5daaa7b5e6cf542ffcb8aaab650b8]
+Sep-02 13:16:50.567 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor local > tasks to be completed: 1 -- submitted tasks are shown below
+~> TaskHandler[id: 657; name: RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN (cluster_cluster_5); status: RUNNING; exit: -; error: -; workDir: /home/cdcadmin/wf-assembly-snps-mod/work/ea/7bd82bdd684988eb9015be0e1de64a]
+Sep-02 13:16:55.191 [Task submitter] DEBUG n.processor.TaskPollingMonitor - %% executor local > tasks in the submission queue: 1 -- tasks to be submitted are shown below
+~> TaskHandler[id: 675; name: RECOMBINATION_AWARE_SNPS:IQTREE_FAST (cluster_cluster_1); status: NEW; exit: -; error: -; workDir: /home/cdcadmin/wf-assembly-snps-mod/work/8f/e5daaa7b5e6cf542ffcb8aaab650b8]
+Sep-02 13:21:50.582 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor local > tasks to be completed: 1 -- submitted tasks are shown below
+~> TaskHandler[id: 657; name: RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN (cluster_cluster_5); status: RUNNING; exit: -; error: -; workDir: /home/cdcadmin/wf-assembly-snps-mod/work/ea/7bd82bdd684988eb9015be0e1de64a]
+Sep-02 13:21:55.222 [Task submitter] DEBUG n.processor.TaskPollingMonitor - %% executor local > tasks in the submission queue: 1 -- tasks to be submitted are shown below
+~> TaskHandler[id: 675; name: RECOMBINATION_AWARE_SNPS:IQTREE_FAST (cluster_cluster_1); status: NEW; exit: -; error: -; workDir: /home/cdcadmin/wf-assembly-snps-mod/work/8f/e5daaa7b5e6cf542ffcb8aaab650b8]
+Sep-02 13:26:50.589 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor local > tasks to be completed: 1 -- submitted tasks are shown below
+~> TaskHandler[id: 657; name: RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN (cluster_cluster_5); status: RUNNING; exit: -; error: -; workDir: /home/cdcadmin/wf-assembly-snps-mod/work/ea/7bd82bdd684988eb9015be0e1de64a]
+Sep-02 13:26:55.250 [Task submitter] DEBUG n.processor.TaskPollingMonitor - %% executor local > tasks in the submission queue: 1 -- tasks to be submitted are shown below
+~> TaskHandler[id: 675; name: RECOMBINATION_AWARE_SNPS:IQTREE_FAST (cluster_cluster_1); status: NEW; exit: -; error: -; workDir: /home/cdcadmin/wf-assembly-snps-mod/work/8f/e5daaa7b5e6cf542ffcb8aaab650b8]
+Sep-02 13:28:10.235 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 657; name: RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN (cluster_cluster_5); status: COMPLETED; exit: 0; error: -; workDir: /home/cdcadmin/wf-assembly-snps-mod/work/ea/7bd82bdd684988eb9015be0e1de64a]
+Sep-02 13:28:10.238 [Task monitor] DEBUG n.processor.TaskPollingMonitor - <<< barrier arrives (monitor: local) - terminating tasks monitor poll loop
+Sep-02 13:28:10.238 [main] DEBUG nextflow.Session - Session await > all barriers passed
+Sep-02 13:28:10.250 [main] DEBUG nextflow.util.ThreadPoolManager - Thread pool 'TaskFinalizer' shutdown completed (hard=false)
+Sep-02 13:28:10.251 [main] DEBUG nextflow.util.ThreadPoolManager - Thread pool 'PublishDir' shutdown completed (hard=false)
+Sep-02 13:28:10.255 [main] INFO  nextflow.Nextflow - -[0;35m[bacterial-genomics/wf-assembly-snps][0;31m Pipeline completed with errors[0m-
+Sep-02 13:28:10.256 [main] INFO  nextflow.Nextflow - -[0;35m[bacterial-genomics/wf-assembly-snps][0;31m Pipeline completed with errors[0m-
+Sep-02 13:28:10.256 [main] INFO  nextflow.Nextflow - -[0;35m[bacterial-genomics/wf-assembly-snps][0;31m Pipeline completed with errors[0m-
+Sep-02 13:28:10.263 [main] DEBUG n.trace.WorkflowStatsObserver - Workflow completed > WorkflowStats[succeededCount=12; failedCount=1; ignoredCount=0; cachedCount=661; pendingCount=1; submittedCount=0; runningCount=0; retriesCount=0; abortedCount=0; succeedDuration=5h 40m 14s; failedDuration=46.9s; cachedDuration=1d 9h 50m 22s;loadCpus=0; loadMemory=0; peakRunning=8; peakCpus=120; peakMemory=304 GB; ]
+Sep-02 13:28:10.263 [main] DEBUG nextflow.trace.TraceFileObserver - Workflow completed -- saving trace file
+Sep-02 13:28:10.265 [main] DEBUG nextflow.trace.ReportObserver - Workflow completed -- rendering execution report
+Sep-02 13:28:11.307 [main] DEBUG nextflow.trace.TimelineObserver - Workflow completed -- rendering execution timeline
+Sep-02 13:28:11.594 [main] DEBUG nextflow.cache.CacheDB - Closing CacheDB done
+Sep-02 13:28:11.611 [main] DEBUG nextflow.util.ThreadPoolManager - Thread pool 'FileTransfer' shutdown completed (hard=false)
+Sep-02 13:28:11.612 [main] DEBUG nextflow.script.ScriptRunner - > Execution complete -- Goodbye

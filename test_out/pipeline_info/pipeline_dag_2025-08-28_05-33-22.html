@@ -1,0 +1,142 @@
+<!--
+  ~ Copyright 2013-2024, Seqera Labs
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<html>
+<head>
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+</head>
+<body>
+<pre class="mermaid" style="text-align: center;">
+flowchart TB
+    subgraph " "
+    v4["Channel.fromPath"]
+    end
+    subgraph ASSEMBLY_SNPS_SCALABLE
+    v13([INFILE_HANDLING_UNIX])
+    subgraph CLUSTERING
+    v24([MASH_SKETCH])
+    v28([MASH_DIST])
+    v30([CLUSTER_GENOMES])
+    v26(( ))
+    v78(( ))
+    end
+    subgraph CLUSTERED_SNP_TREE
+    v46([SKA_BUILD])
+    v48([SKA_ALIGN])
+    v50([IQTREE_FAST])
+    v54([GUBBINS_CLUSTER])
+    v53(( ))
+    v68(( ))
+    end
+    subgraph INTEGRATE_RESULTS
+    v59([EXTRACT_CORE_SNPS])
+    v65([INTEGRATE_CORE_SNPS])
+    v70([GRAFT_TREES])
+    v73([BUILD_INTEGRATED_TREE])
+    v79([CREATE_FINAL_SUMMARY])
+    v61(( ))
+    v63(( ))
+    v85(( ))
+    v86(( ))
+    v87(( ))
+    end
+    v5(( ))
+    v12(( ))
+    v16(( ))
+    v17(( ))
+    end
+    subgraph " "
+    v14[" "]
+    v22["ch_reference"]
+    v51[" "]
+    v55["recombination_gff"]
+    v66["integrated_positions"]
+    v71[" "]
+    v74["integrated_tree_log"]
+    v80["analysis_statistics"]
+    v81["final_text_report"]
+    v82["final_html_report"]
+    v92["ch_output_summary_files"]
+    v95[" "]
+    end
+    v4 --> v5
+    v5 --> v13
+    v13 --> v14
+    v13 --> v12
+    v13 --> v16
+    v13 --> v17
+    v17 --> v22
+    v17 --> v24
+    v24 --> v12
+    v24 --> v26
+    v26 --> v28
+    v28 --> v30
+    v28 --> v12
+    v30 --> v59
+    v30 --> v65
+    v30 --> v70
+    v30 --> v79
+    v30 --> v12
+    v30 --> v17
+    v30 --> v78
+    v17 --> v46
+    v46 --> v48
+    v46 --> v12
+    v48 --> v50
+    v48 --> v12
+    v48 --> v53
+    v50 --> v51
+    v50 --> v12
+    v50 --> v53
+    v53 --> v54
+    v54 --> v59
+    v54 --> v55
+    v54 --> v12
+    v54 --> v68
+    v59 --> v12
+    v59 --> v61
+    v59 --> v63
+    v61 --> v65
+    v63 --> v65
+    v65 --> v70
+    v65 --> v66
+    v65 --> v79
+    v65 --> v73
+    v65 --> v12
+    v65 --> v85
+    v68 --> v70
+    v70 --> v79
+    v70 --> v71
+    v70 --> v12
+    v70 --> v86
+    v73 --> v74
+    v73 --> v79
+    v73 --> v12
+    v73 --> v87
+    v78 --> v79
+    v79 --> v82
+    v79 --> v81
+    v79 --> v80
+    v79 --> v12
+    v16 --> v92
+    v12 --> v95
+
+</pre>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true, maxTextSize: Number.MAX_SAFE_INTEGER, maxEdges: Number.MAX_SAFE_INTEGER });
+</script>
+</body>
+</html>

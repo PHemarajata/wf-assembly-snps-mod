@@ -1,0 +1,11 @@
+DateTime	2025-09-02T05:49:09
+ReadFiles	fake_reads.fq
+Reference	/home/cdcadmin/wf-assembly-snps-mod/work/73/b0327fbf73b6cd89fc5ddc3daa9725/IP-0030-7_S10_L001-SPAdes.fa
+ReferenceSize	7081864
+Software	snippy 4.6.0
+Variant-COMPLEX	1126
+Variant-DEL	707
+Variant-INS	573
+Variant-MNP	4
+Variant-SNP	17941
+VariantTotal	20351

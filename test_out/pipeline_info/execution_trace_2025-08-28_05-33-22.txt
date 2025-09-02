@@ -1,0 +1,2 @@
+task_id	hash	native_id	name	status	exit	submit	duration	realtime	%cpu	peak_rss	peak_vmem	rchar	wchar
+1	ca/bb2ede	1847	ASSEMBLY_SNPS_SCALABLE:INFILE_HANDLING_UNIX (test)	FAILED	126	2025-08-28 05:33:29.823	1.2s	1.2s	-	-	-	-	-
