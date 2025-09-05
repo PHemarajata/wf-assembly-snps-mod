@@ -51,12 +51,12 @@ process SNIPPY_ALIGN {
         fi
 
         # Run snippy
-        snippy \
-            --outdir snippy_work/\$sample \
-            --ref ${reference} \
-            --ctgs \$assembly_file \
-            --cpus ${task.cpus} \
-            --force \
+        snippy \\
+            --outdir snippy_work/\$sample \\
+            --ref ${reference} \\
+            --ctgs \$assembly_file \\
+            --cpus ${task.cpus} \\
+            --force \\
             ${args} || {
             echo "Warning: Snippy failed for sample \$sample"
             continue
@@ -81,23 +81,23 @@ process SNIPPY_ALIGN {
         echo "Found \${#snippy_dirs[@]} successful Snippy runs"
 
         # Run snippy-core to generate core alignment
-        snippy-core \
-            --ref ${reference} \
-            --prefix ${cluster_id} \
+        snippy-core \\
+            --ref ${reference} \\
+            --prefix ${cluster_id} \\
             \${snippy_dirs[@]} || {
             echo "Warning: snippy-core failed, creating minimal alignment"
             echo ">${representative_id}" > ${cluster_id}.core.full.aln
             echo "N" >> ${cluster_id}.core.full.aln
             touch ${cluster_id}.core.tab
         }
-        
+
         # Rename snippy-core output files to expected names
         if [[ -f "${cluster_id}.full.aln" ]]; then
             mv "${cluster_id}.full.aln" "${cluster_id}.core.full.aln"
         elif [[ -f "${cluster_id}.aln" ]]; then
             mv "${cluster_id}.aln" "${cluster_id}.core.full.aln"
         fi
-        
+
         if [[ -f "${cluster_id}.tab" ]]; then
             mv "${cluster_id}.tab" "${cluster_id}.core.tab"
         fi
@@ -121,7 +121,7 @@ process SNIPPY_ALIGN {
     cat <<-END_VERSIONS > versions.yml
 "${task.process}":
     snippy: \$(snippy --version 2>&1 | head -n1 | sed 's/^/    /')
-	END_VERSIONS
-    EOF
-    """
+END_VERSIONS
+EOF
+"""
 }
