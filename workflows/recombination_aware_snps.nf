@@ -325,7 +325,9 @@ workflow RECOMBINATION_AWARE_SNPS {
         .join(IQTREE_FAST.out.tree, by: 0)
 
     GUBBINS_CLUSTER_DIAGNOSTIC(
-        ch_for_gubbins
+        ch_for_gubbins.map { cluster_id, alignment, tree -> cluster_id },
+        ch_for_gubbins.map { cluster_id, alignment, tree -> alignment },
+        ch_for_gubbins.map { cluster_id, alignment, tree -> tree }
     )
     ch_versions = ch_versions.mix(GUBBINS_CLUSTER_DIAGNOSTIC.out.versions)
 
@@ -338,7 +340,7 @@ workflow RECOMBINATION_AWARE_SNPS {
     log.info "STEP 4: Building per-cluster final ML trees with ASC correction"
 
     // Combine Gubbins filtered SNPs with representative info for IQ-TREE
-    ch_for_final_tree = GUBBINS_CLUSTER.out.filtered_alignment
+    ch_for_final_tree = GUBBINS_CLUSTER_DIAGNOSTIC.out.filtered_alignment
         .join(SELECT_CLUSTER_REPRESENTATIVE.out.representative.map { cluster_id, rep_id, rep_file ->
             tuple(cluster_id, rep_id)
         }, by: 0)
