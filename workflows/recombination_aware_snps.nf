@@ -69,8 +69,8 @@ include { KEEP_INVARIANT_ATCG                              } from "../modules/lo
 //
 // MODULES: Step 3 - Gubbins on WGA
 //
-include { GUBBINS_CLUSTER                                  } from "../modules/local/gubbins_cluster/main"
-
+//include { GUBBINS_CLUSTER                                  } from "../modules/local/gubbins_cluster/main"
+include { GUBBINS_CLUSTER_DIAGNOSTIC } from '../modules/local/gubbins_cluster_diagnostic/main'
 //
 // MODULES: Step 4 - Per-cluster final ML tree
 //
@@ -324,10 +324,10 @@ workflow RECOMBINATION_AWARE_SNPS {
     ch_for_gubbins = KEEP_INVARIANT_ATCG.out.core_alignment
         .join(IQTREE_FAST.out.tree, by: 0)
 
-    GUBBINS_CLUSTER (
+    GUBBINS_CLUSTER_DIAGNOSTIC(
         ch_for_gubbins
     )
-    ch_versions = ch_versions.mix(GUBBINS_CLUSTER.out.versions)
+    ch_versions = ch_versions.mix(GUBBINS_CLUSTER_DIAGNOSTIC.out.versions)
 
     /*
     ================================================================================
@@ -372,8 +372,7 @@ workflow RECOMBINATION_AWARE_SNPS {
     log.info "STEP 6: Building backbone tree from representatives"
 
     BUILD_BACKBONE_TREE (
-        COLLECT_REPRESENTATIVES.out.representatives_fasta,
-        MASH_TAB_TO_MATRIX.out.matrix
+        COLLECT_REPRESENTATIVES.out.representatives_fasta
     )
     ch_versions = ch_versions.mix(BUILD_BACKBONE_TREE.out.versions)
 

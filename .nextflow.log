@@ -1,46 +1,46 @@
-Sep-06 12:08:17.582 [main] DEBUG nextflow.cli.Launcher - $> nextflow run main.nf -profile local_workstation_rtx4070,docker --input /home/phemarajata/Downloads/bp_finalset --outdir /home/phemarajata/Downloads/bp_finalset/results_recombination_aware --recombination_aware_mode --integrate_results --mash_threshold 0.028 --max_cluster_size 50 --merge_singletons --mash_sketch_size 50000 --recombination gubbins --snp_package parsnp --run_gubbins
-Sep-06 12:08:17.681 [main] DEBUG nextflow.cli.CmdRun - N E X T F L O W  ~  version 25.04.6
-Sep-06 12:08:17.695 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; embedded=false; plugins-dir=/home/phemarajata/.nextflow/plugins; core-plugins: nf-amazon@2.15.0,nf-azure@1.16.0,nf-cloudcache@0.4.3,nf-codecommit@0.2.3,nf-console@1.2.1,nf-google@1.21.1,nf-k8s@1.0.0,nf-tower@1.11.4,nf-wave@1.12.1
-Sep-06 12:08:17.709 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
-Sep-06 12:08:17.710 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
-Sep-06 12:08:17.712 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.12.0 in 'deployment' mode
-Sep-06 12:08:17.722 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
-Sep-06 12:08:17.737 [main] DEBUG nextflow.config.ConfigBuilder - Found config local: /home/phemarajata/wf-assembly-snps-mod/nextflow.config
-Sep-06 12:08:17.738 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /home/phemarajata/wf-assembly-snps-mod/nextflow.config
-Sep-06 12:08:17.763 [main] DEBUG n.secret.LocalSecretsProvider - Secrets store: /home/phemarajata/.nextflow/secrets/store.json
-Sep-06 12:08:17.766 [main] DEBUG nextflow.secret.SecretsLoader - Discovered secrets providers: [nextflow.secret.LocalSecretsProvider@69c6161d] - activable => nextflow.secret.LocalSecretsProvider@69c6161d
-Sep-06 12:08:17.776 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `local_workstation_rtx4070,docker`
-Sep-06 12:08:18.863 [main] DEBUG nextflow.config.ConfigBuilder - Available config profiles: [aspen_hpc, debug, test, local_workstation, docker, local_workstation_rtx4070, dgx_station_a100_updated, shifter, conda, dgx_station, singularity, rosalind_hpc, test_full]
-Sep-06 12:08:18.903 [main] DEBUG nextflow.cli.CmdRun - Applied DSL=2 from script declaration
-Sep-06 12:08:18.914 [main] DEBUG nextflow.cli.CmdRun - Launching `main.nf` [boring_einstein] DSL2 - revision: e09a5c4ead
-Sep-06 12:08:18.915 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
-Sep-06 12:08:18.915 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins resolved requirement=[]
-Sep-06 12:08:18.953 [main] DEBUG nextflow.Session - Session UUID: 3c3cc2c8-4296-4e8b-a574-115a137f57a1
-Sep-06 12:08:18.954 [main] DEBUG nextflow.Session - Run name: boring_einstein
-Sep-06 12:08:18.954 [main] DEBUG nextflow.Session - Executor pool size: 22
-Sep-06 12:08:18.963 [main] DEBUG nextflow.file.FilePorter - File porter settings maxRetries=3; maxTransfers=50; pollTimeout=null
-Sep-06 12:08:18.967 [main] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'FileTransfer' minSize=10; maxSize=66; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
-Sep-06 12:08:18.981 [main] DEBUG nextflow.cli.CmdRun - 
+Sep-06 13:49:43.698 [main] DEBUG nextflow.cli.Launcher - $> nextflow run main.nf -profile local_workstation_rtx4070,docker --input /home/phemarajata/Downloads/bp_finalset --outdir /home/phemarajata/Downloads/bp_finalset/results_recombination_aware --recombination_aware_mode --integrate_results --mash_threshold 0.028 --max_cluster_size 50 --merge_singletons --mash_sketch_size 50000 --recombination gubbins --snp_package parsnp --run_gubbins -resume
+Sep-06 13:49:43.906 [main] DEBUG nextflow.cli.CmdRun - N E X T F L O W  ~  version 25.04.6
+Sep-06 13:49:43.931 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; embedded=false; plugins-dir=/home/phemarajata/.nextflow/plugins; core-plugins: nf-amazon@2.15.0,nf-azure@1.16.0,nf-cloudcache@0.4.3,nf-codecommit@0.2.3,nf-console@1.2.1,nf-google@1.21.1,nf-k8s@1.0.0,nf-tower@1.11.4,nf-wave@1.12.1
+Sep-06 13:49:43.951 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+Sep-06 13:49:43.953 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+Sep-06 13:49:43.955 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.12.0 in 'deployment' mode
+Sep-06 13:49:43.968 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+Sep-06 13:49:43.996 [main] DEBUG nextflow.config.ConfigBuilder - Found config local: /home/phemarajata/wf-assembly-snps-mod/nextflow.config
+Sep-06 13:49:43.999 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /home/phemarajata/wf-assembly-snps-mod/nextflow.config
+Sep-06 13:49:44.026 [main] DEBUG n.secret.LocalSecretsProvider - Secrets store: /home/phemarajata/.nextflow/secrets/store.json
+Sep-06 13:49:44.030 [main] DEBUG nextflow.secret.SecretsLoader - Discovered secrets providers: [nextflow.secret.LocalSecretsProvider@69c6161d] - activable => nextflow.secret.LocalSecretsProvider@69c6161d
+Sep-06 13:49:44.043 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `local_workstation_rtx4070,docker`
+Sep-06 13:49:45.544 [main] DEBUG nextflow.config.ConfigBuilder - Available config profiles: [aspen_hpc, debug, test, local_workstation, docker, local_workstation_rtx4070, dgx_station_a100_updated, shifter, conda, dgx_station, singularity, rosalind_hpc, test_full]
+Sep-06 13:49:45.592 [main] DEBUG nextflow.cli.CmdRun - Applied DSL=2 from script declaration
+Sep-06 13:49:45.608 [main] DEBUG nextflow.cli.CmdRun - Launching `main.nf` [scruffy_bell] DSL2 - revision: e09a5c4ead
+Sep-06 13:49:45.609 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+Sep-06 13:49:45.610 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins resolved requirement=[]
+Sep-06 13:49:45.666 [main] DEBUG nextflow.Session - Session UUID: 0b9a5199-ce3c-4c0e-81b0-a0c58745b439
+Sep-06 13:49:45.667 [main] DEBUG nextflow.Session - Run name: scruffy_bell
+Sep-06 13:49:45.667 [main] DEBUG nextflow.Session - Executor pool size: 22
+Sep-06 13:49:45.673 [main] DEBUG nextflow.file.FilePorter - File porter settings maxRetries=3; maxTransfers=50; pollTimeout=null
+Sep-06 13:49:45.678 [main] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'FileTransfer' minSize=10; maxSize=66; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
+Sep-06 13:49:45.697 [main] DEBUG nextflow.cli.CmdRun - 
   Version: 25.04.6 build 5954
   Created: 01-07-2025 11:27 UTC (18:27 ICST)
   System: Linux 6.11.0-29-generic
   Runtime: Groovy 4.0.26 on Java HotSpot(TM) 64-Bit Server VM 17.0.12+8-LTS-286
   Encoding: UTF-8 (UTF-8)
-  Process: 1973904@phemarajata-Stealth-16-MercedesAMG-A1VGG [127.0.1.1]
-  CPUs: 22 - Mem: 62.3 GB (2.8 GB) - Swap: 8 GB (8 GB)
-Sep-06 12:08:18.996 [main] DEBUG nextflow.Session - Work-dir: /home/phemarajata/wf-assembly-snps-mod/work [ext2/ext3]
-Sep-06 12:08:19.019 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
-Sep-06 12:08:19.027 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
-Sep-06 12:08:19.047 [main] DEBUG nextflow.Session - Observer factory (v2): LinObserverFactory
-Sep-06 12:08:19.067 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
-Sep-06 12:08:19.075 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 23; maxThreads: 1000
-Sep-06 12:08:19.122 [main] DEBUG nextflow.Session - Session start
-Sep-06 12:08:19.125 [main] DEBUG nextflow.trace.TraceFileObserver - Workflow started -- trace file: /home/phemarajata/Downloads/bp_finalset/results_recombination_aware/pipeline_info/execution_trace_2025-09-06_12-08-18.txt
-Sep-06 12:08:19.132 [main] DEBUG nextflow.Session - Using default localLib path: /home/phemarajata/wf-assembly-snps-mod/lib
-Sep-06 12:08:19.134 [main] DEBUG nextflow.Session - Adding to the classpath library: /home/phemarajata/wf-assembly-snps-mod/lib
-Sep-06 12:08:19.135 [main] DEBUG nextflow.Session - Adding to the classpath library: /home/phemarajata/wf-assembly-snps-mod/lib/nfcore_external_java_deps.jar
-Sep-06 12:08:19.689 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
-Sep-06 12:08:19.726 [main] INFO  nextflow.Nextflow - 
+  Process: 2308666@phemarajata-Stealth-16-MercedesAMG-A1VGG [127.0.1.1]
+  CPUs: 22 - Mem: 62.3 GB (1.8 GB) - Swap: 8 GB (8 GB)
+Sep-06 13:49:45.731 [main] DEBUG nextflow.Session - Work-dir: /home/phemarajata/wf-assembly-snps-mod/work [ext2/ext3]
+Sep-06 13:49:45.760 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+Sep-06 13:49:45.769 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+Sep-06 13:49:45.803 [main] DEBUG nextflow.Session - Observer factory (v2): LinObserverFactory
+Sep-06 13:49:45.830 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
+Sep-06 13:49:45.840 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 23; maxThreads: 1000
+Sep-06 13:49:45.935 [main] DEBUG nextflow.Session - Session start
+Sep-06 13:49:45.940 [main] DEBUG nextflow.trace.TraceFileObserver - Workflow started -- trace file: /home/phemarajata/Downloads/bp_finalset/results_recombination_aware/pipeline_info/execution_trace_2025-09-06_13-49-45.txt
+Sep-06 13:49:45.951 [main] DEBUG nextflow.Session - Using default localLib path: /home/phemarajata/wf-assembly-snps-mod/lib
+Sep-06 13:49:45.955 [main] DEBUG nextflow.Session - Adding to the classpath library: /home/phemarajata/wf-assembly-snps-mod/lib
+Sep-06 13:49:45.956 [main] DEBUG nextflow.Session - Adding to the classpath library: /home/phemarajata/wf-assembly-snps-mod/lib/nfcore_external_java_deps.jar
+Sep-06 13:49:46.718 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+Sep-06 13:49:46.769 [main] INFO  nextflow.Nextflow - 
 
 -[2m----------------------------------------------------[0m-
 [0;34m     __         __ __ __     __            __     __  __    [0m
@@ -53,7 +53,7 @@ Sep-06 12:08:19.726 [main] INFO  nextflow.Nextflow -
 [0;35m     bacterial-genomics/wf-assembly-snps v1.0.2[0m
 -[2m----------------------------------------------------[0m-
 [1mCore Nextflow options[0m
-  [0;34mrunName                   : [0;32mboring_einstein[0m
+  [0;34mrunName                   : [0;32mscruffy_bell[0m
   [0;34mcontainerEngine           : [0;32mdocker[0m
   [0;34mlaunchDir                 : [0;32m/home/phemarajata/wf-assembly-snps-mod[0m
   [0;34mworkDir                   : [0;32m/home/phemarajata/wf-assembly-snps-mod/work[0m
@@ -100,111 +100,97 @@ If you use bacterial-genomics/wf-assembly-snps for your analysis please cite:
 * Software dependencies
   https://github.com/bacterial-genomics/wf-assembly-snps/blob/main/CITATIONS.md
 -[2m----------------------------------------------------[0m-
-Sep-06 12:08:19.827 [main] WARN  nextflow.Nextflow - Found unexpected parameters:
+Sep-06 13:49:46.872 [main] WARN  nextflow.Nextflow - Found unexpected parameters:
 * --recombination_aware_mode: true
 * --mash_min_copies: 1
 * --mash_kmer_size: 21
 * --mash_sketch_size: 50000
-Sep-06 12:08:19.828 [main] INFO  nextflow.Nextflow - - [2mIgnore this warning: params.schema_ignore_params = "recombination_aware_mode,mash_min_copies,mash_kmer_size,mash_sketch_size" [0m
-Sep-06 12:08:21.958 [main] INFO  nextflow.Nextflow - Starting recombination-aware SNP analysis workflow
-Sep-06 12:08:21.958 [main] INFO  nextflow.Nextflow - Goal: Per-cluster recombination detection + tree grafting
-Sep-06 12:08:22.055 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
-Sep-06 12:08:22.056 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
-Sep-06 12:08:22.060 [main] DEBUG nextflow.executor.Executor - [warm up] executor > local
-Sep-06 12:08:22.064 [main] DEBUG n.processor.LocalPollingMonitor - Creating local task monitor for executor 'local' > cpus=20; memory=56 GB; capacity=22; pollInterval=100ms; dumpInterval=5m
-Sep-06 12:08:22.066 [main] DEBUG n.processor.TaskPollingMonitor - >>> barrier register (monitor: local)
-Sep-06 12:08:22.080 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX': maxForks=0; fair=false; array=0
-Sep-06 12:08:22.113 [main] INFO  nextflow.Nextflow - STEP 1: Clustering genomes with Mash distances
-Sep-06 12:08:22.119 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name RECOMBINATION_AWARE_SNPS:MASH_SKETCH
-Sep-06 12:08:22.120 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:MASH_SKETCH` matches process RECOMBINATION_AWARE_SNPS:MASH_SKETCH
-Sep-06 12:08:22.123 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
-Sep-06 12:08:22.123 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
-Sep-06 12:08:22.125 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:MASH_SKETCH': maxForks=8; fair=false; array=0
-Sep-06 12:08:22.141 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_medium` matches labels `process_medium` for process with name RECOMBINATION_AWARE_SNPS:MASH_DIST
-Sep-06 12:08:22.143 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:MASH_DIST` matches process RECOMBINATION_AWARE_SNPS:MASH_DIST
-Sep-06 12:08:22.146 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
-Sep-06 12:08:22.146 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
-Sep-06 12:08:22.148 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:MASH_DIST': maxForks=4; fair=false; array=0
-Sep-06 12:08:22.159 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name RECOMBINATION_AWARE_SNPS:MASH_TAB_TO_MATRIX
-Sep-06 12:08:22.166 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
-Sep-06 12:08:22.167 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
-Sep-06 12:08:22.169 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:MASH_TAB_TO_MATRIX': maxForks=8; fair=false; array=0
-Sep-06 12:08:22.179 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name RECOMBINATION_AWARE_SNPS:CLUSTER_GENOMES
-Sep-06 12:08:22.181 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:CLUSTER_GENOMES` matches process RECOMBINATION_AWARE_SNPS:CLUSTER_GENOMES
-Sep-06 12:08:22.184 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
-Sep-06 12:08:22.184 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
-Sep-06 12:08:22.186 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:CLUSTER_GENOMES': maxForks=8; fair=false; array=0
-Sep-06 12:08:22.233 [main] INFO  nextflow.Nextflow - STEP 2: Creating per-cluster whole genome alignments
-Sep-06 12:08:22.238 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name RECOMBINATION_AWARE_SNPS:SELECT_CLUSTER_REPRESENTATIVE
-Sep-06 12:08:22.241 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
-Sep-06 12:08:22.241 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
-Sep-06 12:08:22.242 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:SELECT_CLUSTER_REPRESENTATIVE': maxForks=8; fair=false; array=0
-Sep-06 12:08:22.249 [main] WARN  nextflow.script.ScriptBinding - Access to undefined parameter `alignment_method` -- Initialise it to a default value eg. `params.alignment_method = some_value`
-Sep-06 12:08:22.250 [main] INFO  nextflow.Nextflow - Using Snippy for per-cluster whole genome alignment
-Sep-06 12:08:22.254 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_high` matches labels `process_high` for process with name RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN
-Sep-06 12:08:22.256 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
-Sep-06 12:08:22.256 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
-Sep-06 12:08:22.257 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN': maxForks=2; fair=false; array=0
-Sep-06 12:08:22.263 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG
-Sep-06 12:08:22.265 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
-Sep-06 12:08:22.265 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
-Sep-06 12:08:22.266 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG': maxForks=8; fair=false; array=0
-Sep-06 12:08:22.270 [main] INFO  nextflow.Nextflow - STEP 3: Running Gubbins for recombination detection
-Sep-06 12:08:22.274 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_medium` matches labels `process_medium` for process with name RECOMBINATION_AWARE_SNPS:IQTREE_FAST
-Sep-06 12:08:22.275 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:IQTREE_FAST` matches process RECOMBINATION_AWARE_SNPS:IQTREE_FAST
-Sep-06 12:08:22.277 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
-Sep-06 12:08:22.277 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
-Sep-06 12:08:22.278 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:IQTREE_FAST': maxForks=4; fair=false; array=0
-Sep-06 12:08:22.286 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_high` matches labels `process_high` for process with name RECOMBINATION_AWARE_SNPS:GUBBINS_CLUSTER
-Sep-06 12:08:22.289 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
-Sep-06 12:08:22.289 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
-Sep-06 12:08:22.289 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:GUBBINS_CLUSTER': maxForks=2; fair=false; array=0
-Sep-06 12:08:22.292 [main] INFO  nextflow.Nextflow - STEP 4: Building per-cluster final ML trees with ASC correction
-Sep-06 12:08:22.299 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_high` matches labels `process_high` for process with name RECOMBINATION_AWARE_SNPS:IQTREE_ASC
-Sep-06 12:08:22.302 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
-Sep-06 12:08:22.302 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
-Sep-06 12:08:22.303 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:IQTREE_ASC': maxForks=2; fair=false; array=0
-Sep-06 12:08:22.307 [main] INFO  nextflow.Nextflow - STEP 5: Collecting cluster representatives
-Sep-06 12:08:22.312 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name RECOMBINATION_AWARE_SNPS:COLLECT_REPRESENTATIVES
-Sep-06 12:08:22.314 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
-Sep-06 12:08:22.314 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
-Sep-06 12:08:22.315 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:COLLECT_REPRESENTATIVES': maxForks=8; fair=false; array=0
-Sep-06 12:08:22.319 [main] INFO  nextflow.Nextflow - STEP 6: Building backbone tree from representatives
-Sep-06 12:08:22.323 [main] DEBUG nextflow.script.ScriptRunner - Parsed script files:
+Sep-06 13:49:46.872 [main] INFO  nextflow.Nextflow - - [2mIgnore this warning: params.schema_ignore_params = "recombination_aware_mode,mash_min_copies,mash_kmer_size,mash_sketch_size" [0m
+Sep-06 13:49:49.526 [main] INFO  nextflow.Nextflow - Starting recombination-aware SNP analysis workflow
+Sep-06 13:49:49.527 [main] INFO  nextflow.Nextflow - Goal: Per-cluster recombination detection + tree grafting
+Sep-06 13:49:49.658 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-06 13:49:49.658 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-06 13:49:49.666 [main] DEBUG nextflow.executor.Executor - [warm up] executor > local
+Sep-06 13:49:49.673 [main] DEBUG n.processor.LocalPollingMonitor - Creating local task monitor for executor 'local' > cpus=20; memory=56 GB; capacity=22; pollInterval=100ms; dumpInterval=5m
+Sep-06 13:49:49.677 [main] DEBUG n.processor.TaskPollingMonitor - >>> barrier register (monitor: local)
+Sep-06 13:49:49.696 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX': maxForks=0; fair=false; array=0
+Sep-06 13:49:49.735 [main] INFO  nextflow.Nextflow - STEP 1: Clustering genomes with Mash distances
+Sep-06 13:49:49.741 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name RECOMBINATION_AWARE_SNPS:MASH_SKETCH
+Sep-06 13:49:49.743 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:MASH_SKETCH` matches process RECOMBINATION_AWARE_SNPS:MASH_SKETCH
+Sep-06 13:49:49.746 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-06 13:49:49.746 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-06 13:49:49.749 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:MASH_SKETCH': maxForks=8; fair=false; array=0
+Sep-06 13:49:49.768 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_medium` matches labels `process_medium` for process with name RECOMBINATION_AWARE_SNPS:MASH_DIST
+Sep-06 13:49:49.768 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:MASH_DIST` matches process RECOMBINATION_AWARE_SNPS:MASH_DIST
+Sep-06 13:49:49.771 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-06 13:49:49.771 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-06 13:49:49.772 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:MASH_DIST': maxForks=4; fair=false; array=0
+Sep-06 13:49:49.785 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name RECOMBINATION_AWARE_SNPS:MASH_TAB_TO_MATRIX
+Sep-06 13:49:49.791 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-06 13:49:49.792 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-06 13:49:49.793 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:MASH_TAB_TO_MATRIX': maxForks=8; fair=false; array=0
+Sep-06 13:49:49.799 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name RECOMBINATION_AWARE_SNPS:CLUSTER_GENOMES
+Sep-06 13:49:49.800 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:CLUSTER_GENOMES` matches process RECOMBINATION_AWARE_SNPS:CLUSTER_GENOMES
+Sep-06 13:49:49.803 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-06 13:49:49.803 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-06 13:49:49.805 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:CLUSTER_GENOMES': maxForks=8; fair=false; array=0
+Sep-06 13:49:49.840 [main] INFO  nextflow.Nextflow - STEP 2: Creating per-cluster whole genome alignments
+Sep-06 13:49:49.849 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name RECOMBINATION_AWARE_SNPS:SELECT_CLUSTER_REPRESENTATIVE
+Sep-06 13:49:49.854 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-06 13:49:49.854 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-06 13:49:49.856 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:SELECT_CLUSTER_REPRESENTATIVE': maxForks=8; fair=false; array=0
+Sep-06 13:49:49.873 [main] WARN  nextflow.script.ScriptBinding - Access to undefined parameter `alignment_method` -- Initialise it to a default value eg. `params.alignment_method = some_value`
+Sep-06 13:49:49.874 [main] INFO  nextflow.Nextflow - Using Snippy for per-cluster whole genome alignment
+Sep-06 13:49:49.883 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_high` matches labels `process_high` for process with name RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN
+Sep-06 13:49:49.888 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-06 13:49:49.889 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-06 13:49:49.890 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN': maxForks=2; fair=false; array=0
+Sep-06 13:49:49.904 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG
+Sep-06 13:49:49.908 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-06 13:49:49.909 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-06 13:49:49.911 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG': maxForks=8; fair=false; array=0
+Sep-06 13:49:49.918 [main] INFO  nextflow.Nextflow - STEP 3: Running Gubbins for recombination detection
+Sep-06 13:49:49.928 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_medium` matches labels `process_medium` for process with name RECOMBINATION_AWARE_SNPS:IQTREE_FAST
+Sep-06 13:49:49.929 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:IQTREE_FAST` matches process RECOMBINATION_AWARE_SNPS:IQTREE_FAST
+Sep-06 13:49:49.933 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-06 13:49:49.933 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-06 13:49:49.935 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:IQTREE_FAST': maxForks=4; fair=false; array=0
+Sep-06 13:49:49.952 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_high` matches labels `process_high` for process with name RECOMBINATION_AWARE_SNPS:GUBBINS_CLUSTER_DIAGNOSTIC
+Sep-06 13:49:49.953 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:GUBBINS_CLUSTER_DIAGNOSTIC` matches process RECOMBINATION_AWARE_SNPS:GUBBINS_CLUSTER_DIAGNOSTIC
+Sep-06 13:49:49.956 [main] DEBUG nextflow.script.ScriptRunner - Parsed script files:
   Script_19036535c7b0b78f: /home/phemarajata/wf-assembly-snps-mod/main.nf
-  Script_8594eba12d3ded59: /home/phemarajata/wf-assembly-snps-mod/modules/local/gubbins_cluster/main.nf
   Script_b9a8232e0fa11be0: /home/phemarajata/wf-assembly-snps-mod/modules/local/create_masked_snp_distance_matrix_snp_dists/main.nf
-  Script_a850517f5a8ab2a0: /home/phemarajata/wf-assembly-snps-mod/modules/local/collect_representatives/main.nf
   Script_1a9637f29693df46: /home/phemarajata/wf-assembly-snps-mod/modules/local/build_phylogenetic_tree_parsnp/main.nf
+  Script_a850517f5a8ab2a0: /home/phemarajata/wf-assembly-snps-mod/modules/local/collect_representatives/main.nf
   Script_aef3ab5dd3c994fd: /home/phemarajata/wf-assembly-snps-mod/modules/local/graft_trees/main.nf
   Script_22f775fce136207e: /home/phemarajata/wf-assembly-snps-mod/modules/local/convert_samplesheet_python/main.nf
   Script_287dd56516c46641: /home/phemarajata/wf-assembly-snps-mod/modules/local/convert_tsv_to_excel_python/main.nf
   Script_4eb33b231f3f8231: /home/phemarajata/wf-assembly-snps-mod/modules/local/mash_dist/main.nf
-  Script_faa30f31d909f9e6: /home/phemarajata/wf-assembly-snps-mod/modules/local/snp_sites/main.nf
-  Script_57b593f098c8e886: /home/phemarajata/wf-assembly-snps-mod/modules/local/snippy_align/main.nf
   Script_de42343b4a60b37d: /home/phemarajata/wf-assembly-snps-mod/modules/local/create_snp_distance_matrix_snp_dists/main.nf
-  Script_92a8fd2e65506f13: /home/phemarajata/wf-assembly-snps-mod/modules/local/create_excel_run_summary_python/main.nf
+  Script_57b593f098c8e886: /home/phemarajata/wf-assembly-snps-mod/modules/local/snippy_align/main.nf
+  Script_faa30f31d909f9e6: /home/phemarajata/wf-assembly-snps-mod/modules/local/snp_sites/main.nf
   Script_bdfe511ac4c90ab8: /home/phemarajata/wf-assembly-snps-mod/subworkflows/local/recombination.nf
+  Script_92a8fd2e65506f13: /home/phemarajata/wf-assembly-snps-mod/modules/local/create_excel_run_summary_python/main.nf
   Script_d514da91ee3b02bd: /home/phemarajata/wf-assembly-snps-mod/modules/local/calculate_pairwise_distances_snp_dists/main.nf
-  Script_991114ea4acf6ca7: /home/phemarajata/wf-assembly-snps-mod/workflows/recombination_aware_snps.nf
-  Script_cdc219c241584917: /home/phemarajata/wf-assembly-snps-mod/modules/local/core_genome_alignment_parsnp/main.nf
   Script_8ca59baef4465cd0: /home/phemarajata/wf-assembly-snps-mod/subworkflows/local/integrate_results.nf
+  Script_cdc219c241584917: /home/phemarajata/wf-assembly-snps-mod/modules/local/core_genome_alignment_parsnp/main.nf
   Script_8f3222acc5105b8e: /home/phemarajata/wf-assembly-snps-mod/subworkflows/local/clustering.nf
   Script_53b40eb3093c3510: /home/phemarajata/wf-assembly-snps-mod/subworkflows/local/input_check.nf
   Script_0d0e746d1c5d0fe0: /home/phemarajata/wf-assembly-snps-mod/modules/local/build_integrated_tree/main.nf
+  Script_b6f0a366b4bc275c: /home/phemarajata/wf-assembly-snps-mod/modules/local/build_backbone_tree/main.nf
   Script_076cfc891361d3be: /home/phemarajata/wf-assembly-snps-mod/modules/local/gubbins_cluster_diagnostic/main.nf
-  Script_87f81e5ffbf73298: /home/phemarajata/wf-assembly-snps-mod/modules/local/iqtree_asc/main.nf
   Script_bccd224dbe097fb3: /home/phemarajata/wf-assembly-snps-mod/modules/local/cluster_genomes/main.nf
+  Script_87f81e5ffbf73298: /home/phemarajata/wf-assembly-snps-mod/modules/local/iqtree_asc/main.nf
   Script_5070cd236642fe2f: /home/phemarajata/wf-assembly-snps-mod/modules/local/graft_subtrees/main.nf
+  Script_16689be6eab14569: /home/phemarajata/wf-assembly-snps-mod/workflows/recombination_aware_snps.nf
   Script_6b2443191adf2b8a: /home/phemarajata/wf-assembly-snps-mod/modules/local/iqtree_fast/main.nf
   Script_d6e26c35873b177f: /home/phemarajata/wf-assembly-snps-mod/modules/local/ska_align/main.nf
-  Script_d024c62fed4aecd0: /home/phemarajata/wf-assembly-snps-mod/workflows/assembly_snps_scalable.nf
   Script_622e6250fb129d0f: /home/phemarajata/wf-assembly-snps-mod/modules/local/extract_core_snps/main.nf
-  Script_6f90e0c9552f62ee: /home/phemarajata/wf-assembly-snps-mod/modules/local/create_final_summary/main.nf
+  Script_d024c62fed4aecd0: /home/phemarajata/wf-assembly-snps-mod/workflows/assembly_snps_scalable.nf
   Script_1dd23afb5d9f9306: /home/phemarajata/wf-assembly-snps-mod/modules/local/mash_tab_to_matrix/main.nf
+  Script_6f90e0c9552f62ee: /home/phemarajata/wf-assembly-snps-mod/modules/local/create_final_summary/main.nf
   Script_b86bc69fb8228a3e: /home/phemarajata/wf-assembly-snps-mod/modules/local/recombination_clonalframeml/main.nf
   Script_3710c6c0a9c48c8b: /home/phemarajata/wf-assembly-snps-mod/modules/local/usher_build/main.nf
-  Script_cc4b4c3049f24ec8: /home/phemarajata/wf-assembly-snps-mod/modules/local/build_backbone_tree/main.nf
   Script_4001c25e1d2c18a2: /home/phemarajata/wf-assembly-snps-mod/modules/local/keep_invariant_atcg/main.nf
   Script_5c5c47609ece951f: /home/phemarajata/wf-assembly-snps-mod/modules/local/select_cluster_representative/main.nf
   Script_c2e700414b82257d: /home/phemarajata/wf-assembly-snps-mod/modules/local/integrate_core_snps/main.nf
@@ -213,13 +199,12 @@ Sep-06 12:08:22.323 [main] DEBUG nextflow.script.ScriptRunner - Parsed script fi
   Script_65ed891bd0e407ab: /home/phemarajata/wf-assembly-snps-mod/modules/local/usher_place/main.nf
   Script_4fa35410fba01909: /home/phemarajata/wf-assembly-snps-mod/subworkflows/local/usher_placement.nf
   Script_8ac462181f421868: /home/phemarajata/wf-assembly-snps-mod/modules/local/mash_sketch/main.nf
-  Script_bc114141908d07be: /home/phemarajata/wf-assembly-snps-mod/modules/local/filter_atcg_columns/main.nf
   Script_30224b4410519b3a: /home/phemarajata/wf-assembly-snps-mod/modules/local/mask_recombinant_positions_biopython/main.nf
+  Script_bc114141908d07be: /home/phemarajata/wf-assembly-snps-mod/modules/local/filter_atcg_columns/main.nf
   Script_cf1907f7a901597f: /home/phemarajata/wf-assembly-snps-mod/workflows/assembly_snps.nf
   Script_eb8cc4d6896a7469: /home/phemarajata/wf-assembly-snps-mod/modules/local/infile_handling_unix/main.nf
-Sep-06 12:08:22.325 [main] DEBUG nextflow.Session - Session aborted -- Cause: No such property: optional for class: nextflow.script.params.FileInParam
-Possible solutions: options
-Sep-06 12:08:22.345 [main] DEBUG nextflow.Session - The following nodes are still active:
+Sep-06 13:49:49.957 [main] DEBUG nextflow.Session - Session aborted -- Cause: Process `RECOMBINATION_AWARE_SNPS:GUBBINS_CLUSTER_DIAGNOSTIC` declares 3 input channels but 1 were specified
+Sep-06 13:49:49.977 [main] DEBUG nextflow.Session - The following nodes are still active:
   [operator] ifEmpty
   [operator] map
   [operator] map
@@ -252,60 +237,11 @@ Sep-06 12:08:22.345 [main] DEBUG nextflow.Session - The following nodes are stil
   [operator] map
   [operator] mix
   [operator] join
-  [operator] mix
-  [operator] map
-  [operator] join
-  [operator] mix
-  [operator] map
-  [operator] collect
-  [operator] mix
 
-Sep-06 12:08:22.353 [Task monitor] DEBUG n.processor.TaskPollingMonitor - <<< barrier arrives (monitor: local) - terminating tasks monitor poll loop
-Sep-06 12:08:22.357 [Actor Thread 23] DEBUG nextflow.Nextflow - Ignoring exit because execution is already aborted -- message=Cannot find any files matching: /home/phemarajata/Downloads/bp_finalset
-NB: Path needs to be enclosed in quotes!
-Sep-06 12:08:22.355 [main] ERROR nextflow.cli.Launcher - @unknown
-groovy.lang.MissingPropertyException: No such property: optional for class: nextflow.script.params.FileInParam
-Possible solutions: options
-	at org.codehaus.groovy.runtime.ScriptBytecodeAdapter.unwrap(ScriptBytecodeAdapter.java:67)
-	at org.codehaus.groovy.vmplugin.v8.IndyGuardsFiltersAndSignatures.unwrap(IndyGuardsFiltersAndSignatures.java:163)
-	at org.codehaus.groovy.vmplugin.v8.IndyInterface.fromCache(IndyInterface.java:321)
-	at nextflow.script.params.BaseParam.setOptions(BaseParam.groovy:136)
-	at nextflow.script.params.FileInParam.super$2$setOptions(FileInParam.groovy)
-	at jdk.internal.reflect.GeneratedMethodAccessor76.invoke(Unknown Source)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
-	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:343)
-	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:328)
-	at groovy.lang.MetaClassImpl.doInvokeMethod(MetaClassImpl.java:1333)
-	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1088)
-	at org.codehaus.groovy.runtime.ScriptBytecodeAdapter.invokeMethodOnSuperN(ScriptBytecodeAdapter.java:146)
-	at nextflow.script.params.FileInParam.setOptions(FileInParam.groovy:127)
-	at org.codehaus.groovy.vmplugin.v8.IndyInterface.selectMethod(IndyInterface.java:355)
-	at org.codehaus.groovy.vmplugin.v8.IndyInterface.fromCache(IndyInterface.java:321)
-	at nextflow.script.ProcessConfig._in_path(ProcessConfig.groovy:547)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
-	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:343)
-	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:328)
-	at org.codehaus.groovy.runtime.metaclass.ClosureMetaClass.invokeMethod(ClosureMetaClass.java:343)
-	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1007)
-	at org.codehaus.groovy.vmplugin.v8.IndyInterface.fromCache(IndyInterface.java:321)
-	at Script_cc4b4c3049f24ec8$_runScript_closure1.doCall(Script_cc4b4c3049f24ec8:14)
-	at Script_cc4b4c3049f24ec8$_runScript_closure1.doCall(Script_cc4b4c3049f24ec8)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
-	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:343)
-	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:328)
-	at org.codehaus.groovy.runtime.metaclass.ClosureMetaClass.invokeMethod(ClosureMetaClass.java:280)
-	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1007)
-	at groovy.lang.Closure.call(Closure.java:433)
-	at groovy.lang.Closure.call(Closure.java:412)
-	at nextflow.script.ProcessDef.initialize(ProcessDef.groovy:111)
-	at nextflow.script.ProcessDef.run(ProcessDef.groovy:169)
+Sep-06 13:49:49.983 [Task monitor] DEBUG n.processor.TaskPollingMonitor - <<< barrier arrives (monitor: local) - terminating tasks monitor poll loop
+Sep-06 13:49:49.984 [main] ERROR nextflow.cli.Launcher - Process `RECOMBINATION_AWARE_SNPS:GUBBINS_CLUSTER_DIAGNOSTIC` declares 3 input channels but 1 were specified
+nextflow.exception.ScriptRuntimeException: Process `RECOMBINATION_AWARE_SNPS:GUBBINS_CLUSTER_DIAGNOSTIC` declares 3 input channels but 1 were specified
+	at nextflow.script.ProcessDef.run(ProcessDef.groovy:175)
 	at nextflow.script.BindableDef.invoke_a(BindableDef.groovy:51)
 	at nextflow.script.ComponentDef.invoke_o(ComponentDef.groovy:40)
 	at nextflow.script.WorkflowBinding.invokeMethod(WorkflowBinding.groovy:105)
@@ -315,7 +251,7 @@ Possible solutions: options
 	at org.codehaus.groovy.runtime.metaclass.ClosureMetaClass.invokeMethod(ClosureMetaClass.java:331)
 	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1007)
 	at org.codehaus.groovy.vmplugin.v8.IndyInterface.fromCache(IndyInterface.java:321)
-	at Script_991114ea4acf6ca7$_runScript_closure3$_closure7.doCall(Script_991114ea4acf6ca7:374)
+	at Script_16689be6eab14569$_runScript_closure3$_closure7.doCall(Script_16689be6eab14569:327)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -362,3 +298,5 @@ Possible solutions: options
 	at nextflow.cli.CmdRun.run(CmdRun.groovy:379)
 	at nextflow.cli.Launcher.run(Launcher.groovy:513)
 	at nextflow.cli.Launcher.main(Launcher.groovy:673)
+Sep-06 13:49:49.990 [Actor Thread 22] DEBUG nextflow.Nextflow - Ignoring exit because execution is already aborted -- message=Cannot find any files matching: /home/phemarajata/Downloads/bp_finalset
+NB: Path needs to be enclosed in quotes!
