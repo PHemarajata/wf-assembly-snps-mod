@@ -1,3 +1,6 @@
+#!/usr/bin/env nextflow
+nextflow.enable.dsl=2
+
 process MASH_SKETCH {
     tag "$sample_id"
     label 'process_low'

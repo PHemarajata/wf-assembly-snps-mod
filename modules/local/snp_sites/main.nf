@@ -1,3 +1,6 @@
+#!/usr/bin/env nextflow
+nextflow.enable.dsl=2
+
 process SNP_SITES {
     tag "$meta.id"
     label 'process_low'

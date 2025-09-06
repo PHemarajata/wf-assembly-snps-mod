@@ -1,3 +1,6 @@
+#!/usr/bin/env nextflow
+nextflow.enable.dsl=2
+
 process CALCULATE_PAIRWISE_DISTANCES_SNP_DISTS {
 
     tag { "${meta.snp_package}" }

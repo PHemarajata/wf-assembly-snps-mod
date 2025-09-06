@@ -1,3 +1,6 @@
+#!/usr/bin/env nextflow
+nextflow.enable.dsl=2
+
 process MASH_DIST {
     tag "pairwise_distances"
     label 'process_medium'

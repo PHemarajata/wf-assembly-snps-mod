@@ -1,3 +1,6 @@
+#!/usr/bin/env nextflow
+nextflow.enable.dsl=2
+
 process EXTRACT_CORE_SNPS {
     tag "cluster_${cluster_id}"
     label 'process_low'

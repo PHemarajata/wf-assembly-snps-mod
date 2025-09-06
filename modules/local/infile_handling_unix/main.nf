@@ -1,3 +1,6 @@
+#!/usr/bin/env nextflow
+nextflow.enable.dsl=2
+
 process INFILE_HANDLING_UNIX {
 
     tag( "${meta.id}" )

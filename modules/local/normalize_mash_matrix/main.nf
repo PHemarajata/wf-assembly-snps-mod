@@ -1,3 +1,6 @@
+#!/usr/bin/env nextflow
+nextflow.enable.dsl=2
+
 process NORMALIZE_MASH_MATRIX {
     tag "normalize_mash_matrix"
     label 'process_low'

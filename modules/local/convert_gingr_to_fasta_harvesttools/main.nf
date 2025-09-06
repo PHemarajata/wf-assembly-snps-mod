@@ -1,3 +1,6 @@
+#!/usr/bin/env nextflow
+nextflow.enable.dsl=2
+
 process CONVERT_GINGR_TO_FASTA_HARVESTTOOLS {
 
     tag { "${meta.snp_package}" }

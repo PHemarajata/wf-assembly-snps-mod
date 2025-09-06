@@ -1,3 +1,6 @@
+#!/usr/bin/env nextflow
+nextflow.enable.dsl=2
+
 process BUILD_PHYLOGENETIC_TREE_PARSNP {
 
     tag( "${meta.snp_package}-${meta.recombination}" )

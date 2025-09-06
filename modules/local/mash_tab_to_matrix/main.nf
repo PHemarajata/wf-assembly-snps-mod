@@ -1,3 +1,6 @@
+#!/usr/bin/env nextflow
+nextflow.enable.dsl=2
+
 process MASH_TAB_TO_MATRIX {
     tag "mash_tab_to_matrix"
     label 'process_low'

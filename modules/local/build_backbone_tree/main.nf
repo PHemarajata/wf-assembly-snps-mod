@@ -1,132 +1,127 @@
+/* -*- coding: utf-8 -*- */
+nextflow.enable.dsl=2
+
 process BUILD_BACKBONE_TREE {
-    tag "backbone_tree"
-    label 'process_high'
-    container "quay.io/biocontainers/parsnp@sha256:b46999fb9842f183443dd6226b461c1d8074d4c1391c1f2b1e51cc20cee8f8b2"
+  tag "backbone_tree"
+  label 'process_high'
 
-    input:
-        path representatives_fasta
-        path mash_distances
+  // Override via params.backbone_container in your config if you’d like.
+  // This biocontainer typically includes parsnp, harvesttools, fasttree.
+  container "${params.backbone_container ?: 'quay.io/biocontainers/parsnp:1.7.4--pyhdfd78af_0'}"
 
-    output:
-        path "backbone.treefile", emit: backbone_tree
-        path "backbone_alignment.fa", emit: backbone_alignment
-        path "backbone_report.txt", emit: report
-        path "versions.yml", emit: versions
+  input:
+  path representatives_fasta
+  path mash_distances, optional: true
 
-    script:
-    """
-    set -euo pipefail
+  output:
+  path "backbone.treefile",       emit: backbone_tree
+  path "backbone_alignment.fa",   emit: backbone_alignment
+  path "backbone_report.txt",     emit: report
+  path "versions.yml",            emit: versions
 
-    echo "Building backbone tree from cluster representatives"
-    method="${params.backbone_method:-parsnp}"
-    echo "Method: \$method"
+  script:
+  def method   = params.backbone_method ?: 'parsnp'
+  def ft_opts  = params.backbone_fasttree_opts ?: '-nt -gtr'
+  def threads  = task.cpus
+  """
+  set -euo pipefail
 
-    rep_count=\$(grep -c "^>" ${representatives_fasta})
-    echo "Number of representatives: \$rep_count"
+  echo "== BUILD_BACKBONE_TREE =="
+  echo "Method: ${method}"
+  echo "CPUs: ${threads}"
 
-    # Always create backbone.treefile and backbone_alignment.fa
-    if [ "\$rep_count" -lt 3 ]; then
-        echo "WARNING: Only \$rep_count representatives found. Cannot build meaningful backbone tree."
-        rep_names=\$(grep "^>" ${representatives_fasta} | sed 's/>//' | tr '\n' ',' | sed 's/,\$//')
-        echo "(\$rep_names);" > backbone.treefile
-        cp ${representatives_fasta} backbone_alignment.fa
-        echo "Minimal backbone tree created with \$rep_count representatives" > backbone_report.txt
-        cat <<-END_VERSIONS > versions.yml
-"${task.process}":
-    parsnp: \$(parsnp --version | sed 's/^/    /')
-END_VERSIONS
-        exit 0
-    fi
+  rep_count=\$(grep -c '^>' "${representatives_fasta}" || echo 0)
+  echo "Representatives: \$rep_count"
 
-    if [ "\$method" = "parsnp" ]; then
-        echo "Using Parsnp for backbone tree construction"
-        mkdir -p representatives
-        awk '/^>/ {filename="representatives/"substr(\$0,2)".fa"} {print > filename}' ${representatives_fasta}
-        ref_file=\$(ls representatives/*.fa | head -n1)
-        echo "Using reference: \$ref_file"
-        parsnp \\
-            --sequences representatives/ \\
-            --reference \$ref_file \\
-            --output-dir parsnp_backbone \\
-            --use-fasttree \\
-            --threads \${task.cpus} \\
-            --verbose || {
-            echo "WARNING: Parsnp failed. Creating distance-based tree."
-            if [ -f "${mash_distances}" ]; then
-                echo "Creating distance-based tree from Mash distances"
-                python3 << 'PYTHON_EOF'
-import pandas as pd
-try:
-    distances_df = pd.read_csv("${mash_distances}", sep='\\t', index_col=0)
-    with open("${representatives_fasta}", 'r') as f:
-        rep_names = [line.strip()[1:] for line in f if line.startswith('>')]
-    available_reps = [rep for rep in rep_names if rep in distances_df.index]
-    if len(available_reps) >= 3:
-        tree_str = "(" + ",".join(available_reps) + ");"
-        with open("backbone.treefile", 'w') as f:
-            f.write(tree_str)
-    else:
-        tree_str = "(" + ",".join(rep_names) + ");"
-        with open("backbone.treefile", 'w') as f:
-            f.write(tree_str)
-except Exception as e:
-    with open("${representatives_fasta}", 'r') as f:
-        rep_names = [line.strip()[1:] for line in f if line.startswith('>')]
-    tree_str = "(" + ",".join(rep_names) + ");"
-    with open("backbone.treefile", 'w') as f:
-        f.write(tree_str)
-PYTHON_EOF
-            fi
-        }
-        if [ -f "parsnp_backbone/parsnp.tree" ]; then
-            cp parsnp_backbone/parsnp.tree backbone.treefile
-        fi
-        if [ -f "parsnp_backbone/parsnp.xmfa" ]; then
-            harvesttools -i parsnp_backbone/parsnp.ggr -M backbone_alignment.fa || cp ${representatives_fasta} backbone_alignment.fa
+  status="SUCCESS"
+
+  # Handle tiny sets gracefully
+  if [ "\$rep_count" -lt 3 ]; then
+    echo "WARNING: <3 representatives found; emitting trivial tree."
+    awk '/^>/{gsub(/^>/,""); n=n (n? ",":"") \$0} END{print "(" n ");"}' "${representatives_fasta}" > backbone.treefile || echo "(A:0.1,B:0.1);" > backbone.treefile
+    cp "${representatives_fasta}" backbone_alignment.fa
+    status="TRIVIAL"
+  else
+    if [ "${method}" = "parsnp" ]; then
+      echo "Running Parsnp backbone..."
+      mkdir -p reps
+      awk '/^>/{fn="reps/" substr(\$0,2) ".fa"}{print > fn}' "${representatives_fasta}"
+      ref=\$(ls reps/*.fa | head -n1 || true)
+      if [ -z "\$ref" ]; then
+        echo "No reference resolved; falling back to FastTree."
+        cp "${representatives_fasta}" backbone_alignment.fa
+        if command -v fasttree >/dev/null 2>&1; then
+          fasttree ${ft_opts} backbone_alignment.fa > backbone.treefile || status="FALLBACK"
         else
-            cp ${representatives_fasta} backbone_alignment.fa
+          status="FALLBACK"
         fi
-    elif [ "\$method" = "fasttree" ]; then
-        echo "Using FastTree for backbone tree construction"
-        cp ${representatives_fasta} backbone_alignment.fa
-        fasttree -nt backbone_alignment.fa > backbone.treefile || {
-            rep_names=\$(grep "^>" ${representatives_fasta} | sed 's/>//' | tr '\n' ',' | sed 's/,\$//')
-            echo "(\$rep_names);" > backbone.treefile
-        }
+      else
+        set +e
+        parsnp --sequences reps --reference "\$ref" --output-dir parsnp_backbone --use-fasttree --threads ${threads} --verbose
+        rc=\$?
+        set -e
+        if [ "\$rc" -eq 0 ] && [ -s parsnp_backbone/parsnp.tree ]; then
+          cp parsnp_backbone/parsnp.tree backbone.treefile
+          if [ -s parsnp_backbone/parsnp.xmfa ]; then
+            cp parsnp_backbone/parsnp.xmfa backbone_alignment.fa
+          else
+            cp "${representatives_fasta}" backbone_alignment.fa
+          fi
+        else
+          echo "Parsnp failed or produced no tree; falling back to FastTree."
+          cp "${representatives_fasta}" backbone_alignment.fa
+          if command -v fasttree >/dev/null 2>&1; then
+            fasttree ${ft_opts} backbone_alignment.fa > backbone.treefile || status="FALLBACK"
+          else
+            status="FALLBACK"
+          fi
+        fi
+      fi
+    elif [ "${method}" = "fasttree" ]; then
+      echo "Running FastTree backbone..."
+      cp "${representatives_fasta}" backbone_alignment.fa
+      if command -v fasttree >/dev/null 2>&1; then
+        fasttree ${ft_opts} backbone_alignment.fa > backbone.treefile || status="FALLBACK"
+      else
+        status="FALLBACK"
+      fi
     else
-        rep_names=\$(grep "^>" ${representatives_fasta} | sed 's/>//' | tr '\n' ',' | sed 's/,\$//')
-        echo "(\$rep_names);" > backbone.treefile
-        cp ${representatives_fasta} backbone_alignment.fa
+      echo "Unknown method '${method}'; using FastTree."
+      cp "${representatives_fasta}" backbone_alignment.fa
+      if command -v fasttree >/dev/null 2>&1; then
+        fasttree ${ft_opts} backbone_alignment.fa > backbone.treefile || status="FALLBACK"
+      else
+        status="FALLBACK"
+      fi
     fi
+  fi
 
-    # Fallback: always create backbone.treefile if missing
-    if [ ! -f "backbone.treefile" ]; then
-        rep_names=\$(grep "^>" ${representatives_fasta} | sed 's/>//' | tr '\n' ',' | sed 's/,\$//')
-        echo "(\$rep_names);" > backbone.treefile
-    fi
+  # Ensure mandatory outputs exist
+  [ -s backbone.treefile ] || awk '/^>/{gsub(/^>/,""); n=n (n? ",":"") \$0} END{print "(" n ");"}' "${representatives_fasta}" > backbone.treefile
+  [ -s backbone_alignment.fa ] || cp "${representatives_fasta}" backbone_alignment.fa
 
-    # Fallback: always create backbone_alignment.fa if missing
-    if [ ! -f "backbone_alignment.fa" ]; then
-        cp ${representatives_fasta} backbone_alignment.fa
-    fi
-
-    echo "BACKBONE TREE CONSTRUCTION REPORT" > backbone_report.txt
-    echo "=================================" >> backbone_report.txt
-    echo "Method: \$method" >> backbone_report.txt
-    echo "Number of representatives: \$rep_count" >> backbone_report.txt
-    echo "Tree file: backbone.treefile" >> backbone_report.txt
-    echo "Alignment file: backbone_alignment.fa" >> backbone_report.txt
-    if [ -f "backbone.treefile" ] && [ -s "backbone.treefile" ]; then
-        echo "Status: SUCCESS" >> backbone_report.txt
+  # Report
+  {
+    echo "BACKBONE TREE CONSTRUCTION REPORT"
+    echo "================================="
+    echo "Date (UTC): \$(date -u +%FT%TZ)"
+    echo "Method: ${method}"
+    echo "Representatives: \$rep_count"
+    echo "Tree file: backbone.treefile"
+    echo "Alignment file: backbone_alignment.fa"
+    echo "Status: \$status"
+    if [ -f "${mash_distances}" ]; then
+      echo "Mash distances (optional input) present: yes"
     else
-        echo "Status: PARTIAL (fallback tree created)" >> backbone_report.txt
+      echo "Mash distances (optional input) present: no"
     fi
+  } > backbone_report.txt
 
-    cat <<-END_VERSIONS > versions.yml
-"${task.process}":
-    parsnp: \$(parsnp --version | sed 's/^/    /')
-    fasttree: \$(fasttree -expert 2>&1 | head -1 | sed 's/^/    /')
-    harvesttools: \$(harvesttools --version | sed 's/^/    /')
-END_VERSIONS
-    """
+  # Versions
+  {
+    echo "\"\${task.process}\":"
+    echo "  parsnp: \$( (parsnp --version 2>/dev/null || echo 'N/A') | sed 's/^/    /')"
+    echo "  fasttree: \$( (fasttree -expert 2>&1 | head -1 || echo 'N/A') | sed 's/^/    /')"
+  } > versions.yml
+  """
 }

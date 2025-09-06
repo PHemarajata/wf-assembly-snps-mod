@@ -1,3 +1,6 @@
+#!/usr/bin/env nextflow
+nextflow.enable.dsl=2
+
 process CREATE_SCALABLE_SUMMARY {
     tag "scalable_summary"
     label 'process_low'

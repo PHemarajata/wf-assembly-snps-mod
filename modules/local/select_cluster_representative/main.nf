@@ -1,3 +1,6 @@
+#!/usr/bin/env nextflow
+nextflow.enable.dsl=2
+
 process SELECT_CLUSTER_REPRESENTATIVE {
     tag "cluster_${cluster_id}"
     label 'process_low'

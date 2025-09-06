@@ -1,3 +1,6 @@
+#!/usr/bin/env nextflow
+nextflow.enable.dsl=2
+
 process GRAFT_TREES {
     tag "tree_grafting"
     label 'process_medium'

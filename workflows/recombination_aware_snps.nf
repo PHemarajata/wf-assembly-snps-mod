@@ -1,3 +1,4 @@
+#!/usr/bin/env nextflow
 nextflow.enable.dsl=2
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -55,7 +56,7 @@ include { INFILE_HANDLING_UNIX as REF_INFILE_HANDLING_UNIX } from "../modules/lo
 include { MASH_SKETCH                                      } from "../modules/local/mash_sketch/main"
 include { MASH_DIST                                        } from "../modules/local/mash_dist/main"
 include { CLUSTER_GENOMES                                  } from "../modules/local/cluster_genomes/main"
-include { MASH_TAB_TO_MATRIX } from "../modules/local/mash_tab_to_matrix/main"
+include { MASH_TAB_TO_MATRIX                               } from "../modules/local/mash_tab_to_matrix/main"
 
 //
 // MODULES: Step 2 - Per-cluster whole/core alignment

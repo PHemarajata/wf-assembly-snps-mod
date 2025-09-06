@@ -1,3 +1,6 @@
+#!/usr/bin/env nextflow
+nextflow.enable.dsl=2
+
 process INTEGRATE_CORE_SNPS {
     tag "global_integration"
     label 'process_medium'

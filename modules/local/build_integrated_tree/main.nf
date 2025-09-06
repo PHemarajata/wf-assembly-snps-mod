@@ -1,3 +1,6 @@
+#!/usr/bin/env nextflow
+nextflow.enable.dsl=2
+
 process BUILD_INTEGRATED_TREE {
     tag "integrated_phylogeny"
     label 'process_high'

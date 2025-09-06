@@ -1,3 +1,6 @@
+#!/usr/bin/env nextflow
+nextflow.enable.dsl=2
+
 process COLLECT_REPRESENTATIVES {
     tag "collect_reps"
     label 'process_low'
