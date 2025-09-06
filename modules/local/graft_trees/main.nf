@@ -4,7 +4,7 @@ nextflow.enable.dsl=2
 process GRAFT_TREES {
     tag "tree_grafting"
     label 'process_medium'
-    container "quay.io/biocontainers/ete3:3.1.1--pyh24bf2e0_1"
+    container "quay.io/biocontainers/ete3:3.1.1--py35_0"
     
     publishDir "${params.outdir}/Integrated_Results", mode: params.publish_dir_mode, pattern: "*.{tre,txt,pdf}"
 

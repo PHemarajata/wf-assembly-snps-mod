@@ -27,7 +27,7 @@ process GUBBINS_CLUSTER_DIAGNOSTIC {
     def iterations = params.gubbins_iterations ?: 3
     def tree_builder = params.gubbins_tree_builder ?: 'iqtree'
     def first_tree_builder = params.gubbins_first_tree_builder ?: 'rapidnj'
-    def min_snps = params.gubbins_min_snps ?: 5
+    def min_snps = params.gubbins_min_snps ?: 2
     def use_hybrid = params.gubbins_use_hybrid ?: true
     def cpus = task.cpus
     """
@@ -43,6 +43,13 @@ process GUBBINS_CLUSTER_DIAGNOSTIC {
     echo "Input file checks:" >> .diagnostics.log
     echo "Alignment file: ${alignment} - \$(ls -la ${alignment})" >> .diagnostics.log
     echo "Starting tree: ${starting_tree} - \$(ls -la ${starting_tree})" >> .diagnostics.log
+
+    # Logic to omit --first-tree-builder if starting_tree is provided
+    if [ -s "${starting_tree}" ]; then
+        gubbins_first_tree_builder_arg=""
+    else
+        gubbins_first_tree_builder_arg="--first-tree-builder ${first_tree_builder}"
+    fi
 
     if [ \$seq_count -lt 3 ]; then
         echo "WARNING: Alignment has only \$seq_count sequences. Skipping Gubbins." >> .diagnostics.log
@@ -61,25 +68,26 @@ process GUBBINS_CLUSTER_DIAGNOSTIC {
 
         if [ "${use_hybrid}" = "true" ]; then
             echo "Running Gubbins with hybrid mode..." >> .diagnostics.log
-            run_gubbins.py \\
-                --starting-tree ${starting_tree} \\
-                --prefix ${cluster_id} \\
-                --first-tree-builder ${first_tree_builder} \\
-                --tree-builder ${tree_builder} \\
-                --iterations ${iterations} \\
-                --min-snps ${min_snps} \\
-                --threads ${cpus} \\
+            run_gubbins.py \
+                --starting-tree ${starting_tree} \
+                --prefix ${cluster_id} \
+                \${gubbins_first_tree_builder_arg} \
+                --tree-builder ${tree_builder} \
+                --iterations ${iterations} \
+                --min-snps ${min_snps} \
+                --threads ${cpus} \
                 ${alignment} >> .diagnostics.log 2>&1
             gubbins_exit_code=\$?
         else
             echo "Running Gubbins without hybrid mode..." >> .diagnostics.log
-            run_gubbins.py \\
-                --starting-tree ${starting_tree} \\
-                --prefix ${cluster_id} \\
-                --tree-builder ${tree_builder} \\
-                --iterations ${iterations} \\
-                --min-snps ${min_snps} \\
-                --threads ${cpus} \\
+            run_gubbins.py \
+                --starting-tree ${starting_tree} \
+                --prefix ${cluster_id} \
+                \${gubbins_first_tree_builder_arg} \
+                --tree-builder ${tree_builder} \
+                --iterations ${iterations} \
+                --min-snps ${min_snps} \
+                --threads ${cpus} \
                 ${alignment} >> .diagnostics.log 2>&1
             gubbins_exit_code=\$?
         fi
