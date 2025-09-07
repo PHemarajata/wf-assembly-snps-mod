@@ -5,6 +5,8 @@ process CLUSTER_GENOMES {
     tag "clustering"
     label 'process_low'
     container "quay.io/biocontainers/python:3.9--1"
+    
+    publishDir "${params.outdir}/Summaries", mode: params.publish_dir_mode, pattern: "*.{tsv,txt}"
 
     input:
     path mash_distances

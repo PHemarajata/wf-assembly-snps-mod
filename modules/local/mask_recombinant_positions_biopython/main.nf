@@ -3,6 +3,8 @@ process MASK_RECOMBINANT_POSITIONS_BIOPYTHON {
     tag( "${meta.snp_package}-${meta.recombination}" )
     label "process_medium"
     container "quay.io/biocontainers/biopython@sha256:10d755c731c82a22d91fc346f338ba47d5fd4f3b357828f5bbc903c9be865614"
+    
+    publishDir "${params.outdir}/Recombination_Analysis", mode: params.publish_dir_mode, pattern: "*.masked_recombination.fasta"
 
     input:
     tuple val(meta), path(recombination_files)
@@ -16,7 +18,7 @@ process MASK_RECOMBINANT_POSITIONS_BIOPYTHON {
     shell:
     format = meta.recombination.toString().toLowerCase()
     '''
-    source bash_functions.sh
+    source ${projectDir}/bin/bash_functions.sh
 
     msg "INFO: Masking recombinant positions."
 

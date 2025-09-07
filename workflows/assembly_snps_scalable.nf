@@ -36,8 +36,6 @@ include { INFILE_HANDLING_UNIX as REF_INFILE_HANDLING_UNIX } from "../modules/lo
 include { INPUT_CHECK                                      } from "../subworkflows/local/input_check"
 include { INPUT_CHECK as REF_INPUT_CHECK                   } from "../subworkflows/local/input_check"
 include { CLUSTERING                                       } from "../subworkflows/local/clustering"
-include { FILTER_ATCG_COLUMNS                              } from "../modules/local/filter_atcg_columns/main.nf"
-include { GUBBINS_CLUSTER_DIAGNOSTIC                       } from "../modules/local/gubbins_cluster_diagnostic/main.nf"
 include { INTEGRATE_RESULTS                                } from "../subworkflows/local/integrate_results"
 include { USHER_PLACEMENT                                  } from "../subworkflows/local/usher_placement"
 include { SKA_ALIGN                                        } from "../modules/local/ska_align"
@@ -181,35 +179,9 @@ workflow ASSEMBLY_SNPS_SCALABLE {
         )
         ch_versions = ch_versions.mix(IQTREE_FAST.out.versions)
 
-        // Invoke FILTER_ATCG_COLUMNS for each alignment
-        FILTER_ATCG_COLUMNS(
-            SKA_ALIGN.out.alignment
-        )
-        ch_versions = ch_versions.mix(FILTER_ATCG_COLUMNS.out.versions)
-
-        // Join filtered alignments with trees by cluster_id
-        ch_for_gubbins = FILTER_ATCG_COLUMNS.out.filtered_alignment
-            .join(IQTREE_FAST.out.tree, by: 0)   // -> (cluster_id, filtered.fa, tree)
-
-        // Use multiMap to separate inputs for GUBBINS_CLUSTER_DIAGNOSTIC
-        ch_for_gubbins
-            .multiMap { cluster_id, alignment, tree ->
-                cluster_ids: cluster_id
-                alignments: alignment
-                trees: tree
-            }
-            .set { gubbins_input }
-
-        GUBBINS_CLUSTER_DIAGNOSTIC(
-            gubbins_input.cluster_ids,
-            gubbins_input.alignments,
-            gubbins_input.trees
-        )
-        ch_versions = ch_versions.mix(GUBBINS_CLUSTER_DIAGNOSTIC.out.versions)
-
         // Collect cluster results for integration
-        ch_cluster_alignments = GUBBINS_CLUSTER_DIAGNOSTIC.out.filtered_alignment
-        ch_cluster_trees     = GUBBINS_CLUSTER_DIAGNOSTIC.out.final_tree
+        ch_cluster_alignments = SKA_ALIGN.out.alignment
+        ch_cluster_trees     = IQTREE_FAST.out.tree
 
         // SUBWORKFLOW: Integrate results across clusters (if enabled)
         if (params.integrate_results) {

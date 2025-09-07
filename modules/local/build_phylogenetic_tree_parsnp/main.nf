@@ -6,6 +6,8 @@ process BUILD_PHYLOGENETIC_TREE_PARSNP {
     tag( "${meta.snp_package}-${meta.recombination}" )
     label "process_high"
     container "quay.io/biocontainers/parsnp@sha256:b46999fb9842f183443dd6226b461c1d8074d4c1391c1f2b1e51cc20cee8f8b2"
+    
+    publishDir "${params.outdir}/Phylogenetic_Trees", mode: params.publish_dir_mode, pattern: "*.Final.tree"
 
     input:
     tuple val(meta), path(masked_alignment)
@@ -18,7 +20,7 @@ process BUILD_PHYLOGENETIC_TREE_PARSNP {
 
     shell:
     '''
-    source bash_functions.sh
+    source ${projectDir}/bin/bash_functions.sh
 
     if [[ "!{params.tree_method}" = "fasttree" ]]; then
       msg "INFO: Building phylogenetic tree using FastTree."

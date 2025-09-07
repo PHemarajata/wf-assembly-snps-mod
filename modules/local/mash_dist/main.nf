@@ -5,6 +5,8 @@ process MASH_DIST {
     tag "pairwise_distances"
     label 'process_medium'
     container "quay.io/biocontainers/mash:2.3--he348c14_1"
+    
+    publishDir "${params.outdir}/Summaries", mode: params.publish_dir_mode, pattern: "*.tsv"
 
     input:
     path sketches

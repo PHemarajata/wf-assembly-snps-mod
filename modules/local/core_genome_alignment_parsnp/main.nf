@@ -3,6 +3,8 @@ process CORE_GENOME_ALIGNMENT_PARSNP {
     tag { "${meta_input.snp_package}" }
     label "process_medium"
     container "quay.io/biocontainers/parsnp@sha256:b46999fb9842f183443dd6226b461c1d8074d4c1391c1f2b1e51cc20cee8f8b2"
+    
+    publishDir "${params.outdir}/Parsnp_Results", mode: params.publish_dir_mode, pattern: "*.{ggr,xmfa,tree,fa.gz}"
 
     input:
     tuple val(meta_input)    , path("genomes/")
@@ -18,7 +20,7 @@ process CORE_GENOME_ALIGNMENT_PARSNP {
     curatedInput = params.curated_input               ? "--curated"      : ""
     treeMethod   = (params.tree_method == "fasttree") ? "--use-fasttree" : ""
     '''
-    source bash_functions.sh
+    source ${projectDir}/bin/bash_functions.sh
 
     # TEMPORARY hack to avoid the v1.2 issue that thinks input ref file has
     #  aligned nucleotide sequences if the deflines contain hyphens

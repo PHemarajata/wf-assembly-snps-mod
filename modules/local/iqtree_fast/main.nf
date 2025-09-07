@@ -5,6 +5,16 @@ process IQTREE_FAST {
     tag "cluster_${cluster_id}"
     label 'process_medium'
     container "quay.io/biocontainers/iqtree:2.2.6--h21ec9f0_0"
+    
+    publishDir "${params.outdir}/Clusters/cluster_${cluster_id}", mode: params.publish_dir_mode, pattern: "*.{treefile,iqtree}"
+    
+    publishDir "${params.outdir}/Clusters/cluster_${cluster_id}", mode: params.publish_dir_mode, pattern: "*.{treefile,iqtree}"
+    
+    publishDir "${params.outdir}/Clusters/cluster_${cluster_id}", mode: params.publish_dir_mode, pattern: "*.{treefile,iqtree}"
+    
+    publishDir "${params.outdir}/Clusters/cluster_${cluster_id}", mode: params.publish_dir_mode, pattern: "*.{treefile,iqtree}"
+    
+    publishDir "${params.outdir}/Clusters/cluster_${cluster_id}", mode: params.publish_dir_mode, pattern: "*.{treefile,iqtree}"
 
     input:
     tuple val(cluster_id), path(alignment)

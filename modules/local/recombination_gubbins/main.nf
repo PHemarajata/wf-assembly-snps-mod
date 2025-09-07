@@ -3,6 +3,8 @@ process RECOMBINATION_GUBBINS {
     tag { "${meta.snp_package}" }
     label "process_medium"
     container "quay.io/biocontainers/gubbins:3.3.5--py39pl5321he4a0461_0"
+    
+    publishDir "${params.outdir}/Recombination_Analysis", mode: params.publish_dir_mode, pattern: "*.{txt,tree}"
 
     input:
     tuple val(meta), path(core_alignment_fasta)
@@ -15,7 +17,7 @@ process RECOMBINATION_GUBBINS {
 
     shell:
     '''
-    source bash_functions.sh
+    source ${projectDir}/bin/bash_functions.sh
 
     msg "INFO: Performing recombination using Gubbins."
 

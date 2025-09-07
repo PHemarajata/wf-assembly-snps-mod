@@ -6,6 +6,10 @@ process CONVERT_GINGR_TO_FASTA_HARVESTTOOLS {
     tag { "${meta.snp_package}" }
     label "process_low"
     container "quay.io/biocontainers/parsnp@sha256:b46999fb9842f183443dd6226b461c1d8074d4c1391c1f2b1e51cc20cee8f8b2"
+    
+    publishDir "${params.outdir}/Core_Alignments", mode: params.publish_dir_mode, pattern: "*.fasta"
+    
+    publishDir "${params.outdir}/Core_Alignments", mode: params.publish_dir_mode, pattern: "*.Core_Alignment.fasta"
 
     input:
     tuple val(meta), path(snp_files)
@@ -18,7 +22,7 @@ process CONVERT_GINGR_TO_FASTA_HARVESTTOOLS {
 
     shell:
     '''
-    source bash_functions.sh
+    source ${projectDir}/bin/bash_functions.sh
 
     msg "INFO: Generating FastA file from Parsnp Gingr output file."
 

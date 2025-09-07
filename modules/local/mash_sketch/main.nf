@@ -5,6 +5,8 @@ process MASH_SKETCH {
     tag "$sample_id"
     label 'process_low'
     container "quay.io/biocontainers/mash:2.3--he348c14_1"
+    
+    publishDir "${params.outdir}/Mash_Sketches", mode: params.publish_dir_mode, pattern: "*.msh"
 
     input:
     tuple val(sample_id), path(assembly)
