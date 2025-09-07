@@ -19,7 +19,7 @@ process CALCULATE_PAIRWISE_DISTANCES_SNP_DISTS {
 
     shell:
     '''
-    source ${projectDir}/bin/bash_functions.sh
+    source $!{projectDir}/bin/bash_functions.sh
 
     msg "INFO: Calculating pairwise SNP distances."
 

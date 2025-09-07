@@ -17,7 +17,7 @@ process RECOMBINATION_GUBBINS {
 
     shell:
     '''
-    source ${projectDir}/bin/bash_functions.sh
+    source $!{projectDir}/bin/bash_functions.sh
 
     msg "INFO: Performing recombination using Gubbins."
 

@@ -20,7 +20,7 @@ process CORE_GENOME_ALIGNMENT_PARSNP {
     curatedInput = params.curated_input               ? "--curated"      : ""
     treeMethod   = (params.tree_method == "fasttree") ? "--use-fasttree" : ""
     '''
-    source ${projectDir}/bin/bash_functions.sh
+    source $!{projectDir}/bin/bash_functions.sh
 
     # TEMPORARY hack to avoid the v1.2 issue that thinks input ref file has
     #  aligned nucleotide sequences if the deflines contain hyphens

@@ -20,7 +20,7 @@ process BUILD_PHYLOGENETIC_TREE_PARSNP {
 
     shell:
     '''
-    source ${projectDir}/bin/bash_functions.sh
+    source !!{projectDir}/bin/bash_functions.sh
 
     if [[ "!{params.tree_method}" = "fasttree" ]]; then
       msg "INFO: Building phylogenetic tree using FastTree."

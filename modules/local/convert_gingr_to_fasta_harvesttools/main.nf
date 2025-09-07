@@ -22,7 +22,7 @@ process CONVERT_GINGR_TO_FASTA_HARVESTTOOLS {
 
     shell:
     '''
-    source ${projectDir}/bin/bash_functions.sh
+    source $!{projectDir}/bin/bash_functions.sh
 
     msg "INFO: Generating FastA file from Parsnp Gingr output file."
 

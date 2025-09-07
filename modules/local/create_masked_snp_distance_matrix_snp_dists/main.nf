@@ -22,7 +22,7 @@ process CREATE_MASKED_SNP_DISTANCE_MATRIX_SNP_DISTS {
 
     shell:
     '''
-    source ${projectDir}/bin/bash_functions.sh
+    source $!{projectDir}/bin/bash_functions.sh
 
     msg "INFO: Creating SNP distance matrix using the masked multi-fasta file."
 

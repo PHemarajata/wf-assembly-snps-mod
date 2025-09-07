@@ -20,7 +20,7 @@ process INFILE_HANDLING_UNIX {
     gzip_compressed = input.toString().contains('.gz') ? '.gz' : ''
     file_extension  = input.toString().split('.gz')[0].split('\\.')[-1]
     '''
-    source ${projectDir}/bin/bash_functions.sh
+    source !{projectDir}/bin/bash_functions.sh
 
     # Rename input files to prefix and move to inputfiles dir
     mkdir inputfiles

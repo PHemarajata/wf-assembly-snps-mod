@@ -1,0 +1,787 @@
+Sep-07 11:20:13.965 [main] DEBUG nextflow.cli.Launcher - $> nextflow run main.nf -profile local_workstation_rtx4070,docker --input /home/phemarajata/Downloads/bp_finalset --outdir /home/phemarajata/Downloads/bp_finalset/results_recombination_aware --recombination_aware_mode true --integrate_results true --mash_threshold 0.028 --max_cluster_size 50 --merge_singletons true --mash_sketch_size 50000 --recombination gubbins --snp_package parsnp --run_gubbins -resume
+Sep-07 11:20:14.046 [main] DEBUG nextflow.cli.CmdRun - N E X T F L O W  ~  version 25.04.6
+Sep-07 11:20:14.076 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; embedded=false; plugins-dir=/home/phemarajata/.nextflow/plugins; core-plugins: nf-amazon@2.15.0,nf-azure@1.16.0,nf-cloudcache@0.4.3,nf-codecommit@0.2.3,nf-console@1.2.1,nf-google@1.21.1,nf-k8s@1.0.0,nf-tower@1.11.4,nf-wave@1.12.1
+Sep-07 11:20:14.101 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+Sep-07 11:20:14.102 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+Sep-07 11:20:14.104 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.12.0 in 'deployment' mode
+Sep-07 11:20:14.114 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+Sep-07 11:20:14.134 [main] DEBUG nextflow.config.ConfigBuilder - Found config local: /home/phemarajata/wf-assembly-snps-mod/nextflow.config
+Sep-07 11:20:14.136 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /home/phemarajata/wf-assembly-snps-mod/nextflow.config
+Sep-07 11:20:14.164 [main] DEBUG n.secret.LocalSecretsProvider - Secrets store: /home/phemarajata/.nextflow/secrets/store.json
+Sep-07 11:20:14.168 [main] DEBUG nextflow.secret.SecretsLoader - Discovered secrets providers: [nextflow.secret.LocalSecretsProvider@29f0802c] - activable => nextflow.secret.LocalSecretsProvider@29f0802c
+Sep-07 11:20:14.182 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `local_workstation_rtx4070,docker`
+Sep-07 11:20:15.525 [main] DEBUG nextflow.config.ConfigBuilder - Available config profiles: [aspen_hpc, debug, test, local_workstation, docker, local_workstation_rtx4070, dgx_station_a100_updated, shifter, conda, dgx_station, singularity, rosalind_hpc, test_full]
+Sep-07 11:20:15.589 [main] DEBUG nextflow.cli.CmdRun - Applied DSL=2 from script declaration
+Sep-07 11:20:15.601 [main] DEBUG nextflow.cli.CmdRun - Launching `main.nf` [elated_almeida] DSL2 - revision: e09a5c4ead
+Sep-07 11:20:15.603 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+Sep-07 11:20:15.603 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins resolved requirement=[]
+Sep-07 11:20:15.642 [main] DEBUG nextflow.Session - Session UUID: 8d7ad4c4-bf12-4f30-af42-544f80aa2670
+Sep-07 11:20:15.642 [main] DEBUG nextflow.Session - Run name: elated_almeida
+Sep-07 11:20:15.643 [main] DEBUG nextflow.Session - Executor pool size: 22
+Sep-07 11:20:15.649 [main] DEBUG nextflow.file.FilePorter - File porter settings maxRetries=3; maxTransfers=50; pollTimeout=null
+Sep-07 11:20:15.652 [main] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'FileTransfer' minSize=10; maxSize=66; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
+Sep-07 11:20:15.667 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 25.04.6 build 5954
+  Created: 01-07-2025 11:27 UTC (18:27 ICST)
+  System: Linux 6.11.0-29-generic
+  Runtime: Groovy 4.0.26 on Java HotSpot(TM) 64-Bit Server VM 17.0.12+8-LTS-286
+  Encoding: UTF-8 (UTF-8)
+  Process: 3809398@phemarajata-Stealth-16-MercedesAMG-A1VGG [127.0.1.1]
+  CPUs: 22 - Mem: 62.3 GB (2.5 GB) - Swap: 8 GB (8 GB)
+Sep-07 11:20:15.688 [main] DEBUG nextflow.Session - Work-dir: /home/phemarajata/wf-assembly-snps-mod/work [ext2/ext3]
+Sep-07 11:20:15.717 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+Sep-07 11:20:15.725 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+Sep-07 11:20:15.747 [main] DEBUG nextflow.Session - Observer factory (v2): LinObserverFactory
+Sep-07 11:20:15.768 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
+Sep-07 11:20:15.777 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 23; maxThreads: 1000
+Sep-07 11:20:15.850 [main] DEBUG nextflow.Session - Session start
+Sep-07 11:20:15.853 [main] DEBUG nextflow.trace.TraceFileObserver - Workflow started -- trace file: /home/phemarajata/Downloads/bp_finalset/results_recombination_aware/pipeline_info/execution_trace_2025-09-07_11-20-15.txt
+Sep-07 11:20:15.861 [main] DEBUG nextflow.Session - Using default localLib path: /home/phemarajata/wf-assembly-snps-mod/lib
+Sep-07 11:20:15.865 [main] DEBUG nextflow.Session - Adding to the classpath library: /home/phemarajata/wf-assembly-snps-mod/lib
+Sep-07 11:20:15.866 [main] DEBUG nextflow.Session - Adding to the classpath library: /home/phemarajata/wf-assembly-snps-mod/lib/nfcore_external_java_deps.jar
+Sep-07 11:20:16.629 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+Sep-07 11:20:16.699 [main] INFO  nextflow.Nextflow - 
+
+-[2m----------------------------------------------------[0m-
+[0;34m     __         __ __ __     __            __     __  __    [0m
+[0;34m|  ||_  __  /\ (_ (_ |_ |\/||__)|  \_/ __ (_ |\ ||__)(_ [0m
+[0;34m|/\||      /--\__)__)|__|  ||__)|__ |     __)| \||   __) [0m
+
+[0;32m       Identify SNPs from genome assemblies.               [0m
+
+
+[0;35m     bacterial-genomics/wf-assembly-snps v1.0.2[0m
+-[2m----------------------------------------------------[0m-
+[1mCore Nextflow options[0m
+  [0;34mrunName                   : [0;32melated_almeida[0m
+  [0;34mcontainerEngine           : [0;32mdocker[0m
+  [0;34mlaunchDir                 : [0;32m/home/phemarajata/wf-assembly-snps-mod[0m
+  [0;34mworkDir                   : [0;32m/home/phemarajata/wf-assembly-snps-mod/work[0m
+  [0;34mprojectDir                : [0;32m/home/phemarajata/wf-assembly-snps-mod[0m
+  [0;34muserName                  : [0;32mphemarajata[0m
+  [0;34mprofile                   : [0;32mlocal_workstation_rtx4070,docker[0m
+  [0;34mconfigFiles               : [0;32m/home/phemarajata/wf-assembly-snps-mod/nextflow.config[0m
+
+[1mInput/output options[0m
+  [0;34minput                     : [0;32m/home/phemarajata/Downloads/bp_finalset[0m
+  [0;34moutdir                    : [0;32m/home/phemarajata/Downloads/bp_finalset/results_recombination_aware[0m
+
+[1mAnalysis options[0m
+  [0;34mrecombination             : [0;32mgubbins[0m
+
+[1mProfile options[0m
+  [0;34mprofile_cache_dir         : [0;32m/home/phemarajata/wf-assembly-snps-mod/assets/.cache[0m
+
+[1mScalable workflow options[0m
+  [0;34mmash_threshold            : [0;32m0.028[0m
+  [0;34mmax_cluster_size          : [0;32m50[0m
+  [0;34mgubbins_tree_builder      : [0;32miqtree[0m
+  [0;34mgubbins_min_snps          : [0;32m2[0m
+
+[1mInstitutional config options[0m
+  [0;34mconfig_profile_name       : [0;32mLocal workstation RTX 4070[0m
+  [0;34mconfig_profile_description: [0;32mLocal workstation profile for 22 cores, 64GB RAM, and NVIDIA RTX 4070 GPU[0m
+
+[1mMax job request options[0m
+  [0;34mmax_cpus                  : [0;32m20[0m
+  [0;34mmax_memory                : [0;32m56.GB[0m
+
+[1mGeneric options[0m
+  [0;34mtracedir                  : [0;32m/home/phemarajata/Downloads/bp_finalset/results_recombination_aware/pipeline_info[0m
+  [0;34mprocess_log_dir           : [0;32m/home/phemarajata/Downloads/bp_finalset/results_recombination_aware/pipeline_info/process_logs[0m
+  [0;34mqc_filecheck_log_dir      : [0;32m/home/phemarajata/Downloads/bp_finalset/results_recombination_aware/pipeline_info/qc_file_checks[0m
+
+!! Only displaying parameters that differ from the pipeline defaults !!
+-[2m----------------------------------------------------[0m-
+If you use bacterial-genomics/wf-assembly-snps for your analysis please cite:
+
+* The nf-core framework
+  https://doi.org/10.1038/s41587-020-0439-x
+
+* Software dependencies
+  https://github.com/bacterial-genomics/wf-assembly-snps/blob/main/CITATIONS.md
+-[2m----------------------------------------------------[0m-
+Sep-07 11:20:16.802 [main] WARN  nextflow.Nextflow - Found unexpected parameters:
+* --rescale_grafted_branches: false
+* --backbone_container: null
+* --backbone_fasttree_opts: -nt -gtr
+* --backbone_method: parsnp
+* --alignment_method: snippy
+* --iqtree_fconst: null
+* --iqtree_asc_model: GTR+ASC
+* --mash_min_copies: 1
+* --mash_kmer_size: 21
+* --work_cache_dir: /home/phemarajata/Downloads/bp_finalset/results_recombination_aware/work_cache
+* --mash_sketch_size: 50000
+* --recombination_aware_mode: true
+* --enable_resume_optimization: true
+Sep-07 11:20:16.803 [main] INFO  nextflow.Nextflow - - [2mIgnore this warning: params.schema_ignore_params = "rescale_grafted_branches,backbone_container,backbone_fasttree_opts,backbone_method,alignment_method,iqtree_fconst,iqtree_asc_model,mash_min_copies,mash_kmer_size,work_cache_dir,mash_sketch_size,recombination_aware_mode,enable_resume_optimization" [0m
+Sep-07 11:20:19.171 [main] INFO  nextflow.Nextflow - Starting recombination-aware SNP analysis workflow
+Sep-07 11:20:19.171 [main] INFO  nextflow.Nextflow - Goal: Per-cluster recombination detection + tree grafting
+Sep-07 11:20:19.285 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-07 11:20:19.286 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-07 11:20:19.291 [main] DEBUG nextflow.executor.Executor - [warm up] executor > local
+Sep-07 11:20:19.295 [main] DEBUG n.processor.LocalPollingMonitor - Creating local task monitor for executor 'local' > cpus=20; memory=56 GB; capacity=22; pollInterval=100ms; dumpInterval=5m
+Sep-07 11:20:19.297 [main] DEBUG n.processor.TaskPollingMonitor - >>> barrier register (monitor: local)
+Sep-07 11:20:19.311 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX': maxForks=0; fair=false; array=0
+Sep-07 11:20:19.344 [main] INFO  nextflow.Nextflow - STEP 1: Clustering genomes with Mash distances
+Sep-07 11:20:19.352 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name RECOMBINATION_AWARE_SNPS:MASH_SKETCH
+Sep-07 11:20:19.353 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:MASH_SKETCH` matches process RECOMBINATION_AWARE_SNPS:MASH_SKETCH
+Sep-07 11:20:19.355 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-07 11:20:19.355 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-07 11:20:19.358 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:MASH_SKETCH': maxForks=8; fair=false; array=0
+Sep-07 11:20:19.371 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_medium` matches labels `process_medium` for process with name RECOMBINATION_AWARE_SNPS:MASH_DIST
+Sep-07 11:20:19.372 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:MASH_DIST` matches process RECOMBINATION_AWARE_SNPS:MASH_DIST
+Sep-07 11:20:19.373 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-07 11:20:19.374 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-07 11:20:19.375 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:MASH_DIST': maxForks=4; fair=false; array=0
+Sep-07 11:20:19.381 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name RECOMBINATION_AWARE_SNPS:MASH_TAB_TO_MATRIX
+Sep-07 11:20:19.385 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-07 11:20:19.385 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-07 11:20:19.386 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:MASH_TAB_TO_MATRIX': maxForks=8; fair=false; array=0
+Sep-07 11:20:19.392 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name RECOMBINATION_AWARE_SNPS:CLUSTER_GENOMES
+Sep-07 11:20:19.393 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:CLUSTER_GENOMES` matches process RECOMBINATION_AWARE_SNPS:CLUSTER_GENOMES
+Sep-07 11:20:19.395 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-07 11:20:19.395 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-07 11:20:19.396 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:CLUSTER_GENOMES': maxForks=8; fair=false; array=0
+Sep-07 11:20:19.424 [main] INFO  nextflow.Nextflow - STEP 2: Creating per-cluster whole genome alignments
+Sep-07 11:20:19.430 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name RECOMBINATION_AWARE_SNPS:SELECT_CLUSTER_REPRESENTATIVE
+Sep-07 11:20:19.433 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-07 11:20:19.433 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-07 11:20:19.434 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:SELECT_CLUSTER_REPRESENTATIVE': maxForks=8; fair=false; array=0
+Sep-07 11:20:19.442 [main] INFO  nextflow.Nextflow - Using Snippy for per-cluster whole genome alignment
+Sep-07 11:20:19.447 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_high` matches labels `process_high` for process with name RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN
+Sep-07 11:20:19.449 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-07 11:20:19.450 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-07 11:20:19.450 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN': maxForks=2; fair=false; array=0
+Sep-07 11:20:19.458 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG
+Sep-07 11:20:19.460 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-07 11:20:19.460 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-07 11:20:19.461 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG': maxForks=8; fair=false; array=0
+Sep-07 11:20:19.466 [main] INFO  nextflow.Nextflow - STEP 3: Running Gubbins for recombination detection
+Sep-07 11:20:19.480 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_medium` matches labels `process_medium` for process with name RECOMBINATION_AWARE_SNPS:IQTREE_FAST
+Sep-07 11:20:19.481 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:IQTREE_FAST` matches process RECOMBINATION_AWARE_SNPS:IQTREE_FAST
+Sep-07 11:20:19.483 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-07 11:20:19.483 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-07 11:20:19.484 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:IQTREE_FAST': maxForks=4; fair=false; array=0
+Sep-07 11:20:19.496 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_high` matches labels `process_high` for process with name RECOMBINATION_AWARE_SNPS:GUBBINS_CLUSTER
+Sep-07 11:20:19.498 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-07 11:20:19.498 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-07 11:20:19.499 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:GUBBINS_CLUSTER': maxForks=2; fair=false; array=0
+Sep-07 11:20:19.503 [main] INFO  nextflow.Nextflow - STEP 4: Building per-cluster final ML trees with ASC correction
+Sep-07 11:20:19.514 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_high` matches labels `process_high` for process with name RECOMBINATION_AWARE_SNPS:IQTREE_ASC
+Sep-07 11:20:19.519 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-07 11:20:19.519 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-07 11:20:19.521 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:IQTREE_ASC': maxForks=2; fair=false; array=0
+Sep-07 11:20:19.528 [main] INFO  nextflow.Nextflow - STEP 5: Collecting cluster representatives
+Sep-07 11:20:19.535 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name RECOMBINATION_AWARE_SNPS:COLLECT_REPRESENTATIVES
+Sep-07 11:20:19.538 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-07 11:20:19.538 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-07 11:20:19.540 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:COLLECT_REPRESENTATIVES': maxForks=8; fair=false; array=0
+Sep-07 11:20:19.549 [main] INFO  nextflow.Nextflow - STEP 6: Building backbone tree from representatives
+Sep-07 11:20:19.552 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_high` matches labels `process_high` for process with name RECOMBINATION_AWARE_SNPS:BUILD_BACKBONE_TREE
+Sep-07 11:20:19.553 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-07 11:20:19.554 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-07 11:20:19.555 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:BUILD_BACKBONE_TREE': maxForks=2; fair=false; array=0
+Sep-07 11:20:19.559 [main] INFO  nextflow.Nextflow - STEP 7: Grafting cluster subtrees onto backbone tree
+Sep-07 11:20:19.563 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_medium` matches labels `process_medium` for process with name RECOMBINATION_AWARE_SNPS:GRAFT_SUBTREES
+Sep-07 11:20:19.567 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Sep-07 11:20:19.567 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-07 11:20:19.568 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'RECOMBINATION_AWARE_SNPS:GRAFT_SUBTREES': maxForks=4; fair=false; array=0
+Sep-07 11:20:19.596 [main] DEBUG nextflow.Session - Workflow process names [dsl2]: INFILE_HANDLING_UNIX, MASH_SKETCH, IQTREE_FAST, SNP_SITES, CONVERT_GINGR_TO_FASTA_HARVESTTOOLS, MASK_RECOMBINANT_POSITIONS_BIOPYTHON, BUILD_INTEGRATED_TREE, CORE_GENOME_ALIGNMENT_PARSNP, RECOMBINATION_AWARE_SNPS:MASH_DIST, MASH_DIST, RECOMBINATION_AWARE_SNPS:BUILD_BACKBONE_TREE, RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN, INTEGRATE_CORE_SNPS, SNIPPY_ALIGN, IQTREE_ASC, EXTRACT_CORE_SNPS, USHER_PLACE, CALCULATE_PAIRWISE_DISTANCES_SNP_DISTS, RECOMBINATION_AWARE_SNPS:IQTREE_ASC, GRAFT_TREES, RECOMBINATION_GUBBINS, RECOMBINATION_AWARE_SNPS:GUBBINS_CLUSTER, RECOMBINATION_AWARE_SNPS:MASH_TAB_TO_MATRIX, BUILD_PHYLOGENETIC_TREE_PARSNP, RECOMBINATION_CLONALFRAMEML, RECOMBINATION_AWARE_SNPS:COLLECT_REPRESENTATIVES, MASH_TAB_TO_MATRIX, GRAFT_SUBTREES, GUBBINS_CLUSTER, RECOMBINATION_AWARE_SNPS:MASH_SKETCH, RECOMBINATION_AWARE_SNPS:IQTREE_FAST, CREATE_SNP_DISTANCE_MATRIX_SNP_DISTS, RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX, RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG, BUILD_BACKBONE_TREE, SELECT_CLUSTER_REPRESENTATIVE, RECOMBINATION_AWARE_SNPS:CLUSTER_GENOMES, REF_INFILE_HANDLING_UNIX, CONVERT_TSV_TO_EXCEL_PYTHON, CREATE_FINAL_SUMMARY, RECOMBINATION_AWARE_SNPS:GRAFT_SUBTREES, KEEP_INVARIANT_ATCG, COLLECT_REPRESENTATIVES, CLUSTER_GENOMES, CONVERT_SAMPLESHEET_PYTHON, CREATE_EXCEL_RUN_SUMMARY_PYTHON, USHER_BUILD, CREATE_MASKED_SNP_DISTANCE_MATRIX_SNP_DISTS, RECOMBINATION_AWARE_SNPS:SELECT_CLUSTER_REPRESENTATIVE, SKA_ALIGN
+Sep-07 11:20:19.623 [main] WARN  nextflow.Session - There's no process matching config selector: SKA_BUILD -- Did you mean: USHER_BUILD?
+Sep-07 11:20:19.623 [main] WARN  nextflow.Session - There's no process matching config selector: GUBBINS_CLUSTER_DIAGNOSTIC
+Sep-07 11:20:19.624 [main] WARN  nextflow.Session - There's no process matching config selector: GPU_ACCELERATED
+Sep-07 11:20:19.629 [main] DEBUG nextflow.Session - Igniting dataflow network (21)
+Sep-07 11:20:19.636 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: /home/phemarajata/Downloads/bp_finalset/; pattern: **.{fasta,fas,fna,fsa,fa}{,.gz}; options: [checkIfExists:true]
+Sep-07 11:20:19.637 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX
+Sep-07 11:20:19.637 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH
+Sep-07 11:20:19.637 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:MASH_DIST
+Sep-07 11:20:19.637 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:MASH_TAB_TO_MATRIX
+Sep-07 11:20:19.637 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:CLUSTER_GENOMES
+Sep-07 11:20:19.638 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:SELECT_CLUSTER_REPRESENTATIVE
+Sep-07 11:20:19.638 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN
+Sep-07 11:20:19.638 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG
+Sep-07 11:20:19.638 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:IQTREE_FAST
+Sep-07 11:20:19.638 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:GUBBINS_CLUSTER
+Sep-07 11:20:19.638 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:IQTREE_ASC
+Sep-07 11:20:19.638 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:COLLECT_REPRESENTATIVES
+Sep-07 11:20:19.638 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:BUILD_BACKBONE_TREE
+Sep-07 11:20:19.638 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > RECOMBINATION_AWARE_SNPS:GRAFT_SUBTREES
+Sep-07 11:20:19.640 [main] DEBUG nextflow.script.ScriptRunner - Parsed script files:
+  Script_19036535c7b0b78f: /home/phemarajata/wf-assembly-snps-mod/main.nf
+  Script_63f708e10498b63f: /home/phemarajata/wf-assembly-snps-mod/modules/local/mash_dist/main.nf
+  Script_22f775fce136207e: /home/phemarajata/wf-assembly-snps-mod/modules/local/convert_samplesheet_python/main.nf
+  Script_287dd56516c46641: /home/phemarajata/wf-assembly-snps-mod/modules/local/convert_tsv_to_excel_python/main.nf
+  Script_609162fa6e83f6c1: /home/phemarajata/wf-assembly-snps-mod/modules/local/graft_trees/main.nf
+  Script_fd7d0ad8314d8598: /home/phemarajata/wf-assembly-snps-mod/modules/local/iqtree_asc/main.nf
+  Script_391d0748fead67b2: /home/phemarajata/wf-assembly-snps-mod/modules/local/mask_recombinant_positions_biopython/main.nf
+  Script_8004ba9733cd8e75: /home/phemarajata/wf-assembly-snps-mod/modules/local/mash_sketch/main.nf
+  Script_faa30f31d909f9e6: /home/phemarajata/wf-assembly-snps-mod/modules/local/snp_sites/main.nf
+  Script_57b593f098c8e886: /home/phemarajata/wf-assembly-snps-mod/modules/local/snippy_align/main.nf
+  Script_bdfe511ac4c90ab8: /home/phemarajata/wf-assembly-snps-mod/subworkflows/local/recombination.nf
+  Script_92a8fd2e65506f13: /home/phemarajata/wf-assembly-snps-mod/modules/local/create_excel_run_summary_python/main.nf
+  Script_105476c812f11ac1: /home/phemarajata/wf-assembly-snps-mod/modules/local/calculate_pairwise_distances_snp_dists/main.nf
+  Script_9fb0efb2706f8a7e: /home/phemarajata/wf-assembly-snps-mod/modules/local/convert_gingr_to_fasta_harvesttools/main.nf
+  Script_45d6f9715a961734: /home/phemarajata/wf-assembly-snps-mod/modules/local/core_genome_alignment_parsnp/main.nf
+  Script_8ca59baef4465cd0: /home/phemarajata/wf-assembly-snps-mod/subworkflows/local/integrate_results.nf
+  Script_6a8fc84812e3ffdf: /home/phemarajata/wf-assembly-snps-mod/workflows/recombination_aware_snps.nf
+  Script_615e32892d1eb8f9: /home/phemarajata/wf-assembly-snps-mod/modules/local/recombination_gubbins/main.nf
+  Script_8f3222acc5105b8e: /home/phemarajata/wf-assembly-snps-mod/subworkflows/local/clustering.nf
+  Script_0d0e746d1c5d0fe0: /home/phemarajata/wf-assembly-snps-mod/modules/local/build_integrated_tree/main.nf
+  Script_53b40eb3093c3510: /home/phemarajata/wf-assembly-snps-mod/subworkflows/local/input_check.nf
+  Script_b6f0a366b4bc275c: /home/phemarajata/wf-assembly-snps-mod/modules/local/build_backbone_tree/main.nf
+  Script_7253ec5122e5dc89: /home/phemarajata/wf-assembly-snps-mod/modules/local/gubbins_cluster/main.nf
+  Script_622e6250fb129d0f: /home/phemarajata/wf-assembly-snps-mod/modules/local/extract_core_snps/main.nf
+  Script_87b063907c31a23c: /home/phemarajata/wf-assembly-snps-mod/modules/local/create_masked_snp_distance_matrix_snp_dists/main.nf
+  Script_1dd23afb5d9f9306: /home/phemarajata/wf-assembly-snps-mod/modules/local/mash_tab_to_matrix/main.nf
+  Script_6f90e0c9552f62ee: /home/phemarajata/wf-assembly-snps-mod/modules/local/create_final_summary/main.nf
+  Script_fe55b01af8eba401: /home/phemarajata/wf-assembly-snps-mod/modules/local/iqtree_fast/main.nf
+  Script_41795ef0c51366dd: /home/phemarajata/wf-assembly-snps-mod/modules/local/graft_subtrees/main.nf
+  Script_83ac1f1b446c59ef: /home/phemarajata/wf-assembly-snps-mod/workflows/assembly_snps_scalable.nf
+  Script_de288e3cacef9e9c: /home/phemarajata/wf-assembly-snps-mod/modules/local/ska_align/main.nf
+  Script_8a0000ca66a93fdf: /home/phemarajata/wf-assembly-snps-mod/modules/local/collect_representatives/main.nf
+  Script_b86bc69fb8228a3e: /home/phemarajata/wf-assembly-snps-mod/modules/local/recombination_clonalframeml/main.nf
+  Script_3710c6c0a9c48c8b: /home/phemarajata/wf-assembly-snps-mod/modules/local/usher_build/main.nf
+  Script_f7d9436793bb6855: /home/phemarajata/wf-assembly-snps-mod/modules/local/keep_invariant_atcg/main.nf
+  Script_5c5c47609ece951f: /home/phemarajata/wf-assembly-snps-mod/modules/local/select_cluster_representative/main.nf
+  Script_c2e700414b82257d: /home/phemarajata/wf-assembly-snps-mod/modules/local/integrate_core_snps/main.nf
+  Script_97be43049bb1727f: /home/phemarajata/wf-assembly-snps-mod/modules/local/infile_handling_unix/main.nf
+  Script_65ed891bd0e407ab: /home/phemarajata/wf-assembly-snps-mod/modules/local/usher_place/main.nf
+  Script_4fa35410fba01909: /home/phemarajata/wf-assembly-snps-mod/subworkflows/local/usher_placement.nf
+  Script_adf9864f69944ac9: /home/phemarajata/wf-assembly-snps-mod/modules/local/create_snp_distance_matrix_snp_dists/main.nf
+  Script_b9a8840dc1c7d981: /home/phemarajata/wf-assembly-snps-mod/modules/local/cluster_genomes/main.nf
+  Script_c0148eb8abab6235: /home/phemarajata/wf-assembly-snps-mod/modules/local/build_phylogenetic_tree_parsnp/main.nf
+  Script_cf1907f7a901597f: /home/phemarajata/wf-assembly-snps-mod/workflows/assembly_snps.nf
+Sep-07 11:20:19.640 [main] DEBUG nextflow.script.ScriptRunner - > Awaiting termination 
+Sep-07 11:20:19.640 [main] DEBUG nextflow.Session - Session await
+Sep-07 11:20:19.949 [Actor Thread 2] INFO  nextflow.processor.TaskProcessor - [4d/7f6ce2] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCF_014712955_1_Laos)
+Sep-07 11:20:19.950 [Actor Thread 22] INFO  nextflow.processor.TaskProcessor - [2c/bc4e03] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0021)
+Sep-07 11:20:19.950 [Actor Thread 5] INFO  nextflow.processor.TaskProcessor - [e9/7df7c6] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963563475_1)
+Sep-07 11:20:19.950 [Actor Thread 21] INFO  nextflow.processor.TaskProcessor - [58/c85993] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963570575_1)
+Sep-07 11:20:19.950 [Actor Thread 12] INFO  nextflow.processor.TaskProcessor - [10/7eb380] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0005)
+Sep-07 11:20:19.949 [Actor Thread 14] INFO  nextflow.processor.TaskProcessor - [59/d32cea] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012303)
+Sep-07 11:20:19.949 [Actor Thread 8] INFO  nextflow.processor.TaskProcessor - [eb/497872] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963561975_1)
+Sep-07 11:20:19.949 [Actor Thread 4] INFO  nextflow.processor.TaskProcessor - [89/092faa] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0182)
+Sep-07 11:20:19.949 [Actor Thread 25] INFO  nextflow.processor.TaskProcessor - [1b/e8c4bd] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963569365_1)
+Sep-07 11:20:19.949 [Actor Thread 23] INFO  nextflow.processor.TaskProcessor - [78/ce544c] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCF_002110985_1_USA_Puerto_Rico)
+Sep-07 11:20:19.949 [Actor Thread 7] INFO  nextflow.processor.TaskProcessor - [50/10f765] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCF_025847905_1_Viet_Nam)
+Sep-07 11:20:19.949 [Actor Thread 16] INFO  nextflow.processor.TaskProcessor - [45/952f90] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963565015_1)
+Sep-07 11:20:19.949 [Actor Thread 13] INFO  nextflow.processor.TaskProcessor - [bb/0287db] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0201)
+Sep-07 11:20:19.949 [Actor Thread 17] INFO  nextflow.processor.TaskProcessor - [ad/137a42] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCF_002110925_1_USA_Texas)
+Sep-07 11:20:19.949 [Actor Thread 11] INFO  nextflow.processor.TaskProcessor - [b0/a2be56] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963560675_1)
+Sep-07 11:20:19.949 [Actor Thread 18] INFO  nextflow.processor.TaskProcessor - [1d/dd7f7b] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0016)
+Sep-07 11:20:19.950 [Actor Thread 3] INFO  nextflow.processor.TaskProcessor - [93/e400b7] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963568885_1)
+Sep-07 11:20:19.950 [Actor Thread 9] INFO  nextflow.processor.TaskProcessor - [59/fb67d4] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963568705_1)
+Sep-07 11:20:19.950 [Actor Thread 24] INFO  nextflow.processor.TaskProcessor - [55/04f856] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0051)
+Sep-07 11:20:19.950 [Actor Thread 6] INFO  nextflow.processor.TaskProcessor - [51/314eaf] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0003)
+Sep-07 11:20:19.950 [Actor Thread 20] INFO  nextflow.processor.TaskProcessor - [f9/f73908] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0012)
+Sep-07 11:20:19.950 [Actor Thread 1] INFO  nextflow.processor.TaskProcessor - [26/f60f1f] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012330)
+Sep-07 11:20:20.005 [Actor Thread 24] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'PublishDir' minSize=10; maxSize=66; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
+Sep-07 11:20:20.028 [Actor Thread 19] INFO  nextflow.processor.TaskProcessor - [5b/bd5369] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCF_002110985_1_USA_Puerto_Rico)
+Sep-07 11:20:20.029 [Actor Thread 30] INFO  nextflow.processor.TaskProcessor - [f1/cdaf1d] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCF_002110925_1_USA_Texas)
+Sep-07 11:20:20.029 [Actor Thread 33] INFO  nextflow.processor.TaskProcessor - [92/3253e9] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963569365_1)
+Sep-07 11:20:20.030 [Actor Thread 31] INFO  nextflow.processor.TaskProcessor - [35/c53610] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0051)
+Sep-07 11:20:20.034 [Actor Thread 34] INFO  nextflow.processor.TaskProcessor - [1b/57ca09] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012330)
+Sep-07 11:20:20.036 [Actor Thread 41] INFO  nextflow.processor.TaskProcessor - [30/7279ce] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0005)
+Sep-07 11:20:20.036 [Actor Thread 47] INFO  nextflow.processor.TaskProcessor - [09/c0c315] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0003)
+Sep-07 11:20:20.037 [Actor Thread 28] INFO  nextflow.processor.TaskProcessor - [da/549073] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963568705_1)
+Sep-07 11:20:20.039 [Actor Thread 22] INFO  nextflow.processor.TaskProcessor - [90/e7b84b] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963564375_1)
+Sep-07 11:20:20.042 [Actor Thread 1] INFO  nextflow.processor.TaskProcessor - [b4/c282fe] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963562795_1)
+Sep-07 11:20:20.045 [Actor Thread 26] INFO  nextflow.processor.TaskProcessor - [83/963a3a] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0182)
+Sep-07 11:20:20.052 [Actor Thread 44] INFO  nextflow.processor.TaskProcessor - [b2/30587e] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0012)
+Sep-07 11:20:20.052 [Actor Thread 37] INFO  nextflow.processor.TaskProcessor - [aa/b63edf] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012303)
+Sep-07 11:20:20.053 [Actor Thread 43] INFO  nextflow.processor.TaskProcessor - [a3/c2c082] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963565015_1)
+Sep-07 11:20:20.052 [Actor Thread 3] INFO  nextflow.processor.TaskProcessor - [0d/299812] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0043)
+Sep-07 11:20:20.053 [Actor Thread 38] INFO  nextflow.processor.TaskProcessor - [ec/bee186] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963561975_1)
+Sep-07 11:20:20.055 [Actor Thread 18] INFO  nextflow.processor.TaskProcessor - [db/a0f6ab] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963560915_1)
+Sep-07 11:20:20.055 [Actor Thread 49] INFO  nextflow.processor.TaskProcessor - [5f/db529a] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0201)
+Sep-07 11:20:20.056 [Actor Thread 14] INFO  nextflow.processor.TaskProcessor - [82/261f24] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0156)
+Sep-07 11:20:20.056 [Actor Thread 6] INFO  nextflow.processor.TaskProcessor - [e3/dde79d] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0013)
+Sep-07 11:20:20.057 [Actor Thread 13] INFO  nextflow.processor.TaskProcessor - [75/6615f5] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963570025_1)
+Sep-07 11:20:20.058 [Actor Thread 11] INFO  nextflow.processor.TaskProcessor - [ec/3fcd7f] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963561435_1)
+Sep-07 11:20:20.058 [Actor Thread 2] INFO  nextflow.processor.TaskProcessor - [7a/036e25] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0149)
+Sep-07 11:20:20.060 [Actor Thread 24] INFO  nextflow.processor.TaskProcessor - [2d/8f9245] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012370)
+Sep-07 11:20:20.060 [Actor Thread 16] INFO  nextflow.processor.TaskProcessor - [05/528fa8] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCF_009827035_1_Viet_Nam)
+Sep-07 11:20:20.057 [Actor Thread 39] INFO  nextflow.processor.TaskProcessor - [d6/9c31ed] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCF_025847905_1_Viet_Nam)
+Sep-07 11:20:20.060 [Actor Thread 4] INFO  nextflow.processor.TaskProcessor - [e7/bc2149] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0159)
+Sep-07 11:20:20.060 [Actor Thread 40] INFO  nextflow.processor.TaskProcessor - [b0/cb1357] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963563475_1)
+Sep-07 11:20:20.064 [Actor Thread 32] INFO  nextflow.processor.TaskProcessor - [84/c250eb] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0016)
+Sep-07 11:20:20.066 [Actor Thread 48] INFO  nextflow.processor.TaskProcessor - [0e/958a6e] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963568885_1)
+Sep-07 11:20:20.068 [Actor Thread 55] INFO  nextflow.processor.TaskProcessor - [c4/ee116a] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963570575_1)
+Sep-07 11:20:20.068 [Actor Thread 5] INFO  nextflow.processor.TaskProcessor - [27/8fa478] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCF_001207785_2_Malaysia)
+Sep-07 11:20:20.068 [Actor Thread 36] INFO  nextflow.processor.TaskProcessor - [bd/4977f0] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0006)
+Sep-07 11:20:20.068 [Actor Thread 27] INFO  nextflow.processor.TaskProcessor - [46/3ed6c2] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0021)
+Sep-07 11:20:20.069 [Actor Thread 20] INFO  nextflow.processor.TaskProcessor - [91/d204b8] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012365)
+Sep-07 11:20:20.071 [Actor Thread 8] INFO  nextflow.processor.TaskProcessor - [8c/ae294e] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963571975_1)
+Sep-07 11:20:20.072 [Actor Thread 21] INFO  nextflow.processor.TaskProcessor - [b2/bb1083] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0142)
+Sep-07 11:20:20.074 [Actor Thread 29] INFO  nextflow.processor.TaskProcessor - [7b/e1ee0f] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCF_000773235_1_Australia)
+Sep-07 11:20:20.074 [Actor Thread 12] INFO  nextflow.processor.TaskProcessor - [5f/83d6c5] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012363)
+Sep-07 11:20:20.075 [Actor Thread 54] INFO  nextflow.processor.TaskProcessor - [ce/8a6564] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCF_014712955_1_Laos)
+Sep-07 11:20:20.079 [Actor Thread 35] INFO  nextflow.processor.TaskProcessor - [b6/4715d5] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963560675_1)
+Sep-07 11:20:20.111 [Actor Thread 38] INFO  nextflow.processor.TaskProcessor - [82/1b2fc0] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0013)
+Sep-07 11:20:20.113 [Actor Thread 18] INFO  nextflow.processor.TaskProcessor - [84/013ba4] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0156)
+Sep-07 11:20:20.114 [Actor Thread 9] INFO  nextflow.processor.TaskProcessor - [51/0d9e6f] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0054)
+Sep-07 11:20:20.114 [Actor Thread 1] INFO  nextflow.processor.TaskProcessor - [87/762922] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0193)
+Sep-07 11:20:20.114 [Actor Thread 7] INFO  nextflow.processor.TaskProcessor - [33/6861d1] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012358)
+Sep-07 11:20:20.114 [Actor Thread 35] INFO  nextflow.processor.TaskProcessor - [e6/7f55fa] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012365)
+Sep-07 11:20:20.116 [Actor Thread 6] INFO  nextflow.processor.TaskProcessor - [89/46d727] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0178)
+Sep-07 11:20:20.116 [Actor Thread 23] INFO  nextflow.processor.TaskProcessor - [bd/da716e] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0022)
+Sep-07 11:20:20.116 [Actor Thread 48] INFO  nextflow.processor.TaskProcessor - [c2/d7c23d] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012320)
+Sep-07 11:20:20.127 [Actor Thread 22] INFO  nextflow.processor.TaskProcessor - [36/bb1eb6] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS013343)
+Sep-07 11:20:20.130 [Actor Thread 17] INFO  nextflow.processor.TaskProcessor - [af/9c99a0] Cached process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012358)
+Sep-07 11:20:20.141 [Actor Thread 20] INFO  nextflow.processor.TaskProcessor - [2a/aba92e] Cached process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963569685_1)
+Sep-07 11:20:20.213 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:20.216 [Task submitter] INFO  nextflow.Session - [10/6383c0] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0149)
+Sep-07 11:20:20.250 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:20.251 [Task submitter] INFO  nextflow.Session - [10/e06208] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0191)
+Sep-07 11:20:20.275 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:20.275 [Task submitter] INFO  nextflow.Session - [fb/3db0c5] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012370)
+Sep-07 11:20:20.284 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:20.288 [Task submitter] INFO  nextflow.Session - [d2/071406] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963570025_1)
+Sep-07 11:20:20.296 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:20.297 [Task submitter] INFO  nextflow.Session - [62/a7003f] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963562795_1)
+Sep-07 11:20:20.310 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:20.315 [Task submitter] INFO  nextflow.Session - [4f/fea6f5] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963564375_1)
+Sep-07 11:20:20.327 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:20.330 [Task submitter] INFO  nextflow.Session - [1c/2c615a] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0142)
+Sep-07 11:20:20.340 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:20.342 [Task submitter] INFO  nextflow.Session - [40/0a553e] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012363)
+Sep-07 11:20:20.353 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:20.357 [Task submitter] INFO  nextflow.Session - [d0/53add1] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963560915_1)
+Sep-07 11:20:20.375 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:20.377 [Task submitter] INFO  nextflow.Session - [4c/82c3e2] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0144)
+Sep-07 11:20:20.925 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 118; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0191); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/10/e06208012a6fa345e16cb39a36ddae]
+Sep-07 11:20:20.933 [Task monitor] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'TaskFinalizer' minSize=10; maxSize=66; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
+Sep-07 11:20:20.965 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:20.969 [Task submitter] INFO  nextflow.Session - [60/d8fda3] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0041)
+Sep-07 11:20:21.145 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 78; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0149); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/10/6383c025a9e6b38edf9249b23680ba]
+Sep-07 11:20:21.154 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:21.156 [Task submitter] INFO  nextflow.Session - [9f/a6d15e] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963561435_1)
+Sep-07 11:20:21.220 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 74; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0144); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/4c/82c3e216991a1fded32d4a95b876c7]
+Sep-07 11:20:21.241 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:21.244 [Task submitter] INFO  nextflow.Session - [25/5471a4] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0199)
+Sep-07 11:20:21.413 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 79; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963570025_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/d2/07140653de22de41dac70829da2668]
+Sep-07 11:20:21.419 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:21.420 [Task submitter] INFO  nextflow.Session - [61/1e7aff] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCF_001207785_2_Malaysia)
+Sep-07 11:20:21.464 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 70; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963562795_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/62/a7003fffc49562b4ba83e6de683cac]
+Sep-07 11:20:21.473 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:21.474 [Task submitter] INFO  nextflow.Session - [b8/f2fe1e] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCF_000773235_1_Australia)
+Sep-07 11:20:21.609 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 76; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012370); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/fb/3db0c527fecad8f21cfc8bb4dffc9b]
+Sep-07 11:20:21.610 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 97; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0041); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/60/d8fda3842696e1d9aac9dee6d997f9]
+Sep-07 11:20:21.618 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:21.619 [Task submitter] INFO  nextflow.Session - [05/18db82] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS013348)
+Sep-07 11:20:21.629 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:21.630 [Task submitter] INFO  nextflow.Session - [7e/9b9633] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0047)
+Sep-07 11:20:21.687 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 88; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012363); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/40/0a553e6e6425e60aceff7303141092]
+Sep-07 11:20:21.694 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:21.695 [Task submitter] INFO  nextflow.Session - [d5/f6db92] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012313)
+Sep-07 11:20:21.719 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 69; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963564375_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/4f/fea6f57b5e10f3525bfc457ecbf87e]
+Sep-07 11:20:21.738 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:21.740 [Task submitter] INFO  nextflow.Session - [de/82bce5] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0006)
+Sep-07 11:20:21.804 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 83; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963560915_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/d0/53add101a15a27fd29ec0b83070a5a]
+Sep-07 11:20:21.812 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:21.813 [Task submitter] INFO  nextflow.Session - [54/b1aa72] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0159)
+Sep-07 11:20:21.836 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 94; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0142); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/1c/2c615a5d3ec7522c0b0c1048df4955]
+Sep-07 11:20:21.847 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:21.847 [Task submitter] INFO  nextflow.Session - [64/a4fe71] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963571055_1)
+Sep-07 11:20:22.119 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 93; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0199); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/25/5471a4bf719eedf988745a4b39ab59]
+Sep-07 11:20:22.145 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:22.147 [Task submitter] INFO  nextflow.Session - [53/eaf459] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCF_009827035_1_Viet_Nam)
+Sep-07 11:20:22.208 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 99; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0047); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/7e/9b9633a980b9fde9754bd1a537b3d1]
+Sep-07 11:20:22.216 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 89; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS013348); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/05/18db8294974f134bb9ecd98c3f9e23]
+Sep-07 11:20:22.216 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:22.216 [Task submitter] INFO  nextflow.Session - [ec/d38cbc] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCF_000774495_1_Australia)
+Sep-07 11:20:22.225 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:22.225 [Task submitter] INFO  nextflow.Session - [3e/2d18b0] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (SRR12527885_contigs)
+Sep-07 11:20:22.336 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 86; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012313); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/d5/f6db920f772580b64fe324d12c84ff]
+Sep-07 11:20:22.346 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:22.346 [Task submitter] INFO  nextflow.Session - [87/3a89cd] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963571975_1)
+Sep-07 11:20:22.436 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 82; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963561435_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/9f/a6d15e628de2c4b14c157b31734a59]
+Sep-07 11:20:22.444 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:22.444 [Task submitter] INFO  nextflow.Session - [27/cdfc63] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCF_003268105_1_Viet_Nam)
+Sep-07 11:20:22.480 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 92; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963571055_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/64/a4fe7118ec9fdb5f0cb2d46ce08cc7]
+Sep-07 11:20:22.486 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:22.486 [Task submitter] INFO  nextflow.Session - [0d/1904d7] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0030)
+Sep-07 11:20:22.539 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 87; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCF_001207785_2_Malaysia); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/61/1e7aff391ad46792660f5f6b46799b]
+Sep-07 11:20:22.547 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:22.547 [Task submitter] INFO  nextflow.Session - [42/889c1a] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0010)
+Sep-07 11:20:22.560 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 100; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCF_000773235_1_Australia); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/b8/f2fe1ec2f3c37ecb97a3dac4a6fc5c]
+Sep-07 11:20:22.572 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:22.572 [Task submitter] INFO  nextflow.Session - [0f/0fa6a1] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0054)
+Sep-07 11:20:22.609 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 102; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0006); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/de/82bce55662d8707fe4e99b44b4e8a5]
+Sep-07 11:20:22.620 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:22.621 [Task submitter] INFO  nextflow.Session - [de/d0844f] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0028)
+Sep-07 11:20:22.850 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 75; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0159); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/54/b1aa72cf6a7be748c9f0ff223b61b5]
+Sep-07 11:20:22.856 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:22.857 [Task submitter] INFO  nextflow.Session - [ea/617a56] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0043)
+Sep-07 11:20:22.957 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 81; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (SRR12527885_contigs); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/3e/2d18b00570a85da7052838e664a243]
+Sep-07 11:20:22.963 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:22.964 [Task submitter] INFO  nextflow.Session - [a8/b809a2] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012320)
+Sep-07 11:20:22.995 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 77; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCF_000774495_1_Australia); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/ec/d38cbc8e2ce64c1b0e77eaf59c43d3]
+Sep-07 11:20:23.022 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:23.024 [Task submitter] INFO  nextflow.Session - [6a/1c67e2] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0164)
+Sep-07 11:20:23.116 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 98; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCF_003268105_1_Viet_Nam); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/27/cdfc637a41f85ef5756d33acad27bb]
+Sep-07 11:20:23.122 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:23.122 [Task submitter] INFO  nextflow.Session - [8d/054381] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0178)
+Sep-07 11:20:23.124 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 101; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0030); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/0d/1904d731e8ff35893c070ab457c25f]
+Sep-07 11:20:23.132 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:23.133 [Task submitter] INFO  nextflow.Session - [dd/a2c18b] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0017)
+Sep-07 11:20:23.142 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:23.143 [Task submitter] INFO  nextflow.Session - [ba/023191] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0035)
+Sep-07 11:20:23.162 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 80; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCF_009827035_1_Viet_Nam); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/53/eaf45915b02a86fe0516386738dc82]
+Sep-07 11:20:23.172 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:23.173 [Task submitter] INFO  nextflow.Session - [c3/db8cb1] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0193)
+Sep-07 11:20:23.310 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 105; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0010); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/42/889c1aea7041ddd1ca116504d4791b]
+Sep-07 11:20:23.321 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:23.322 [Task submitter] INFO  nextflow.Session - [9f/9b3e28] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963565565_1)
+Sep-07 11:20:23.325 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 90; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963571975_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/87/3a89cdea343360472f9b7d96fe0c9a]
+Sep-07 11:20:23.331 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:23.332 [Task submitter] INFO  nextflow.Session - [05/5307b8] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0003)
+Sep-07 11:20:23.344 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 84; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0028); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/de/d0844fbedc8c923ea8f7e93f41b445]
+Sep-07 11:20:23.353 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:23.353 [Task submitter] INFO  nextflow.Session - [6f/6887f9] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0046)
+Sep-07 11:20:23.652 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 111; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0054); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/0f/0fa6a1074d62d34e3d90fb653cd7a2]
+Sep-07 11:20:23.657 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:23.658 [Task submitter] INFO  nextflow.Session - [a9/52700c] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0016)
+Sep-07 11:20:23.745 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 91; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0164); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/6a/1c67e29cd1d6a6d9d679ba63f90fe9]
+Sep-07 11:20:23.750 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:23.751 [Task submitter] INFO  nextflow.Session - [5c/e4bea4] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS013343)
+Sep-07 11:20:23.824 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 112; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0017); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/dd/a2c18b2170f5ab244715ca35a59794]
+Sep-07 11:20:23.840 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:23.840 [Task submitter] INFO  nextflow.Session - [de/48f943] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS013346)
+Sep-07 11:20:23.856 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 73; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0043); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/ea/617a56f6488349a8e032c8f70e75b8]
+Sep-07 11:20:23.864 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:23.865 [Task submitter] INFO  nextflow.Session - [5b/7685cc] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0022)
+Sep-07 11:20:23.874 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 115; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0035); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/ba/023191c4d6dba243a45fa7697700e2]
+Sep-07 11:20:23.881 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:23.882 [Task submitter] INFO  nextflow.Session - [18/7e99d0] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012316)
+Sep-07 11:20:23.926 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 134; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963565565_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/9f/9b3e28c68259fc17e6c591567f2d03]
+Sep-07 11:20:23.932 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:23.933 [Task submitter] INFO  nextflow.Session - [48/db5646] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963566855_1)
+Sep-07 11:20:24.040 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 125; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0003); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/05/5307b8ffaa4f25ba7b7005eb4da389]
+Sep-07 11:20:24.042 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 109; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012320); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/a8/b809a20b769fb6f19a6a51fa641f1f]
+Sep-07 11:20:24.044 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:24.044 [Task submitter] INFO  nextflow.Session - [b5/13139f] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0184)
+Sep-07 11:20:24.048 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:24.049 [Task submitter] INFO  nextflow.Session - [11/67afb1] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963569685_1)
+Sep-07 11:20:24.085 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 95; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0046); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/6f/6887f9e90f3c103c6d1d4f55a9761f]
+Sep-07 11:20:24.089 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:24.089 [Task submitter] INFO  nextflow.Session - [a4/2bbcde] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012309)
+Sep-07 11:20:24.117 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 113; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0178); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/8d/054381612f6995c8fdd5c3bceeb1df]
+Sep-07 11:20:24.122 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:24.122 [Task submitter] INFO  nextflow.Session - [21/773631] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0172)
+Sep-07 11:20:24.151 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 106; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0193); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/c3/db8cb1b1b8a05f77e50951103b2c82]
+Sep-07 11:20:24.156 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:24.157 [Task submitter] INFO  nextflow.Session - [53/0a1978] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963562655_1)
+Sep-07 11:20:24.525 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 110; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS013346); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/de/48f9432135d65a7315f37ae7fd15cc]
+Sep-07 11:20:24.531 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:24.532 [Task submitter] INFO  nextflow.Session - [68/74ebcf] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0024)
+Sep-07 11:20:24.536 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 108; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IE-0016); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/a9/52700c78ec5fb53a960f583b288eb5]
+Sep-07 11:20:24.542 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:24.542 [Task submitter] INFO  nextflow.Session - [46/aab66e] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0020)
+Sep-07 11:20:24.577 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 140; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012316); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/18/7e99d0d7f80dd2d20a5969538fe342]
+Sep-07 11:20:24.582 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:24.583 [Task submitter] INFO  nextflow.Session - [1e/3d1161] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963561855_1)
+Sep-07 11:20:24.668 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 114; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963566855_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/48/db5646de74d80b26759d7d99c34d78]
+Sep-07 11:20:24.675 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:24.677 [Task submitter] INFO  nextflow.Session - [8e/3318dc] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS013364)
+Sep-07 11:20:24.719 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 119; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0184); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/b5/13139f3ba415b0e30e5e17a441f485]
+Sep-07 11:20:24.727 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:24.728 [Task submitter] INFO  nextflow.Session - [8c/7f8e0e] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS013354)
+Sep-07 11:20:24.755 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 121; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012309); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/a4/2bbcdedc8cc8d2b887118830f121a6]
+Sep-07 11:20:24.761 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:24.761 [Task submitter] INFO  nextflow.Session - [4e/b29660] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0146)
+Sep-07 11:20:24.829 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 116; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS013343); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/5c/e4bea4105895a0104e26e32166e55b]
+Sep-07 11:20:24.832 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:24.833 [Task submitter] INFO  nextflow.Session - [9e/186a73] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS013352)
+Sep-07 11:20:24.912 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 122; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0172); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/21/77363176d7b3d66bf0db0c31d56df2]
+Sep-07 11:20:24.916 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:24.917 [Task submitter] INFO  nextflow.Session - [26/ca1f1e] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCF_014713085_1_Laos)
+Sep-07 11:20:24.930 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 123; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963562655_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/53/0a1978a81ebb94879884030e0b73ac]
+Sep-07 11:20:24.933 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:24.933 [Task submitter] INFO  nextflow.Session - [66/e26d75] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0176)
+Sep-07 11:20:24.969 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 117; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0022); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/5b/7685cc02bdfa0c4fa171fcfed363d2]
+Sep-07 11:20:24.978 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:24.979 [Task submitter] INFO  nextflow.Session - [c9/fafd5c] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCF_002111145_1_USA_Arizona_ex_Costa_Rica)
+Sep-07 11:20:24.997 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 120; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963569685_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/11/67afb1560e281fb50f35ebc9070d3b]
+Sep-07 11:20:25.002 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:25.002 [Task submitter] INFO  nextflow.Session - [d3/c9c1a4] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963573095_1)
+Sep-07 11:20:25.270 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 124; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0024); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/68/74ebcfb631c227c7c36185cbc08cad]
+Sep-07 11:20:25.274 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:25.274 [Task submitter] INFO  nextflow.Session - [c4/70d209] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963566175_1)
+Sep-07 11:20:25.306 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 126; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0020); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/46/aab66e408a6498c3153b80ddb265b7]
+Sep-07 11:20:25.311 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:25.311 [Task submitter] INFO  nextflow.Session - [f1/45c65d] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963563635_1)
+Sep-07 11:20:25.412 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 127; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963561855_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/1e/3d11611126f05b586117eef7fb65c1]
+Sep-07 11:20:25.415 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:25.416 [Task submitter] INFO  nextflow.Session - [cb/046be0] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0166)
+Sep-07 11:20:25.455 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 128; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0146); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/4e/b296607eb346552c499a07b9f38993]
+Sep-07 11:20:25.461 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:25.461 [Task submitter] INFO  nextflow.Session - [e1/0c02de] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0138)
+Sep-07 11:20:25.485 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 133; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS013364); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/8e/3318dc0dfc5d42873d3e61b31ecfca]
+Sep-07 11:20:25.490 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:25.490 [Task submitter] INFO  nextflow.Session - [bb/931a7f] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012362)
+Sep-07 11:20:25.521 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 130; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS013352); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/9e/186a73d9563753b47c1d48f44ad54a]
+Sep-07 11:20:25.525 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:25.525 [Task submitter] INFO  nextflow.Session - [95/9e4e8d] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0038)
+Sep-07 11:20:25.546 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 129; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0176); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/66/e26d75eafb091e28a1ef6487ae6f06]
+Sep-07 11:20:25.551 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:25.551 [Task submitter] INFO  nextflow.Session - [58/edb3ed] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0186)
+Sep-07 11:20:25.576 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 131; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS013354); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/8c/7f8e0e1e4404a351cade7babfb1400]
+Sep-07 11:20:25.580 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:25.580 [Task submitter] INFO  nextflow.Session - [c7/2243e5] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963561075_1)
+Sep-07 11:20:25.609 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 132; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCF_014713085_1_Laos); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/26/ca1f1e913c961b036ae6136dcd5ba3]
+Sep-07 11:20:25.615 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:25.617 [Task submitter] INFO  nextflow.Session - [76/023110] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0168)
+Sep-07 11:20:25.922 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 135; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCF_002111145_1_USA_Arizona_ex_Costa_Rica); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/c9/fafd5c800a151b4325ea37fe494095]
+Sep-07 11:20:25.926 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:25.927 [Task submitter] INFO  nextflow.Session - [54/6dc1f1] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0005)
+Sep-07 11:20:25.951 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 136; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963573095_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/d3/c9c1a4be8640809124c603142dc52f]
+Sep-07 11:20:25.954 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:25.954 [Task submitter] INFO  nextflow.Session - [9d/02d6d6] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012306)
+Sep-07 11:20:25.987 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 137; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963566175_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/c4/70d2099289aebb53ed00d630238eaa]
+Sep-07 11:20:25.991 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:25.992 [Task submitter] INFO  nextflow.Session - [51/918850] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963565395_1)
+Sep-07 11:20:26.079 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 139; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0166); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/cb/046be01113cf5dd7e315996f8444ee]
+Sep-07 11:20:26.083 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:26.084 [Task submitter] INFO  nextflow.Session - [af/ada742] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012312)
+Sep-07 11:20:26.112 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 138; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963563635_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/f1/45c65d089930588ba092bd97c94bc7]
+Sep-07 11:20:26.116 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:26.117 [Task submitter] INFO  nextflow.Session - [84/1a1150] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963566625_1)
+Sep-07 11:20:26.144 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 141; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0138); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/e1/0c02decfb23c7e797a6c8b28ae6d1c]
+Sep-07 11:20:26.148 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:26.148 [Task submitter] INFO  nextflow.Session - [5e/0a7f3f] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0140)
+Sep-07 11:20:26.179 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 143; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0038); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/95/9e4e8d73ac8c98a2d46a5a468bc7f1]
+Sep-07 11:20:26.184 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:26.185 [Task submitter] INFO  nextflow.Session - [c6/82f62c] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0135)
+Sep-07 11:20:26.200 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 144; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0186); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/58/edb3eda0dcc8753d0f1f13a57beee9]
+Sep-07 11:20:26.205 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:26.205 [Task submitter] INFO  nextflow.Session - [9d/0f475b] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963563065_1)
+Sep-07 11:20:26.253 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 142; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012362); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/bb/931a7f0686e1feba49adfc8a4a74ae]
+Sep-07 11:20:26.260 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:26.261 [Task submitter] INFO  nextflow.Session - [7e/e18659] Submitted process > RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012332)
+Sep-07 11:20:26.508 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 146; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0168); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/76/023110c5709b11d12d82d35d5163cd]
+Sep-07 11:20:26.511 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:26.512 [Task submitter] INFO  nextflow.Session - [f5/9cfff0] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0191)
+Sep-07 11:20:26.553 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 145; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963561075_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/c7/2243e5e5e6120bb0fd391ba955de0e]
+Sep-07 11:20:26.558 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:26.559 [Task submitter] INFO  nextflow.Session - [a5/4e2992] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0144)
+Sep-07 11:20:26.680 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 147; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012306); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/9d/02d6d63593c704d9608c03f1675c2f]
+Sep-07 11:20:26.685 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:26.685 [Task submitter] INFO  nextflow.Session - [94/d31388] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0041)
+Sep-07 11:20:26.706 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 148; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0005); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/54/6dc1f1f565a07367746ed4db05b98a]
+Sep-07 11:20:26.712 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:26.712 [Task submitter] INFO  nextflow.Session - [5d/6cd610] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0199)
+Sep-07 11:20:26.733 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 149; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963565395_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/51/91885037625c9312aff62fc932a8be]
+Sep-07 11:20:26.738 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:26.738 [Task submitter] INFO  nextflow.Session - [31/e22b3c] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0047)
+Sep-07 11:20:26.775 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 153; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0140); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/5e/0a7f3fec1cc2dc318232811152d177]
+Sep-07 11:20:26.780 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:26.780 [Task submitter] INFO  nextflow.Session - [d5/937ce5] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS013348)
+Sep-07 11:20:26.812 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 151; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012312); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/af/ada7422517fa461d9666e543d83aaa]
+Sep-07 11:20:26.816 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:26.816 [Task submitter] INFO  nextflow.Session - [da/37015c] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012313)
+Sep-07 11:20:26.848 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 150; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963566625_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/84/1a11502d93d98d6942c975afb3637a]
+Sep-07 11:20:26.851 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:26.851 [Task submitter] INFO  nextflow.Session - [37/b4889f] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963571055_1)
+Sep-07 11:20:26.898 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 152; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (IP-0135); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/c6/82f62c3672f9499e7e5d199a7cc7d8]
+Sep-07 11:20:27.136 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 154; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (GCA_963563065_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/9d/0f475bff1c531c68e5cb8779d1b971]
+Sep-07 11:20:27.304 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 155; name: RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX (ERS012332); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/7e/e186595c8be8d29715823510305b9e]
+Sep-07 11:20:27.332 [Actor Thread 54] DEBUG nextflow.sort.BigSort - Sort completed -- entries: 106; slices: 1; internal sort time: 0.004 s; external sort time: 0.007 s; total time: 0.011 s
+Sep-07 11:20:27.335 [Actor Thread 54] DEBUG nextflow.file.FileCollector - >> temp file exists? false
+Sep-07 11:20:27.336 [Actor Thread 54] DEBUG nextflow.file.FileCollector - Missed collect-file cache -- cause: java.nio.file.NoSuchFileException: /home/phemarajata/wf-assembly-snps-mod/work/collect-file/55890ae8bd994e34fb0c347933b7c6be
+Sep-07 11:20:27.351 [Actor Thread 54] DEBUG nextflow.file.FileCollector - Saved collect-files list to: /home/phemarajata/wf-assembly-snps-mod/work/collect-file/55890ae8bd994e34fb0c347933b7c6be
+Sep-07 11:20:27.360 [Actor Thread 54] DEBUG nextflow.file.FileCollector - Deleting file collector temp dir: /tmp/nxf-8816516589649810972
+Sep-07 11:20:27.528 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 156; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0191); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/f5/9cfff0fef964b99177d52e48034797]
+Sep-07 11:20:27.532 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:27.532 [Task submitter] INFO  nextflow.Session - [07/5256e0] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (SRR12527885_contigs)
+Sep-07 11:20:27.599 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 157; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0144); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/a5/4e29926cee7dc7c3e13a11e559e99c]
+Sep-07 11:20:27.602 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:27.603 [Task submitter] INFO  nextflow.Session - [a0/5223a6] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCF_000774495_1_Australia)
+Sep-07 11:20:27.651 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 159; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0199); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/5d/6cd610372b4614d85d3a52563a66e2]
+Sep-07 11:20:27.655 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:27.656 [Task submitter] INFO  nextflow.Session - [76/a2432f] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCF_003268105_1_Viet_Nam)
+Sep-07 11:20:27.692 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 158; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0041); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/94/d31388cf29ca9d5981c4e9fad9ac4d]
+Sep-07 11:20:27.696 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:27.696 [Task submitter] INFO  nextflow.Session - [05/e64bf6] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0030)
+Sep-07 11:20:27.703 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 162; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012313); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/da/37015ceb5abf356d619c34a3f5c2d8]
+Sep-07 11:20:27.707 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:27.707 [Task submitter] INFO  nextflow.Session - [e1/11b202] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0010)
+Sep-07 11:20:27.743 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 160; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0047); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/31/e22b3cac485e482580cc793eaa587f]
+Sep-07 11:20:27.747 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:27.748 [Task submitter] INFO  nextflow.Session - [db/11675b] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0028)
+Sep-07 11:20:27.783 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 161; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS013348); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/d5/937ce59e1dbee451fe5859dc9da244]
+Sep-07 11:20:27.790 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:27.790 [Task submitter] INFO  nextflow.Session - [ea/ea92e1] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0164)
+Sep-07 11:20:27.838 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 163; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963571055_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/37/b4889ff3a54ae64b1fe0d617e619d0]
+Sep-07 11:20:27.844 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:27.844 [Task submitter] INFO  nextflow.Session - [26/7210b0] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0017)
+Sep-07 11:20:28.442 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 164; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (SRR12527885_contigs); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/07/5256e05f1396d47ecc21b6d37a155e]
+Sep-07 11:20:28.447 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:28.448 [Task submitter] INFO  nextflow.Session - [23/cc2bdf] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0035)
+Sep-07 11:20:28.510 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 165; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCF_000774495_1_Australia); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/a0/5223a6ed36405680d1040d548b01fe]
+Sep-07 11:20:28.513 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:28.513 [Task submitter] INFO  nextflow.Session - [56/5bf7e9] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963565565_1)
+Sep-07 11:20:28.584 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 168; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0010); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/e1/11b202ace1b638c820c40f1bd05522]
+Sep-07 11:20:28.588 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:28.588 [Task submitter] INFO  nextflow.Session - [77/4f9306] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0003)
+Sep-07 11:20:28.605 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 166; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCF_003268105_1_Viet_Nam); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/76/a2432f7629e16909ddaab4f4626a5f]
+Sep-07 11:20:28.610 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:28.610 [Task submitter] INFO  nextflow.Session - [d2/ffce42] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0046)
+Sep-07 11:20:28.655 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 170; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0164); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/ea/ea92e1d6b79541c26cd746cc357c9e]
+Sep-07 11:20:28.659 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:28.659 [Task submitter] INFO  nextflow.Session - [22/fea28d] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS013346)
+Sep-07 11:20:28.692 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 171; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0017); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/26/7210b075e6bf470a67c21e94d418be]
+Sep-07 11:20:28.697 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:28.698 [Task submitter] INFO  nextflow.Session - [7c/84fd17] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0016)
+Sep-07 11:20:28.738 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 167; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0030); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/05/e64bf6ba0ac07336078d1e2253d778]
+Sep-07 11:20:28.746 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:28.747 [Task submitter] INFO  nextflow.Session - [31/defc24] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012316)
+Sep-07 11:20:28.769 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 169; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0028); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/db/11675ba414b97df353ac8d6fd75458]
+Sep-07 11:20:28.773 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:28.774 [Task submitter] INFO  nextflow.Session - [22/eb2a0e] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963566855_1)
+Sep-07 11:20:29.399 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 175; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0046); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/d2/ffce4254083db16d7364f2b93cfcae]
+Sep-07 11:20:29.404 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:29.404 [Task submitter] INFO  nextflow.Session - [95/65565d] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0184)
+Sep-07 11:20:29.409 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 172; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0035); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/23/cc2bdf3051543bc008ceffed9e4207]
+Sep-07 11:20:29.414 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:29.414 [Task submitter] INFO  nextflow.Session - [25/e420ac] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012309)
+Sep-07 11:20:29.506 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 174; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0003); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/77/4f930633aaace9b1e5e3f31e5ffb3a]
+Sep-07 11:20:29.510 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:29.510 [Task submitter] INFO  nextflow.Session - [58/50ecd5] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0172)
+Sep-07 11:20:29.553 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 176; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS013346); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/22/fea28df206e3de244fe45fe0de104c]
+Sep-07 11:20:29.556 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 173; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963565565_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/56/5bf7e91a4fe1ba2d740a2d13a77471]
+Sep-07 11:20:29.558 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:29.558 [Task submitter] INFO  nextflow.Session - [85/eddd57] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963562655_1)
+Sep-07 11:20:29.562 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:29.562 [Task submitter] INFO  nextflow.Session - [7d/12932a] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0024)
+Sep-07 11:20:29.591 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 178; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012316); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/31/defc241184144cba46cf6e9a00e748]
+Sep-07 11:20:29.595 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:29.595 [Task submitter] INFO  nextflow.Session - [c7/fc6348] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0020)
+Sep-07 11:20:29.628 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 177; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IE-0016); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/7c/84fd17d2e0eeb8953bd305cff9697c]
+Sep-07 11:20:29.631 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:29.631 [Task submitter] INFO  nextflow.Session - [b5/8e1401] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963561855_1)
+Sep-07 11:20:29.696 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 179; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963566855_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/22/eb2a0e5c226b6a765ed22d7a65ce0c]
+Sep-07 11:20:29.700 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:29.700 [Task submitter] INFO  nextflow.Session - [ff/62c68a] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0146)
+Sep-07 11:20:30.309 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 180; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0184); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/95/65565dcb4d685d8fe50dcc113e1d50]
+Sep-07 11:20:30.314 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:30.314 [Task submitter] INFO  nextflow.Session - [cb/23cb8b] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS013364)
+Sep-07 11:20:30.353 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 181; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012309); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/25/e420ac9af7e7297ac1a1de0384ea3b]
+Sep-07 11:20:30.358 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:30.358 [Task submitter] INFO  nextflow.Session - [80/e21ede] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS013352)
+Sep-07 11:20:30.369 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 183; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963562655_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/85/eddd574765b4b508231e8ead6e16c2]
+Sep-07 11:20:30.372 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:30.372 [Task submitter] INFO  nextflow.Session - [17/982c48] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0176)
+Sep-07 11:20:30.398 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 184; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0024); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/7d/12932a2747ababbc4a95d68b039b14]
+Sep-07 11:20:30.401 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:30.401 [Task submitter] INFO  nextflow.Session - [f6/ae654e] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS013354)
+Sep-07 11:20:30.458 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 186; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963561855_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/b5/8e140161e5c286343068d7a530c3ba]
+Sep-07 11:20:30.461 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:30.461 [Task submitter] INFO  nextflow.Session - [4c/7674f0] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCF_014713085_1_Laos)
+Sep-07 11:20:30.469 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 185; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0020); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/c7/fc63483dc0a8dc0e4c3249b7e66ff5]
+Sep-07 11:20:30.474 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:30.474 [Task submitter] INFO  nextflow.Session - [c4/6fc6f4] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCF_002111145_1_USA_Arizona_ex_Costa_Rica)
+Sep-07 11:20:30.500 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 182; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0172); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/58/50ecd5af2e4391dec9f728d51e0dc1]
+Sep-07 11:20:30.504 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:30.504 [Task submitter] INFO  nextflow.Session - [c3/049713] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963573095_1)
+Sep-07 11:20:30.544 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 187; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0146); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/ff/62c68a5a12484f231aaa9d1442e58e]
+Sep-07 11:20:30.550 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:30.550 [Task submitter] INFO  nextflow.Session - [79/85d1f1] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963566175_1)
+Sep-07 11:20:31.068 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 188; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS013364); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/cb/23cb8b2712aeebdd144f8a9ab2a903]
+Sep-07 11:20:31.074 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:31.074 [Task submitter] INFO  nextflow.Session - [97/aaa448] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0166)
+Sep-07 11:20:31.152 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 189; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS013352); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/80/e21ede718a678a3c467307fdd365e0]
+Sep-07 11:20:31.156 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:31.157 [Task submitter] INFO  nextflow.Session - [99/3e3021] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963563635_1)
+Sep-07 11:20:31.211 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 190; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0176); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/17/982c48b5fecf3c0b52dee747eac12d]
+Sep-07 11:20:31.214 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:31.215 [Task submitter] INFO  nextflow.Session - [d5/a76a67] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0138)
+Sep-07 11:20:31.288 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 191; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS013354); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/f6/ae654e32958c11334148d3f178bf46]
+Sep-07 11:20:31.291 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:31.291 [Task submitter] INFO  nextflow.Session - [85/66fa10] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0038)
+Sep-07 11:20:31.311 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 192; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCF_014713085_1_Laos); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/4c/7674f0a3a402cc1c36fa35f704143e]
+Sep-07 11:20:31.319 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:31.319 [Task submitter] INFO  nextflow.Session - [9a/054dfa] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0186)
+Sep-07 11:20:31.360 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 194; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963573095_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/c3/0497138455a7b4c5025d5ed5b24faa]
+Sep-07 11:20:31.364 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:31.364 [Task submitter] INFO  nextflow.Session - [55/19b714] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012362)
+Sep-07 11:20:31.388 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 193; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCF_002111145_1_USA_Arizona_ex_Costa_Rica); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/c4/6fc6f472754234017ce5c59467c951]
+Sep-07 11:20:31.393 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:31.393 [Task submitter] INFO  nextflow.Session - [52/580ddd] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0168)
+Sep-07 11:20:31.429 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 195; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963566175_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/79/85d1f19f258a1697341c3acd051ccc]
+Sep-07 11:20:31.514 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:31.518 [Task submitter] INFO  nextflow.Session - [3f/a0572c] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963561075_1)
+Sep-07 11:20:31.980 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 196; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0166); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/97/aaa44850a29714ace986ed7be4d139]
+Sep-07 11:20:31.984 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:31.985 [Task submitter] INFO  nextflow.Session - [cd/cb112c] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012306)
+Sep-07 11:20:32.099 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 198; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0138); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/d5/a76a67fb4f47a62c219fa43d868af1]
+Sep-07 11:20:32.102 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:32.103 [Task submitter] INFO  nextflow.Session - [47/7affbe] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0005)
+Sep-07 11:20:32.172 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 199; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0038); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/85/66fa100027febdbd636a265c1835a7]
+Sep-07 11:20:32.175 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:32.175 [Task submitter] INFO  nextflow.Session - [f6/80b25f] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963565395_1)
+Sep-07 11:20:32.189 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 200; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0186); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/9a/054dfa89fc87e220104094b84061a8]
+Sep-07 11:20:32.193 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:32.194 [Task submitter] INFO  nextflow.Session - [53/a9c65e] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0140)
+Sep-07 11:20:32.212 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 197; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963563635_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/99/3e3021b2ddb6508773e7441dd77a83]
+Sep-07 11:20:32.217 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:32.217 [Task submitter] INFO  nextflow.Session - [7a/d08a5f] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012312)
+Sep-07 11:20:32.246 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 201; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012362); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/55/19b71481518d3aecd4344ee202e818]
+Sep-07 11:20:32.254 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:32.254 [Task submitter] INFO  nextflow.Session - [47/84e5b6] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963566625_1)
+Sep-07 11:20:32.275 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 202; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0168); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/52/580ddd6b01d44ff5c99f58faa3af06]
+Sep-07 11:20:32.284 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:32.285 [Task submitter] INFO  nextflow.Session - [e5/b95ebc] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0135)
+Sep-07 11:20:32.305 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 203; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963561075_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/3f/a0572c135c0122324c5a520677fdce]
+Sep-07 11:20:32.309 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:32.309 [Task submitter] INFO  nextflow.Session - [ae/00776f] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963563065_1)
+Sep-07 11:20:32.879 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 205; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0005); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/47/7affbeac207fa394708a4801f31fd2]
+Sep-07 11:20:32.882 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:32.882 [Task submitter] INFO  nextflow.Session - [7a/b5ea04] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012332)
+Sep-07 11:20:32.941 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 204; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012306); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/cd/cb112c55dd2345ee78283263ffcb8e]
+Sep-07 11:20:32.967 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 207; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0140); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/53/a9c65e393132a1b38d8d8f4644e5d6]
+Sep-07 11:20:33.037 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 206; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963565395_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/f6/80b25f16ac339ad93f15e252e16e54]
+Sep-07 11:20:33.074 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 209; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963566625_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/47/84e5b67a402c748d8633b4e3441b5a]
+Sep-07 11:20:33.139 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 210; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (IP-0135); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/e5/b95ebc2dc776776e9060c90a4eaef1]
+Sep-07 11:20:33.171 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 211; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (GCA_963563065_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/ae/00776f2cc8122ec009ba4f6eeca804]
+Sep-07 11:20:33.197 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 208; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012312); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/7a/d08a5ffb44f429477188e45f7e3755]
+Sep-07 11:20:33.529 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 212; name: RECOMBINATION_AWARE_SNPS:MASH_SKETCH (ERS012332); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/7a/b5ea0453f30d6317f12078a90ca5d1]
+Sep-07 11:20:33.553 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:33.553 [Task submitter] INFO  nextflow.Session - [05/a72e53] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_DIST (pairwise_distances)
+Sep-07 11:20:38.450 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 213; name: RECOMBINATION_AWARE_SNPS:MASH_DIST (pairwise_distances); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/05/a72e536fbe7daa6f7280cc8b7730ae]
+Sep-07 11:20:38.461 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:38.462 [Task submitter] INFO  nextflow.Session - [cc/695b48] Submitted process > RECOMBINATION_AWARE_SNPS:MASH_TAB_TO_MATRIX (mash_tab_to_matrix)
+Sep-07 11:20:47.172 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 214; name: RECOMBINATION_AWARE_SNPS:MASH_TAB_TO_MATRIX (mash_tab_to_matrix); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/cc/695b48c71b94dc6ef82b1fafd07924]
+Sep-07 11:20:47.185 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:20:47.185 [Task submitter] INFO  nextflow.Session - [7c/c89d51] Submitted process > RECOMBINATION_AWARE_SNPS:CLUSTER_GENOMES (clustering)
+Sep-07 11:21:00.767 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 215; name: RECOMBINATION_AWARE_SNPS:CLUSTER_GENOMES (clustering); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/7c/c89d51adeeb295593194fe819bbbc7]
+Sep-07 11:21:00.794 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:21:00.794 [Task submitter] INFO  nextflow.Session - [5e/2c7c7b] Submitted process > RECOMBINATION_AWARE_SNPS:SELECT_CLUSTER_REPRESENTATIVE (cluster_cluster_1)
+Sep-07 11:21:00.799 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:21:00.799 [Task submitter] INFO  nextflow.Session - [e7/dd16ec] Submitted process > RECOMBINATION_AWARE_SNPS:SELECT_CLUSTER_REPRESENTATIVE (cluster_cluster_0)
+Sep-07 11:21:00.812 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:21:00.812 [Task submitter] INFO  nextflow.Session - [76/5f32e3] Submitted process > RECOMBINATION_AWARE_SNPS:SELECT_CLUSTER_REPRESENTATIVE (cluster_cluster_2)
+Sep-07 11:21:10.801 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 217; name: RECOMBINATION_AWARE_SNPS:SELECT_CLUSTER_REPRESENTATIVE (cluster_cluster_1); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/5e/2c7c7b9501e22f4583fa4cde887adf]
+Sep-07 11:21:10.820 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:21:10.820 [Task submitter] INFO  nextflow.Session - [c4/77982b] Submitted process > RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN (cluster_cluster_1)
+Sep-07 11:21:10.960 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 218; name: RECOMBINATION_AWARE_SNPS:SELECT_CLUSTER_REPRESENTATIVE (cluster_cluster_2); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/76/5f32e3ab80bd36186b6e1b3eb46a32]
+Sep-07 11:21:10.977 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:21:10.978 [Task submitter] INFO  nextflow.Session - [e3/bc2115] Submitted process > RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN (cluster_cluster_2)
+Sep-07 11:21:14.837 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 216; name: RECOMBINATION_AWARE_SNPS:SELECT_CLUSTER_REPRESENTATIVE (cluster_cluster_0); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/e7/dd16ecbf21eba005c824a16fd14380]
+Sep-07 11:21:14.851 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:21:14.852 [Task submitter] INFO  nextflow.Session - [5b/71a29f] Submitted process > RECOMBINATION_AWARE_SNPS:COLLECT_REPRESENTATIVES (collect_reps)
+Sep-07 11:21:15.253 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 222; name: RECOMBINATION_AWARE_SNPS:COLLECT_REPRESENTATIVES (collect_reps); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/5b/71a29f548df845e66080c3e4fdd2d5]
+Sep-07 11:23:26.889 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 220; name: RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN (cluster_cluster_2); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/e3/bc2115b41b215e9c4ce4aa9f9cea1d]
+Sep-07 11:23:26.893 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:23:26.893 [Task submitter] INFO  nextflow.Session - [ef/5cdc96] Submitted process > RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN (cluster_cluster_0)
+Sep-07 11:23:27.899 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-07 11:23:27.899 [Task submitter] INFO  nextflow.Session - [7a/afa21d] Submitted process > RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG (cluster_cluster_2)
+Sep-07 11:24:42.168 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 224; name: RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG (cluster_cluster_2); status: COMPLETED; exit: 0; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/7a/afa21deaed1a558096ea5baf3a8122]
+Sep-07 11:25:19.440 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor local > tasks to be completed: 2 -- submitted tasks are shown below
+~> TaskHandler[id: 219; name: RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN (cluster_cluster_1); status: RUNNING; exit: -; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/c4/77982b58dd0ae118122a03a484bfb2]
+~> TaskHandler[id: 221; name: RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN (cluster_cluster_0); status: RUNNING; exit: -; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/ef/5cdc96cee48514ec088f83b168207a]
+Sep-07 11:25:21.179 [Task submitter] DEBUG n.processor.TaskPollingMonitor - %% executor local > tasks in the submission queue: 2 -- tasks to be submitted are shown below
+~> TaskHandler[id: 223; name: RECOMBINATION_AWARE_SNPS:BUILD_BACKBONE_TREE (backbone_tree); status: NEW; exit: -; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/cd/fb3545520de39a3f0ce4575d57a849]
+~> TaskHandler[id: 225; name: RECOMBINATION_AWARE_SNPS:IQTREE_FAST (cluster_cluster_2); status: NEW; exit: -; error: -; workDir: /home/phemarajata/wf-assembly-snps-mod/work/12/be8e76a8e911979a23f5ba461e8604]

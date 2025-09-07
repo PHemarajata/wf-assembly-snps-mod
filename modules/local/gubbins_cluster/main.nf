@@ -47,18 +47,16 @@ process GUBBINS_CLUSTER {
         exit 0
     fi
 
-    # Build Gubbins command with hybrid tree builders if enabled
-    if [ "$use_hybrid" = "true" ]; then
-        # Use hybrid approach with two tree builders
-        run_gubbins.py \\
-            --starting-tree $starting_tree \\
-            --prefix ${cluster_id} \\
-            --first-tree-builder $first_tree_builder \\
-            --tree-builder $tree_builder \\
-            --iterations $iterations \\
-            --min-snps $min_snps \\
-            --threads ${task.cpus} \\
-            $args \\
+    # Build Gubbins command logic based on starting tree and hybrid mode
+    if [ -z "$starting_tree" ]; then
+        # No starting tree provided: use only first tree builder
+        run_gubbins.py \
+            --prefix ${cluster_id} \
+            --tree-builder $first_tree_builder \
+            --iterations $iterations \
+            --min-snps $min_snps \
+            --threads ${task.cpus} \
+            $args \
             $alignment || {
             echo "WARNING: Gubbins failed for cluster ${cluster_id}. Creating empty output files."
             touch ${cluster_id}.filtered_polymorphic_sites.fasta
@@ -66,21 +64,40 @@ process GUBBINS_CLUSTER {
             touch ${cluster_id}.node_labelled.final_tree.tre
         }
     else
-        # Use single tree builder
-        run_gubbins.py \\
-            --starting-tree $starting_tree \\
-            --prefix ${cluster_id} \\
-            --tree-builder $tree_builder \\
-            --iterations $iterations \\
-            --min-snps $min_snps \\
-            --threads ${task.cpus} \\
-            $args \\
-            $alignment || {
-            echo "WARNING: Gubbins failed for cluster ${cluster_id}. Creating empty output files."
-            touch ${cluster_id}.filtered_polymorphic_sites.fasta
-            touch ${cluster_id}.recombination_predictions.gff
-            touch ${cluster_id}.node_labelled.final_tree.tre
-        }
+        if [ "$use_hybrid" = "true" ]; then
+            # Use hybrid approach with two tree builders
+            run_gubbins.py \
+                --starting-tree $starting_tree \
+                --prefix ${cluster_id} \
+                --first-tree-builder $first_tree_builder \
+                --tree-builder $tree_builder \
+                --iterations $iterations \
+                --min-snps $min_snps \
+                --threads ${task.cpus} \
+                $args \
+                $alignment || {
+                echo "WARNING: Gubbins failed for cluster ${cluster_id}. Creating empty output files."
+                touch ${cluster_id}.filtered_polymorphic_sites.fasta
+                touch ${cluster_id}.recombination_predictions.gff
+                touch ${cluster_id}.node_labelled.final_tree.tre
+            }
+        else
+            # Use single tree builder with starting tree
+            run_gubbins.py \
+                --starting-tree $starting_tree \
+                --prefix ${cluster_id} \
+                --tree-builder $tree_builder \
+                --iterations $iterations \
+                --min-snps $min_snps \
+                --threads ${task.cpus} \
+                $args \
+                $alignment || {
+                echo "WARNING: Gubbins failed for cluster ${cluster_id}. Creating empty output files."
+                touch ${cluster_id}.filtered_polymorphic_sites.fasta
+                touch ${cluster_id}.recombination_predictions.gff
+                touch ${cluster_id}.node_labelled.final_tree.tre
+            }
+        fi
     fi
 
     # Ensure all required output files exist (in case Gubbins partially failed)

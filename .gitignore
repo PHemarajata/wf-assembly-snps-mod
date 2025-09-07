@@ -1,0 +1,17 @@
+# Nextflow specific files and directories
+.nextflow/
+work/
+.nextflow*
+results/ # Or whatever directory you use for final output
+trace.txt
+report.html
+timeline.html
+.nextflow_schema.json
+!.nextflow.log
+# Common development files
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.bak
+*.orig

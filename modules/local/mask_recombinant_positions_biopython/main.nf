@@ -18,7 +18,7 @@ process MASK_RECOMBINANT_POSITIONS_BIOPYTHON {
     shell:
     format = meta.recombination.toString().toLowerCase()
     '''
-    source ${projectDir}/bin/bash_functions.sh
+    source $!{projectDir}/bin/bash_functions.sh
 
     msg "INFO: Masking recombinant positions."
 
