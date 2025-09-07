@@ -5,6 +5,12 @@ process KEEP_INVARIANT_ATCG {
     tag "cluster_${cluster_id}"
     label 'process_low'
     container "quay.io/biocontainers/biopython@sha256:10d755c731c82a22d91fc346f338ba47d5fd4f3b357828f5bbc903c9be865614"
+    
+    // Enable better caching for resume functionality
+    cache 'lenient'
+    
+    // Store outputs for resume optimization
+    storeDir "${params.work_cache_dir}/keep_invariant_atcg"
 
     input:
     tuple val(cluster_id), path(alignment)
@@ -20,6 +26,19 @@ process KEEP_INVARIANT_ATCG {
     """
     echo "Keeping invariant A/T/C/G columns for cluster ${cluster_id}"
     echo "Input alignment: ${alignment}"
+    
+    # Create checksum for resume optimization
+    input_checksum=\$(md5sum "${alignment}" | cut -d' ' -f1)
+    echo "Input alignment checksum: \$input_checksum"
+    
+    # Check if output already exists with same input checksum
+    if [ -f "${cluster_id}.core.full.aln" ] && [ -f ".${cluster_id}.checksum" ]; then
+        stored_checksum=\$(cat ".${cluster_id}.checksum" 2>/dev/null || echo "")
+        if [ "\$stored_checksum" = "\$input_checksum" ]; then
+            echo "Output already exists for this input - skipping processing"
+            exit 0
+        fi
+    fi
     
     python3 << 'EOF'
 from Bio import AlignIO, SeqIO
@@ -146,6 +165,10 @@ EOF
     echo "Core alignment with invariant sites created for cluster ${cluster_id}"
     echo "Output file size: \$(wc -c < ${cluster_id}.core.full.aln) bytes"
     echo "Number of sequences: \$(grep -c '^>' ${cluster_id}.core.full.aln)"
+    
+    # Store checksum for resume optimization
+    echo "\$input_checksum" > ".${cluster_id}.checksum"
+    echo "Stored input checksum for resume optimization"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

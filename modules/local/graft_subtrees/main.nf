@@ -67,8 +67,19 @@ END_VERSIONS
     fi
     echo "Representative for \$cluster_id: \$representative_id" >> grafting_log.txt
 
-    if ! gotree labels -i current_tree.tre | grep -q "^\$representative_id\$"; then
+    # Check if representative exists in backbone tree (try exact match first, then partial)
+    backbone_labels=\$(gotree labels -i current_tree.tre)
+    if echo "\$backbone_labels" | grep -q "^\$representative_id\$"; then
+      echo "Found exact match for representative \$representative_id in backbone tree" >> grafting_log.txt
+    elif echo "\$backbone_labels" | grep -q "\$representative_id"; then
+      # Found partial match, use the first one
+      actual_rep=\$(echo "\$backbone_labels" | grep "\$representative_id" | head -n1)
+      echo "Found partial match: using \$actual_rep instead of \$representative_id" >> grafting_log.txt
+      representative_id="\$actual_rep"
+    else
       echo "WARNING: Representative \$representative_id not found in backbone tree" >> grafting_log.txt
+      echo "Available labels in backbone tree:" >> grafting_log.txt
+      echo "\$backbone_labels" | head -10 >> grafting_log.txt
       failed_count=\$((failed_count + 1))
       continue
     fi

@@ -71,8 +71,12 @@ END_VERSIONS
 
         # Check if file has content
         if [ -s "\$rep_file" ]; then
-            # Add to combined FASTA
-            cat \$rep_file >> representatives.fa
+            # Standardize sequence headers in FASTA to match representative ID
+            # This ensures backbone tree uses consistent naming
+            awk -v rep_id="\$rep_id" '
+                /^>/ { print ">" rep_id; next }
+                { print }
+            ' "\$rep_file" >> representatives.fa
 
             # Add to mapping
             echo -e "\$cluster_id\t\$rep_id\t\$rep_file" >> cluster_representatives.tsv
