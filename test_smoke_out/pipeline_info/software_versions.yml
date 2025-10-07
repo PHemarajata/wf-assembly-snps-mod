@@ -1,0 +1,47 @@
+RECOMBINATION_AWARE_SNPS:IQTREE_ASC:
+  iqtree:         IQ-TREE multicore version 2.2.6 COVID-edition for Linux 64-bit built Dec  8 2023
+"RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX":
+  ubuntu: 22.04.5 LTS 
+    "RECOMBINATION_AWARE_SNPS:SELECT_CLUSTER_REPRESENTATIVE":
+        python: 3.9.5
+        pandas: 2.3.2
+        numpy: 2.0.2
+"RECOMBINATION_AWARE_SNPS:MASH_SKETCH":
+    mash:     2.3
+"RECOMBINATION_AWARE_SNPS:IQTREE_FAST":
+    iqtree:     IQ-TREE multicore version 2.2.6 COVID-edition for Linux 64-bit built Dec  8 2023
+"RECOMBINATION_AWARE_SNPS:CLUSTER_GENOMES":
+    python: 3.9.5
+    pandas: 2.3.2
+    scipy: 1.13.1
+"RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX":
+  ubuntu: 22.04.5 LTS 
+"RECOMBINATION_AWARE_SNPS:SNIPPY_ALIGN":
+    snippy:     snippy 4.6.0
+"RECOMBINATION_AWARE_SNPS:MASH_SKETCH":
+    mash:     2.3
+"RECOMBINATION_AWARE_SNPS:GUBBINS_CLUSTER":
+    gubbins:     3.3.5
+    "RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG":
+        biopython: 1.81
+        python: 3.12.0
+    END_VERSIONS
+"RECOMBINATION_AWARE_SNPS:MASH_SKETCH":
+    mash:     2.3
+    "RECOMBINATION_AWARE_SNPS:COLLECT_REPRESENTATIVES":
+        ubuntu: 22.04.5 LTS 
+"RECOMBINATION_AWARE_SNPS:MASH_TAB_TO_MATRIX":
+    python: 3.9.5
+    pandas: 2.3.2
+    numpy: 2.0.2
+RECOMBINATION_AWARE_SNPS:BUILD_BACKBONE_TREE:
+  parsnp:     parsnp 1.7.4
+  fasttree:     Detailed usage for FastTree 2.1.11 Double precision (No SSE3):
+"RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX":
+  ubuntu: 22.04.5 LTS 
+"RECOMBINATION_AWARE_SNPS:MASH_SKETCH":
+    mash:     2.3
+"RECOMBINATION_AWARE_SNPS:MASH_DIST":
+    mash:     2.3
+"RECOMBINATION_AWARE_SNPS:INFILE_HANDLING_UNIX":
+  ubuntu: 22.04.5 LTS 

@@ -81,7 +81,8 @@ include { IQTREE_ASC                                       } from "../modules/lo
 //
 include { COLLECT_REPRESENTATIVES                          } from "../modules/local/collect_representatives/main"
 include { BUILD_BACKBONE_TREE                              } from "../modules/local/build_backbone_tree/main"
-include { GRAFT_SUBTREES                                   } from "../modules/local/graft_subtrees/main"
+// GRAFT_SUBTREES removed: grafting of cluster subtrees onto the backbone is disabled
+// include { GRAFT_SUBTREES                                   } from "../modules/local/graft_subtrees/main"
 
 //
 // SUBWORKFLOWS
@@ -377,18 +378,14 @@ workflow RECOMBINATION_AWARE_SNPS {
 
     /*
     ================================================================================
-                    STEP 7: Graft subtrees onto backbone
+                    STEP 7: Tree grafting (DISABLED)
     ================================================================================
     */
 
-    log.info "STEP 7: Grafting cluster subtrees onto backbone tree"
+    log.info "STEP 7: Tree grafting disabled — using backbone tree as final tree"
 
-    GRAFT_SUBTREES (
-        BUILD_BACKBONE_TREE.out.backbone_tree,
-        IQTREE_ASC.out.final_tree.map { cluster_id, tree, rep_id -> tree }.collect(),
-        COLLECT_REPRESENTATIVES.out.representatives_mapping
-    )
-    ch_versions = ch_versions.mix(GRAFT_SUBTREES.out.versions)
+    // Grafting disabled: use backbone tree directly as final tree channel
+    ch_final_tree = BUILD_BACKBONE_TREE.out.backbone_tree
 
     /*
     ================================================================================
@@ -398,7 +395,7 @@ workflow RECOMBINATION_AWARE_SNPS {
 
     // Collect QC file check information
     ch_qc_filecheck = ch_qc_filecheck
-                        .map{ meta, file -> file }
+                        .map{ meta_ignore, file -> file }
                         .collectFile(
                             name:       "Summary.QC_File_Checks.tsv",
                             keepHeader: true,
@@ -428,11 +425,11 @@ workflow RECOMBINATION_AWARE_SNPS {
     ================================================================================
     */
 
-    GRAFT_SUBTREES.out.grafted_tree
+    ch_final_tree
         .subscribe { tree ->
             log.info "✅ WORKFLOW COMPLETE!"
-            log.info "Final grafted tree: ${tree}"
-            log.info "Recombination-aware per-cluster analysis with tree grafting finished successfully"
+            log.info "Final tree (backbone): ${tree}"
+            log.info "Recombination-aware per-cluster analysis finished (grafting disabled)"
         }
 }
 

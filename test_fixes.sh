@@ -31,8 +31,8 @@ echo "Standardized FASTA content:"
 cat test_combined.fa
 echo
 
-# Test 2: Check if GRAFT_SUBTREES matching logic works
-echo "Test 2: Testing representative matching logic..."
+# Test 2: Check representative matching logic (grafting disabled)
+echo "Test 2: Testing representative matching logic (grafting disabled)..."
 
 # Simulate backbone tree labels
 backbone_labels="IP-0030
@@ -98,11 +98,11 @@ echo "=== Fix Validation Complete ==="
 echo
 echo "Summary of fixes applied:"
 echo "1. ✓ Standardized sequence headers in COLLECT_REPRESENTATIVES"
-echo "2. ✓ Enhanced representative matching in GRAFT_SUBTREES"
+echo "2. ✓ Enhanced representative matching logic"
 echo "3. ✓ Added resume optimization to KEEP_INVARIANT_ATCG"
 echo "4. ✓ Added configuration parameters for recombination-aware workflow"
 echo
 echo "The pipeline should now:"
-echo "- Successfully graft cluster trees onto the backbone tree"
+echo "- Grafting disabled; backbone tree used as final tree"
 echo "- Resume much faster by skipping unchanged KEEP_INVARIANT_ATCG steps"
 echo "- Provide better error messages for debugging"

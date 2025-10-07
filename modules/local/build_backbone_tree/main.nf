@@ -9,6 +9,11 @@ process BUILD_BACKBONE_TREE {
   // This biocontainer typically includes parsnp, harvesttools, fasttree.
   container "${params.backbone_container ?: 'quay.io/biocontainers/parsnp:1.7.4--hdcf5f25_2'}"
 
+    // Ensure the backbone tree is published at the run outdir root so downstream
+    // tools can find it as `backbone.treefile` (the python graft script expects
+    // this path relative to the output directory).
+    publishDir "${params.outdir}", mode: params.publish_dir_mode, pattern: "backbone.treefile"
+
   input:
   path representatives_fasta
 

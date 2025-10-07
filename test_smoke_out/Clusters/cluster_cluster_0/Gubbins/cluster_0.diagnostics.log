@@ -1,0 +1,28 @@
+=== Gubbins Diagnostics for cluster cluster_0 ===
+Container: gubbins 3.3.5 | CPUs: 2
+Params: iterations=3, tree_builder=iqtree, first_builder=rapidnj, min_snps=2, use_hybrid=true
+Sequence count: 4
+Alignment length (non-header chars): 4
+Starting tree present: cluster_0.treefile (0 bytes)
+has_starting_tree=false
+RUN: no starting-tree + HYBRID first_builder=rapidnj, tree_builder=iqtree
+
+--- Gubbins 3.3.5 ---
+
+Croucher N. J., Page A. J., Connor T. R., Delaney A. J., Keane J. A., Bentley S. D., Parkhill J., Harris S.R. "Rapid phylogenetic analysis of large samples of recombinant bacterial whole genome sequences using Gubbins". Nucleic Acids Res. 2015 Feb 18;43(3):e15. doi: 10.1093/nar/gku1196.
+
+Checking dependencies and input files...
+
+Checking input alignment file...
+
+Filtering input alignment...
+Excluded sequence GCA_002587385 because it had 100.0 percentage missing data while a maximum of 25.0 is allowed
+Excluded sequence GCA_002596765 because it had 100.0 percentage missing data while a maximum of 25.0 is allowed
+Excluded sequence GCF_000819615 because it had 100.0 percentage missing data while a maximum of 25.0 is allowed
+Excluded sequence Reference because it had 100.0 percentage missing data while a maximum of 25.0 is allowed
+Not enough sequences are left after removing duplicates.Please check you input data.
+Gubbins exit code: 1
+ERROR: Gubbins failed; creating placeholder outputs.
+WARNING: Output file cluster_0.filtered_polymorphic_sites.fasta is empty; leaving placeholder.
+WARNING: Output file cluster_0.recombination_predictions.gff is empty; leaving placeholder.
+WARNING: Output file cluster_0.node_labelled.final_tree.tre is empty; leaving placeholder.

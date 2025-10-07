@@ -1,0 +1,6 @@
+Reading Mash distances from mash_matrix.tsv
+Clustering with threshold 0.03
+Found 2 clusters
+  Cluster 0: 3 samples
+  Cluster 1: 1 samples
+Cluster assignments written to clusters.tsv

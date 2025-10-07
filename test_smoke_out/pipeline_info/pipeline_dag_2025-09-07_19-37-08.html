@@ -1,0 +1,147 @@
+<!--
+  ~ Copyright 2013-2024, Seqera Labs
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<html>
+<head>
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+</head>
+<body>
+<pre class="mermaid" style="text-align: center;">
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': '#B6ECE2',
+      'primaryTextColor': '#160F26',
+      'primaryBorderColor': '#065647',
+      'lineColor': '#545555',
+      'clusterBkg': '#BABCBD22',
+      'clusterBorder': '#DDDEDE',
+      'fontFamily': 'arial'
+    }
+  }
+}%%
+flowchart TB
+    subgraph " "
+    v4["Channel.from"]
+    end
+    subgraph " "
+    v11[" "]
+    v14[" "]
+    v30[" "]
+    v45[" "]
+    v51[" "]
+    v55[" "]
+    v56[" "]
+    v57[" "]
+    v62[" "]
+    v63[" "]
+    v68[" "]
+    v71[" "]
+    v72[" "]
+    v78["ch_output_summary_files"]
+    v81[" "]
+    end
+    subgraph "RECOMBINATION_AWARE_SNPS [RECOMBINATION_AWARE_SNPS]"
+    v13(["INFILE_HANDLING_UNIX"])
+    v21(["MASH_SKETCH"])
+    v25(["MASH_DIST"])
+    v27(["MASH_TAB_TO_MATRIX"])
+    v29(["CLUSTER_GENOMES"])
+    v39(["SELECT_CLUSTER_REPRESENTATIVE"])
+    v44(["SNIPPY_ALIGN"])
+    v47(["KEEP_INVARIANT_ATCG"])
+    v50(["IQTREE_FAST"])
+    v54(["GUBBINS_CLUSTER"])
+    v61(["IQTREE_ASC"])
+    v67(["COLLECT_REPRESENTATIVES"])
+    v70(["BUILD_BACKBONE_TREE"])
+    subgraph "RECOMBINATION_AWARE_SNPS:INPUT_CHECK [INPUT_CHECK]"
+    v5(( ))
+    end
+    v12(( ))
+    v16(( ))
+    v17(( ))
+    v23(( ))
+    v49(( ))
+    v53(( ))
+    v59(( ))
+    v65(( ))
+    v82(( ))
+    end
+    v4 --> v5
+    v5 --> v11
+    v5 --> v13
+    v13 --> v14
+    v13 --> v12
+    v13 --> v16
+    v13 --> v17
+    v17 --> v21
+    v21 --> v12
+    v21 --> v23
+    v23 --> v25
+    v25 --> v27
+    v25 --> v12
+    v27 --> v29
+    v27 --> v39
+    v27 --> v12
+    v29 --> v30
+    v29 --> v67
+    v29 --> v12
+    v29 --> v17
+    v17 --> v39
+    v39 --> v12
+    v39 --> v17
+    v39 --> v59
+    v39 --> v65
+    v17 --> v44
+    v44 --> v47
+    v44 --> v45
+    v44 --> v12
+    v47 --> v12
+    v47 --> v49
+    v47 --> v53
+    v49 --> v50
+    v50 --> v51
+    v50 --> v12
+    v50 --> v53
+    v53 --> v54
+    v54 --> v57
+    v54 --> v56
+    v54 --> v55
+    v54 --> v12
+    v54 --> v59
+    v59 --> v61
+    v61 --> v63
+    v61 --> v62
+    v61 --> v12
+    v65 --> v67
+    v67 --> v70
+    v67 --> v68
+    v67 --> v12
+    v70 --> v72
+    v70 --> v71
+    v70 --> v12
+    v70 --> v82
+    v16 --> v78
+    v12 --> v81
+
+</pre>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true, maxTextSize: Number.MAX_SAFE_INTEGER, maxEdges: Number.MAX_SAFE_INTEGER });
+</script>
+</body>
+</html>

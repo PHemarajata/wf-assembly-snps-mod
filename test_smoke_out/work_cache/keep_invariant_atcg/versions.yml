@@ -1,0 +1,4 @@
+    "RECOMBINATION_AWARE_SNPS:KEEP_INVARIANT_ATCG":
+        biopython: 1.81
+        python: 3.12.0
+    END_VERSIONS

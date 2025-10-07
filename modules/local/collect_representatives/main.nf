@@ -5,12 +5,20 @@ process COLLECT_REPRESENTATIVES {
     tag "collect_reps"
     label 'process_low'
     container "ubuntu:jammy"
+    // Publish the representative FASTA and mapping at the run outdir root so
+    // downstream scripts can find `cluster_representatives.tsv` and
+    // `representatives.fa` directly under the pipeline output directory.
+    publishDir "${params.outdir}", mode: params.publish_dir_mode, pattern: "representatives.fa"
+    publishDir "${params.outdir}", mode: params.publish_dir_mode, pattern: "cluster_representatives.tsv"
 
     input:
     path representative_files
     path cluster_info
 
     output:
+    // Publish the representative FASTA and mapping at the run outdir root so
+    // downstream scripts can find `cluster_representatives.tsv` and
+    // `representatives.fa` directly under the pipeline output directory.
     path "representatives.fa", emit: representatives_fasta
     path "cluster_representatives.tsv", emit: representatives_mapping
     path "versions.yml", emit: versions

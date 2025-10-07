@@ -189,13 +189,13 @@ def create_final_summary():
         
         <h2>🌳 Phylogenetic Analysis</h2>
         <div class="success">
-            <strong>✅ Integration Complete:</strong> Core SNPs have been integrated across all clusters and phylogenetic trees have been grafted into a supertree.
+            <strong>✅ Integration Complete:</strong> Core SNPs have been integrated across all clusters. Tree grafting was disabled; the backbone tree is used as the final global tree.
         </div>
         
         <h3>Key Results:</h3>
         <ul>
             <li><strong>Integrated Core SNPs Alignment:</strong> Combined SNP positions from all clusters</li>
-            <li><strong>Grafted Supertree:</strong> Combined phylogenetic relationships from all cluster trees</li>
+            <li><strong>Grafted Supertree:</strong> Disabled — the backbone tree is used as the final global tree</li>
             <li><strong>Global Phylogenetic Tree:</strong> Built from integrated core SNPs alignment</li>
         </ul>
         
@@ -209,7 +209,7 @@ def create_final_summary():
         <h3>Integrated Results:</h3>
         <ul>
             <li><code>Integrated_Results/integrated_core_snps.fa</code> - Combined core SNPs alignment</li>
-            <li><code>Integrated_Results/grafted_supertree.tre</code> - Grafted supertree from all clusters</li>
+            <li><code>Integrated_Results/grafted_supertree.tre</code> - (disabled) previously used for grafted supertree; backbone tree is final</li>
             <li><code>Integrated_Results/integrated_core_snps.treefile</code> - Global phylogenetic tree</li>
             <li><code>Integrated_Results/sample_cluster_mapping.tsv</code> - Sample-to-cluster assignments</li>
         </ul>
@@ -226,7 +226,7 @@ def create_final_summary():
             <li><strong>Clustering Method:</strong> Mash distance-based hierarchical clustering</li>
             <li><strong>Phylogenetic Method:</strong> IQ-TREE with model selection</li>
             <li><strong>Recombination Analysis:</strong> Gubbins (if enabled)</li>
-            <li><strong>Tree Grafting:</strong> Star topology with cluster subtrees</li>
+            <li><strong>Tree Grafting:</strong> Disabled (grafting of cluster subtrees onto backbone has been turned off)</li>
         </ul>
         
         <div class="warning">
@@ -281,11 +281,11 @@ Total Trees Generated: {total_trees}
 Average Tree Size: {avg_tree_leaves:.2f} leaves
 Total Tree Leaves: {total_tree_leaves}
 
-INTEGRATION RESULTS
+    INTEGRATION RESULTS
 {'-' * 20}
-✅ Core SNPs integrated across all clusters
-✅ Phylogenetic trees grafted into supertree
-✅ Global phylogenetic tree constructed from integrated alignment
+    ✅ Core SNPs integrated across all clusters
+    ✅ Tree grafting disabled — backbone tree used as final global tree
+    ✅ Global phylogenetic tree constructed from integrated alignment (backbone)
 
 OUTPUT STRUCTURE
 {'-' * 20}

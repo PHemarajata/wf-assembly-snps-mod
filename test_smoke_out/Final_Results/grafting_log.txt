@@ -1,0 +1,3 @@
+GRAFTING LOG
+- placeholder created on $(date -u +%FT%TZ)
+- backbone copied to global_grafted.treefile
