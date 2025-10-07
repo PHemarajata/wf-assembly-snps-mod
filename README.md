@@ -12,6 +12,19 @@ A modified and enhanced Nextflow workflow for bacterial genome assembly-based SN
 ## 🚀 Quick Start
 
 ```bash
+# Typical usage for Burkholderia pseudomallei SNP analysis on APHL Analysis Laptop
+nextflow run main.nf -profile local_workstation_rtx4070,docker \
+  --input /path/to/assemblies  \
+  --outdir /path/to/results \
+  --recombination_aware_mode true \
+  --integrate_results true \
+  --mash_threshold 0.028  \
+  --max_cluster_size 50  \   --merge_singletons true \
+  --mash_sketch_size 50000  \
+  --recombination gubbins \
+  --snp_package parsnp \
+  --run_gubbins
+
 # Basic usage with input directory
 nextflow run PHemarajata/wf-assembly-snps-mod \
   -profile docker \
