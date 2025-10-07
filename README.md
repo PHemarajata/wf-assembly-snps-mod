@@ -262,6 +262,13 @@ results/
 ├── reports/            # Quality control reports
 ├── gubbins/            # Recombination analysis (if enabled)
 ├── clusters/           # Per-cluster results (scalable mode)
+│   ├── cluster_1/      # Individual cluster results
+│   └── cluster_N/      
+├── backbone.treefile   # Backbone tree (scalable mode)
+├── cluster_representatives.tsv  # Cluster representative mappings
+├── final_grafted.treefile      # Complete grafted tree (if successful)
+├── grafting_report.txt         # Tree grafting summary
+├── grafting_log.txt           # Detailed grafting log
 └── pipeline_info/      # Execution reports and logs
 ```
 
@@ -310,6 +317,130 @@ chmod +x run_workflow.sh
 ./run_workflow.sh --input assemblies/ --mode scalable -- --mash_threshold 0.025
 ```
 
+## 🌳 Standalone Tree Grafting
+
+When the main workflow encounters issues in the final tree grafting step, you can use the standalone `graft_trees.py` script to complete the phylogenetic analysis separately.
+
+### Background
+In scalable mode, the workflow generates:
+1. **Backbone tree** - Global phylogeny from cluster representatives
+2. **Cluster trees** - Individual phylogenies for each genome cluster
+3. **Final step** - Grafting cluster subtrees onto the backbone tree
+
+The tree grafting step can sometimes fail due to memory constraints, label conflicts, or tree structure issues. The standalone script provides a robust solution with detailed logging and error handling.
+
+### Prerequisites
+
+```bash
+# Install required Python package
+pip install biopython
+```
+
+### Basic Usage
+
+```bash
+# Make the script executable
+chmod +x graft_trees.py
+
+# Basic tree grafting
+./graft_trees.py \
+  --backbone results/backbone.treefile \
+  --clusters 'results/Clusters/**/cluster_*.final.treefile' \
+  --reps results/cluster_representatives.tsv \
+  --out-tree results/final_grafted.treefile \
+  --report results/grafting_report.txt \
+  --log results/grafting_log.txt
+```
+
+### Advanced Options
+
+```bash
+# With conflict resolution and detailed logging
+./graft_trees.py \
+  --backbone results/backbone.treefile \
+  --clusters 'results/Clusters/**/cluster_*.final.treefile' \
+  --reps results/cluster_representatives.tsv \
+  --out-tree results/final_grafted.treefile \
+  --report results/grafting_report.txt \
+  --log results/grafting_log.txt \
+  --rename-conflicts \
+  --parent-edge-mode keep
+
+# Dry run to check what would be done
+./graft_trees.py \
+  --backbone results/backbone.treefile \
+  --clusters 'results/Clusters/**/cluster_*.final.treefile' \
+  --reps results/cluster_representatives.tsv \
+  --out-tree results/final_grafted.treefile \
+  --report results/grafting_report.txt \
+  --log results/grafting_log.txt \
+  --dry-run
+```
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `--backbone` | ✅ | Backbone Newick tree file |
+| `--clusters` | ✅ | Glob pattern for cluster tree files (repeatable) |
+| `--reps` | ❌ | TSV file with cluster→representative mappings |
+| `--out-tree` | ✅ | Output combined tree file |
+| `--report` | ✅ | Summary report file |
+| `--log` | ✅ | Detailed log file |
+| `--rename-conflicts` | ❌ | Rename conflicting tip labels |
+| `--parent-edge-mode` | ❌ | Branch length handling: `keep` or `zero` |
+| `--dry-run` | ❌ | Plan only, don't write output tree |
+
+### Expected Input Files
+
+From a scalable workflow run, you'll typically find:
+
+```
+results/
+├── backbone.treefile              # Global backbone phylogeny
+├── cluster_representatives.tsv    # Cluster→representative mapping
+├── Clusters/
+│   ├── cluster_1/
+│   │   └── cluster_1.final.treefile
+│   ├── cluster_2/
+│   │   └── cluster_2.final.treefile
+│   └── ...
+```
+
+### Troubleshooting
+
+**Common Issues:**
+
+1. **Missing representative file**: If `cluster_representatives.tsv` is missing, the script will infer representatives automatically
+2. **Label conflicts**: Use `--rename-conflicts` to automatically rename conflicting tip labels
+3. **Memory issues**: The standalone script is more memory-efficient than the Nextflow process
+4. **Tree structure problems**: Check the detailed log file for specific grafting failures
+
+**Check your results:**
+
+```bash
+# Verify the final tree structure
+python -c "
+from Bio import Phylo
+tree = Phylo.read('results/final_grafted.treefile', 'newick')
+print(f'Final tree has {len(tree.get_terminals())} tips')
+print(f'Tree depth: {tree.depth()}')
+"
+
+# View the grafting report
+cat results/grafting_report.txt
+```
+
+### Example Usage Script
+
+A complete example script is provided to demonstrate the typical tree grafting workflow:
+
+```bash
+# Run the example (after completing a scalable workflow)
+chmod +x examples/run_tree_grafting_example.sh
+./examples/run_tree_grafting_example.sh
+```
+
 ## 🧪 Testing
 
 ```bash
@@ -321,6 +452,10 @@ nextflow run PHemarajata/wf-assembly-snps-mod -profile test,docker --scalable_mo
 
 # Use the convenient wrapper script
 ./run_workflow.sh --input test_data/ --mode scalable --profile docker
+
+# Test the tree grafting script (requires Python + Biopython)
+pip install biopython
+./graft_trees.py --help
 ```
 
 ## 🤝 Contributing

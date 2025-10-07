@@ -28,6 +28,14 @@ All notable changes to this modified version of wf-assembly-snps are documented 
 - Flexible alignment methods (Snippy, Parsnp)
 - Configurable clustering thresholds and cluster sizes
 
+#### 🌳 Standalone Tree Grafting Tool
+- **`graft_trees.py`**: Standalone Python script for tree grafting when the main workflow fails
+  - Robust leaf-expansion grafting algorithm using Biopython
+  - Detailed logging and error reporting
+  - Conflict resolution for tip label collisions
+  - Dry-run capability for testing
+  - Memory-efficient alternative to Nextflow-based grafting
+
 #### 📁 New Parameters
 - `--scalable_mode`: Enable scalable clustering workflow
 - `--recombination_aware_mode`: Enable recombination detection
