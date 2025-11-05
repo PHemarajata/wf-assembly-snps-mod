@@ -3,7 +3,7 @@ nextflow.enable.dsl=2
 
 process IQTREE_FAST {
     tag "cluster_${cluster_id}"
-    label 'process_medium'
+    label 'process_medium_gpu'
     container "quay.io/biocontainers/iqtree:2.2.6--h21ec9f0_0"
     
     publishDir "${params.outdir}/Clusters/cluster_${cluster_id}", mode: params.publish_dir_mode, pattern: "*.{treefile,iqtree}"
@@ -31,26 +31,39 @@ process IQTREE_FAST {
     def args = task.ext.args ?: ''
     def model = params.iqtree_model ?: 'GTR+ASC'
     """
+    # Detect IQ-TREE binary (prefer GPU version)
+    IQTREE=\$(command -v iqtree2-gpu || command -v iqtree2 || command -v iqtree || true)
+    if [ -z "\$IQTREE" ]; then
+        echo "ERROR: iqtree not found in PATH"
+        touch ${cluster_id}.treefile
+        touch ${cluster_id}.iqtree
+        echo '"${task.process}":' > versions.yml
+        echo '    iqtree: N/A' >> versions.yml
+        exit 0
+    fi
+
+    echo "Using IQ-TREE binary: \$IQTREE"
+
     # Check if alignment has at least 3 sequences (minimum for tree building)
     seq_count=\$(grep -c "^>" $alignment)
-    
+
     if [ \$seq_count -lt 3 ]; then
         echo "WARNING: Alignment has only \$seq_count sequences. IQ-TREE requires at least 3 sequences for tree building."
         echo "Skipping tree construction for cluster ${cluster_id}"
-        
+
         # Create empty output files to satisfy pipeline expectations
         touch ${cluster_id}.treefile
         touch ${cluster_id}.iqtree
-        
+
         # Create versions file for small clusters
         echo '"${task.process}":' > versions.yml
-        echo '    iqtree: '\$(iqtree2 --version 2>&1 | head -n1 | sed 's/^/    /') >> versions.yml
-        
+        echo '    iqtree: '\$("\$IQTREE" --version 2>&1 | head -n1 | sed 's/^/    /') >> versions.yml
+
         exit 0
     fi
 
     # Run IQ-TREE with fast mode
-    iqtree2 \\
+    "\$IQTREE" \\
         -s $alignment \\
         -st DNA \\
         -m MFP \\
@@ -76,7 +89,7 @@ process IQTREE_FAST {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        iqtree: \$(iqtree2 --version 2>&1 | head -n1 | sed 's/^/    /')
+        iqtree: \$("\$IQTREE" --version 2>&1 | head -n1 | sed 's/^/    /')
     END_VERSIONS
     """
 }

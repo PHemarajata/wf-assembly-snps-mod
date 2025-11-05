@@ -1,6 +1,6 @@
 process IQTREE_ASC {
   tag "cluster_${cluster_id}"
-  label 'process_high'
+  label 'process_high_gpu'
   container "quay.io/biocontainers/iqtree:2.2.6--h21ec9f0_0"
   
   publishDir "${params.outdir}/Clusters/cluster_${cluster_id}", mode: params.publish_dir_mode, pattern: "*.{treefile,iqtree}"
@@ -30,8 +30,9 @@ process IQTREE_ASC {
     echo "Building final ML tree for cluster ${cluster_id}"
     echo "Representative: ${representative_id}"
 
-    # Choose IQ-TREE binary (handles images exposing 'iqtree' instead of 'iqtree2')
-    IQTREE=\$(command -v iqtree2 || command -v iqtree || true)
+    # Choose IQ-TREE binary (prefer GPU version, fallback to CPU)
+    IQTREE=\$(command -v iqtree2-gpu || command -v iqtree2 || command -v iqtree || true)
+    echo "Using IQ-TREE binary: \$IQTREE"
     if [ -z "\$IQTREE" ]; then
       echo "ERROR: iqtree/iqtree2 not found in PATH"
       : > ${cluster_id}.final.treefile
