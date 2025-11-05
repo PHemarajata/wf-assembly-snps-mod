@@ -2,7 +2,8 @@ process IQTREE_ASC {
   tag "cluster_${cluster_id}"
   label 'process_high_gpu'
   container "quay.io/biocontainers/iqtree:2.2.6--h21ec9f0_0"
-  
+  cache 'lenient'
+
   publishDir "${params.outdir}/Clusters/cluster_${cluster_id}", mode: params.publish_dir_mode, pattern: "*.{treefile,iqtree}"
 
   input:

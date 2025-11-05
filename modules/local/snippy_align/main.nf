@@ -2,6 +2,7 @@ process SNIPPY_ALIGN {
     tag "cluster_${cluster_id}"
     label 'process_high'
     container "staphb/snippy:4.6.0"
+    cache 'lenient'
 
     input:
     tuple val(cluster_id), val(sample_ids), path(assemblies), val(representative_id), path(reference)

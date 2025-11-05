@@ -5,7 +5,8 @@ process BUILD_INTEGRATED_TREE {
     tag "integrated_phylogeny"
     label 'process_high_gpu'
     container "quay.io/biocontainers/iqtree:2.2.6--h21ec9f0_0"
-    
+    cache 'lenient'
+
     publishDir "${params.outdir}/Integrated_Results", mode: params.publish_dir_mode, pattern: "*.{treefile,iqtree,log}"
 
     input:

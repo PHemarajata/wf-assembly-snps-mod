@@ -14,7 +14,7 @@ process CREATE_EXCEL_RUN_SUMMARY_PYTHON {
     path(list_of_files)
 
     output:
-    path("Summary-Report_*.xlsx"), emit: summary
+    path("Summary-Report.xlsx"), emit: summary
     path(".command.{out,err}")
     path("versions.yml")         , emit: versions
 
@@ -22,7 +22,6 @@ process CREATE_EXCEL_RUN_SUMMARY_PYTHON {
     '''
     python3 <<-END_PYTHON
     import glob
-    import datetime
     import pandas as pd
 
     def create_summary_workbook(output_file, tsv_file):
@@ -30,12 +29,9 @@ process CREATE_EXCEL_RUN_SUMMARY_PYTHON {
         data = pd.read_csv(tsv_file, sep="\t")
         data.to_excel(output_file, sheet_name=sheet_name, index=False)
 
-    date = datetime.datetime.now()
-    date_format = date.strftime("%Y-%b-%d_%H-%M-%S")
-
     list_of_files = glob.glob("*.tsv")
 
-    with pd.ExcelWriter(f"Summary-Report_{date_format}.xlsx") as output_file:
+    with pd.ExcelWriter("Summary-Report.xlsx") as output_file:
         for file in list_of_files:
             create_summary_workbook(output_file, file)
 
