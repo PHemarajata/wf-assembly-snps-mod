@@ -18,23 +18,31 @@ def parse_mash_output(mash_file):
     return df
 
 def build_distance_matrix(df, threshold=0.03):
-    """Build a sparse adjacency matrix from Mash distances (square matrix input)."""
+    """Build a sparse adjacency matrix from Mash distances (square matrix input) - VECTORIZED."""
+    print(f"  Matrix shape: {df.shape}")
+
     # Get sample names from index
     samples = list(df.index)
-    sample_to_idx = {sample: idx for idx, sample in enumerate(samples)}
-    # Filter by threshold and build adjacency matrix
-    filtered_df = df.copy()
-    filtered_df[filtered_df > threshold] = np.nan
-    rows = []
-    cols = []
-    for i, sample_i in enumerate(samples):
-        for j, sample_j in enumerate(samples):
-            if i != j and not np.isnan(filtered_df.iloc[i, j]):
-                rows.append(i)
-                cols.append(j)
+    n_samples = len(samples)
+
+    print(f"  Building adjacency matrix with threshold {threshold}...")
+
+    # Convert DataFrame to numpy array for faster operations
+    dist_array = df.values
+
+    # Vectorized threshold filtering - find all pairs below threshold
+    # Exclude diagonal (i == j) by setting it to infinity
+    np.fill_diagonal(dist_array, np.inf)
+
+    # Find all pairs below threshold in one vectorized operation
+    rows, cols = np.where((dist_array <= threshold) & (~np.isnan(dist_array)))
+
+    print(f"  Found {len(rows)} pairwise connections below threshold")
+
     # Create sparse adjacency matrix
     data = [1] * len(rows)
-    adj_matrix = csr_matrix((data, (rows, cols)), shape=(len(samples), len(samples)))
+    adj_matrix = csr_matrix((data, (rows, cols)), shape=(n_samples, n_samples))
+
     return adj_matrix, samples
 
 def cluster_samples(adj_matrix, samples):
