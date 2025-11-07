@@ -17,7 +17,7 @@ process KEEP_INVARIANT_ATCG {
 
     output:
     tuple val(cluster_id), path("${cluster_id}.core.full.aln"), emit: core_alignment
-    path "versions.yml", emit: versions
+    path "${cluster_id}.versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -178,10 +178,10 @@ EOF
     echo "\$input_checksum" > ".${cluster_id}.checksum"
     echo "Stored input checksum for resume optimization"
 
-    cat <<-END_VERSIONS > versions.yml
+    cat << END_VERSIONS > ${cluster_id}.versions.yml
     "${task.process}":
         biopython: \$(python3 -c "import Bio; print(Bio.__version__)")
         python: \$(python3 --version | sed 's/Python //')
-    END_VERSIONS
+END_VERSIONS
     """
 }
