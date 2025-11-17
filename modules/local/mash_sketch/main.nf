@@ -25,6 +25,7 @@ process MASH_SKETCH {
     def min_copies = params.mash_min_copies ?: 1
     """
     mash sketch \\
+        -p ${task.cpus} \\
         -o ${sample_id} \\
         -s ${sketch_size} \\
         -k ${kmer_size} \\

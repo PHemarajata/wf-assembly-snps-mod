@@ -5,7 +5,8 @@ process SKA_ALIGN {
     tag "cluster_${cluster_id}"
     label 'process_medium'
     container "quay.io/biocontainers/ska2:0.3.7--h4349ce8_2"
-    
+    cache 'lenient'
+
     publishDir "${params.outdir}/Clusters/cluster_${cluster_id}", mode: params.publish_dir_mode, pattern: "*.aln.fa"
 
     input:

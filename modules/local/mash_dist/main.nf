@@ -22,13 +22,19 @@ process MASH_DIST {
     def args = task.ext.args ?: ''
     """
     # Create a combined sketch file
+    echo "Combining \$(ls -1 *.msh | wc -l) sketch files..."
     mash paste combined *.msh
 
-    # Calculate pairwise distances
+    # Calculate pairwise distances with parallelization
+    # Using -p flag to utilize multiple threads
+    echo "Computing pairwise distances with ${task.cpus} threads..."
     mash dist \
+        -p ${task.cpus} \
         $args \
         combined.msh \
         combined.msh > mash_distances.tsv
+
+    echo "Generated distance matrix with \$(wc -l < mash_distances.tsv) entries"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

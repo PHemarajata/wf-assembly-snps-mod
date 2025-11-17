@@ -3,9 +3,10 @@ nextflow.enable.dsl=2
 
 process BUILD_INTEGRATED_TREE {
     tag "integrated_phylogeny"
-    label 'process_high'
+    label 'process_high_gpu'
     container "quay.io/biocontainers/iqtree:2.2.6--h21ec9f0_0"
-    
+    cache 'lenient'
+
     publishDir "${params.outdir}/Integrated_Results", mode: params.publish_dir_mode, pattern: "*.{treefile,iqtree,log}"
 
     input:
@@ -24,6 +25,19 @@ process BUILD_INTEGRATED_TREE {
     script:
     def model = params.iqtree_model ?: 'GTR+ASC'
     """
+    # Detect IQ-TREE binary (prefer GPU version)
+    IQTREE=\$(command -v iqtree2-gpu || command -v iqtree2 || command -v iqtree || true)
+    if [ -z "\$IQTREE" ]; then
+        echo "ERROR: iqtree not found in PATH"
+        touch integrated_core_snps.treefile
+        touch integrated_core_snps.iqtree
+        echo "IQ-TREE binary not found in PATH" > integrated_phylogeny_report.txt
+        echo '"${task.process}":' > versions.yml
+        echo '    iqtree: N/A' >> versions.yml
+        exit 0
+    fi
+
+    echo "Using IQ-TREE binary: \$IQTREE"
     echo "Checking integrated alignment file: ${integrated_alignment}"
     
     # Check if alignment file exists and has content
@@ -60,7 +74,7 @@ process BUILD_INTEGRATED_TREE {
         head -10 "${integrated_alignment}" || echo "Could not read alignment file"
         
         # Build tree with IQ-TREE
-        iqtree2 \\
+        "\$IQTREE" \\
             -s ${integrated_alignment} \\
             -st DNA \\
             -m MFP \\
@@ -130,7 +144,7 @@ EOF
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        iqtree: \$(iqtree2 --version 2>&1 | head -n1 | sed 's/^/    /')
+        iqtree: \$("\$IQTREE" --version 2>&1 | head -n1 | sed 's/^/    /')
     END_VERSIONS
     """
 }

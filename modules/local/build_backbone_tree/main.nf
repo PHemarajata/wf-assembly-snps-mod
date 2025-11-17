@@ -4,8 +4,9 @@ nextflow.enable.dsl=2
 process BUILD_BACKBONE_TREE {
   tag "backbone_tree"
   label 'process_high'
+  cache 'lenient'
 
-  // Override via params.backbone_container in your config if you’d like.
+  // Override via params.backbone_container in your config if you'd like.
   // This biocontainer typically includes parsnp, harvesttools, fasttree.
   container "${params.backbone_container ?: 'quay.io/biocontainers/parsnp:1.7.4--hdcf5f25_2'}"
 
