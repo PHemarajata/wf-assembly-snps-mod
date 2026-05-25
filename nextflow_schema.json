@@ -512,6 +512,25 @@
                     "type": "boolean",
                     "default": false,
                     "description": "When grafting is enabled (currently disabled in the recombination-aware workflow), rescale grafted-subtree branch lengths to match the backbone."
+                },
+                "enable_grafting": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Run GRAFT_TREES (graft_trees.py) at the end of the recombination-aware workflow. When false, the backbone tree is used as the final tree."
+                },
+                "graft_parent_edge_mode": {
+                    "type": "string",
+                    "default": "keep",
+                    "description": "Branch-length handling at the join node during grafting. 'keep' preserves the representative leaf's original branch length on the new internal node; 'zero' sets the join branch to 0.",
+                    "enum": [
+                        "keep",
+                        "zero"
+                    ]
+                },
+                "graft_rename_conflicts": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Rename cluster tip labels that collide with backbone labels (excluding the representative) by appending _dup<N> before grafting."
                 }
             }
         }

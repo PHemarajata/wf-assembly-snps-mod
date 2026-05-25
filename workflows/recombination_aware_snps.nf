@@ -82,8 +82,7 @@ include { IQTREE_ASC                                       } from "../modules/lo
 include { COLLECT_REPRESENTATIVES                          } from "../modules/local/collect_representatives/main"
 include { BUILD_BACKBONE_TREE                              } from "../modules/local/build_backbone_tree/main"
 include { SUMMARIZE_CLUSTER_PHYLOGENY                      } from "../modules/local/summarize_cluster_phylogeny/main"
-// GRAFT_SUBTREES removed: grafting of cluster subtrees onto the backbone is disabled
-// include { GRAFT_SUBTREES                                   } from "../modules/local/graft_subtrees/main"
+include { GRAFT_TREES                                      } from "../modules/local/graft_trees/main"
 
 //
 // SUBWORKFLOWS
@@ -415,14 +414,34 @@ workflow RECOMBINATION_AWARE_SNPS {
 
     /*
     ================================================================================
-                    STEP 7: Tree grafting (DISABLED)
+                    STEP 7: Graft cluster trees onto backbone
     ================================================================================
     */
 
-    log.info "STEP 7: Tree grafting disabled — using backbone tree as final tree"
+    if (params.enable_grafting) {
+        log.info "STEP 7: Grafting per-cluster trees onto backbone via graft_trees.py"
 
-    // Grafting disabled: use backbone tree directly as final tree channel
-    ch_final_tree = BUILD_BACKBONE_TREE.out.backbone_tree
+        // Build cluster_representatives.tsv from SELECT_CLUSTER_REPRESENTATIVE
+        // outputs so graft_trees.py has a deterministic cluster_id -> rep_label
+        // mapping (instead of inferring from cluster tip labels).
+        ch_reps_tsv = SELECT_CLUSTER_REPRESENTATIVE.out.representative
+            .map { cluster_id, rep_id_file, rep_fasta ->
+                def rep_label = rep_id_file.text.trim()
+                "${cluster_id}\t${rep_label}\n"
+            }
+            .collectFile(name: 'cluster_representatives.tsv', newLine: false)
+
+        GRAFT_TREES (
+            BUILD_BACKBONE_TREE.out.backbone_tree,
+            IQTREE_ASC.out.final_tree.map { cluster_id, treefile, rep_id -> treefile }.collect(),
+            ch_reps_tsv
+        )
+        ch_versions   = ch_versions.mix(GRAFT_TREES.out.versions)
+        ch_final_tree = GRAFT_TREES.out.grafted_tree
+    } else {
+        log.info "STEP 7: Tree grafting disabled (enable_grafting=false) — using backbone tree as final tree"
+        ch_final_tree = BUILD_BACKBONE_TREE.out.backbone_tree
+    }
 
     /*
     ================================================================================
