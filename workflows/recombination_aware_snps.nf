@@ -81,6 +81,7 @@ include { IQTREE_ASC                                       } from "../modules/lo
 //
 include { COLLECT_REPRESENTATIVES                          } from "../modules/local/collect_representatives/main"
 include { BUILD_BACKBONE_TREE                              } from "../modules/local/build_backbone_tree/main"
+include { SUMMARIZE_CLUSTER_PHYLOGENY                      } from "../modules/local/summarize_cluster_phylogeny/main"
 // GRAFT_SUBTREES removed: grafting of cluster subtrees onto the backbone is disabled
 // include { GRAFT_SUBTREES                                   } from "../modules/local/graft_subtrees/main"
 
@@ -160,7 +161,9 @@ workflow RECOMBINATION_AWARE_SNPS {
             tuple(sample_id, file)
         }
 
-    // Handle reference genome (optional)
+    // Handle reference genome (optional). When provided, ch_reference carries the
+    // path; when absent, ch_reference emits a NO_FILE sentinel so downstream
+    // processes can branch on file existence without requiring optional inputs.
     if (params.ref) {
         REF_INPUT_CHECK (
             ch_ref_input
@@ -177,7 +180,7 @@ workflow RECOMBINATION_AWARE_SNPS {
             .flatten()
             .first()
     } else {
-        ch_reference = Channel.empty()
+        ch_reference = Channel.value(file("${projectDir}/assets/NO_FILE"))
     }
 
     /*
@@ -243,13 +246,28 @@ workflow RECOMBINATION_AWARE_SNPS {
     ch_versions = ch_versions.mix(SELECT_CLUSTER_REPRESENTATIVE.out.versions)
 
     // Create channel for alignment: [ cluster_id, sample_ids, assemblies, representative_id, reference ]
-    ch_for_alignment = ch_clustered_assemblies
-        .join(SELECT_CLUSTER_REPRESENTATIVE.out.representative.map { cluster_id, rep_id, rep_file -> 
-            tuple(cluster_id, rep_id, rep_file) 
-        }, by: 0)
-        .map { cluster_id, sample_ids, assemblies, rep_id, rep_file ->
-            tuple(cluster_id, sample_ids, assemblies, rep_id, rep_file)
-        }
+    // If params.use_global_reference is enabled and params.ref was supplied, swap
+    // the per-cluster medoid for the global reference so every cluster aligns
+    // against the same anchor (e.g., K96243). Default keeps medoid behavior.
+    if (params.use_global_reference && params.ref) {
+        log.info "use_global_reference=true: overriding per-cluster medoid with params.ref for alignment"
+        ch_for_alignment = ch_clustered_assemblies
+            .join(SELECT_CLUSTER_REPRESENTATIVE.out.representative.map { cluster_id, rep_id, rep_file ->
+                tuple(cluster_id, rep_id)
+            }, by: 0)
+            .combine(ch_reference)
+            .map { cluster_id, sample_ids, assemblies, rep_id, global_ref ->
+                tuple(cluster_id, sample_ids, assemblies, rep_id, global_ref)
+            }
+    } else {
+        ch_for_alignment = ch_clustered_assemblies
+            .join(SELECT_CLUSTER_REPRESENTATIVE.out.representative.map { cluster_id, rep_id, rep_file ->
+                tuple(cluster_id, rep_id, rep_file)
+            }, by: 0)
+            .map { cluster_id, sample_ids, assemblies, rep_id, rep_file ->
+                tuple(cluster_id, sample_ids, assemblies, rep_id, rep_file)
+            }
+    }
 
     // Choose alignment method: Snippy (preferred) or Parsnp (fallback)
     if (params.alignment_method == 'snippy' || !params.alignment_method) {
@@ -372,9 +390,28 @@ workflow RECOMBINATION_AWARE_SNPS {
     log.info "STEP 6: Building backbone tree from representatives"
 
     BUILD_BACKBONE_TREE (
-        COLLECT_REPRESENTATIVES.out.representatives_fasta
+        COLLECT_REPRESENTATIVES.out.representatives_fasta,
+        ch_reference
     )
     ch_versions = ch_versions.mix(BUILD_BACKBONE_TREE.out.versions)
+
+    /*
+    ================================================================================
+                    STEP 6b: Roll up per-cluster phylogeny status
+    ================================================================================
+    */
+
+    log.info "STEP 6b: Aggregating per-cluster diagnostics into cluster_phylogeny_summary.csv"
+
+    SUMMARIZE_CLUSTER_PHYLOGENY (
+        CLUSTER_GENOMES.out.clusters,
+        GUBBINS_CLUSTER.out.diagnostics.collect(),
+        IQTREE_ASC.out.final_tree.map { cluster_id, treefile, rep_id -> treefile }.collect(),
+        IQTREE_ASC.out.log.map { cluster_id, iqtree_log -> iqtree_log }.collect(),
+        GUBBINS_CLUSTER.out.filtered_alignment.map { cluster_id, aln -> aln }.collect(),
+        GUBBINS_CLUSTER.out.recombination_gff.map { cluster_id, gff -> gff }.collect()
+    )
+    ch_versions = ch_versions.mix(SUMMARIZE_CLUSTER_PHYLOGENY.out.versions)
 
     /*
     ================================================================================

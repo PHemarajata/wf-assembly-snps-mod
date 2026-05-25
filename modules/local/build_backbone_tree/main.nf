@@ -16,6 +16,7 @@ process BUILD_BACKBONE_TREE {
 
   input:
   path representatives_fasta
+  path reference_genome    // Pass a real FASTA to anchor Parsnp, or "NO_FILE" sentinel to fall back to head -n1
 
   output:
   path "backbone.treefile",       emit: backbone_tree
@@ -51,7 +52,19 @@ process BUILD_BACKBONE_TREE {
             echo "Running Parsnp backbone..."
             mkdir -p reps
             awk '/^>/{fn="reps/" substr(\$0,2) ".fa"}{print > fn}' "${representatives_fasta}"
-            ref=\$(ls reps/*.fa | head -n1 || true)
+
+            # Prefer a user-supplied global reference (e.g., K96243); fall back to the
+            # first representative if no real reference file was passed in.
+            ref=""
+            if [ -s "${reference_genome}" ] && [ "\$(basename "${reference_genome}")" != "NO_FILE" ]; then
+                cp "${reference_genome}" reps/__global_reference.fa
+                ref="reps/__global_reference.fa"
+                echo "Using user-supplied reference for backbone: \$(basename "${reference_genome}")"
+            else
+                ref=\$(ls reps/*.fa | head -n1 || true)
+                echo "No global reference provided; using first representative as backbone ref: \$ref"
+            fi
+
             if [ -z "\$ref" ]; then
                 echo "No reference resolved; falling back to FastTree."
                 cp "${representatives_fasta}" backbone_alignment.fa
