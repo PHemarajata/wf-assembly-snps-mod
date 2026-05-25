@@ -10,7 +10,9 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["outdir"],
+            "required": [
+                "outdir"
+            ],
             "properties": {
                 "input": {
                     "type": "string",
@@ -33,6 +35,12 @@
                     "default": "1k",
                     "hidden": true,
                     "description": "Minimum file size of input data."
+                },
+                "use_global_reference": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "If true, force every per-cluster alignment (and the backbone tree) to use --ref as the reference instead of the per-cluster medoid. Recommended for BP studies wanting cross-cluster comparability against a canonical reference such as K96243.",
+                    "fa_icon": "fas fa-anchor"
                 }
             }
         },
@@ -46,19 +54,29 @@
                     "type": "string",
                     "default": "parsnp",
                     "description": "Specify what alignment tool to use to identify SNPs.",
-                    "enum": ["parsnp"]
+                    "enum": [
+                        "parsnp"
+                    ]
                 },
                 "tree_method": {
                     "type": "string",
                     "default": "fasttree",
                     "description": "Tool used to infer phylogeny after masking positions due to recombination.",
-                    "enum": ["fasttree", "raxml"]
+                    "enum": [
+                        "fasttree",
+                        "raxml"
+                    ]
                 },
                 "recombination": {
                     "type": "string",
                     "default": "both",
                     "description": "Tool used to classify SNPs due to recombination.",
-                    "enum": ["gubbins", "clonalframeml", "both", "none"]
+                    "enum": [
+                        "gubbins",
+                        "clonalframeml",
+                        "both",
+                        "none"
+                    ]
                 }
             }
         },
@@ -136,7 +154,11 @@
                     "type": "string",
                     "default": "cluster",
                     "description": "Workflow mode for scalable analysis.",
-                    "enum": ["cluster", "place", "global"]
+                    "enum": [
+                        "cluster",
+                        "place",
+                        "global"
+                    ]
                 },
                 "mash_threshold": {
                     "type": "number",
@@ -160,13 +182,19 @@
                 },
                 "gubbins_tree_builder": {
                     "type": "string",
-                    "default": "hybrid",
+                    "default": "iqtree",
                     "description": "Tree builder method for Gubbins.",
-                    "enum": ["hybrid", "fasttree", "raxml", "iqtree"]
+                    "enum": [
+                        "hybrid",
+                        "fasttree",
+                        "raxml",
+                        "iqtree",
+                        "rapidnj"
+                    ]
                 },
                 "gubbins_min_snps": {
                     "type": "integer",
-                    "default": 5,
+                    "default": 2,
                     "description": "Minimum number of SNPs for Gubbins analysis."
                 },
                 "iqtree_model": {
@@ -182,6 +210,51 @@
                 "existing_mat": {
                     "type": "string",
                     "description": "Path to existing UShER MAT file for incremental placement."
+                },
+                "merge_singletons": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Merge singleton clusters into their nearest non-singleton neighbor cluster, subject to mash_threshold and max_cluster_size."
+                },
+                "mash_sketch_size": {
+                    "type": "integer",
+                    "default": 10000,
+                    "description": "Mash sketch size. Larger values stabilize the distance distribution near tight thresholds. The BP profile bumps this to 50000."
+                },
+                "mash_kmer_size": {
+                    "type": "integer",
+                    "default": 21,
+                    "description": "K-mer size used for Mash sketching."
+                },
+                "mash_min_copies": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Minimum number of copies of each k-mer required for inclusion in a Mash sketch."
+                },
+                "gubbins_use_hybrid": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "When no starting tree is available, use the hybrid first-builder + tree-builder pathway in Gubbins."
+                },
+                "gubbins_first_tree_builder": {
+                    "type": "string",
+                    "default": "rapidnj",
+                    "description": "First-tree builder used by Gubbins in hybrid or no-starting-tree mode.",
+                    "enum": [
+                        "rapidnj",
+                        "fasttree",
+                        "raxml",
+                        "iqtree"
+                    ]
+                },
+                "iqtree_asc_model": {
+                    "type": "string",
+                    "default": "GTR+ASC",
+                    "description": "Substitution model passed to IQ-TREE for the final per-cluster ML tree on Gubbins-filtered SNPs."
+                },
+                "iqtree_fconst": {
+                    "type": "string",
+                    "description": "Optional constant-site counts for IQ-TREE ascertainment bias correction when using full alignments (e.g. 'a,c,g,t' or '100,120,98,115')."
                 }
             }
         },
@@ -298,7 +371,14 @@
                     "description": "Method used to save pipeline results to output directory.",
                     "help_text": "The Nextflow `publishDir` option specifies which intermediate files should be saved to the output directory. This option tells the pipeline what method should be used to move these files. See [Nextflow docs](https://www.nextflow.io/docs/latest/process.html#publishdir) for details.",
                     "fa_icon": "fas fa-copy",
-                    "enum": ["symlink", "rellink", "link", "copy", "copyNoFollow", "move"],
+                    "enum": [
+                        "symlink",
+                        "rellink",
+                        "link",
+                        "copy",
+                        "copyNoFollow",
+                        "move"
+                    ],
                     "hidden": true
                 },
                 "email": {
@@ -370,6 +450,68 @@
                     "description": "Show all params when using `--help`",
                     "hidden": true,
                     "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
+                },
+                "enable_resume_optimization": {
+                    "type": "boolean",
+                    "default": true,
+                    "hidden": true,
+                    "description": "Enable checksum-based resume optimization for cached work files."
+                },
+                "work_cache_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "hidden": true,
+                    "description": "Directory used for cached work files when resume optimization is enabled."
+                }
+            }
+        },
+        "recombination_aware_workflow_options": {
+            "title": "Recombination-aware workflow options",
+            "type": "object",
+            "fa_icon": "fas fa-project-diagram",
+            "description": "Parameters for the per-cluster recombination-aware analysis (Mash clustering -> per-cluster alignment -> Gubbins -> IQ-TREE -> backbone tree).",
+            "properties": {
+                "recombination_aware_mode": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Run the recombination-aware workflow (per-cluster Gubbins + IQ-TREE with ASC correction + backbone tree). The BP profile enables this by default."
+                },
+                "alignment_method": {
+                    "type": "string",
+                    "default": "snippy",
+                    "description": "Per-cluster alignment tool used in recombination-aware mode.",
+                    "enum": [
+                        "snippy",
+                        "parsnp"
+                    ]
+                },
+                "backbone_method": {
+                    "type": "string",
+                    "default": "parsnp",
+                    "description": "Tool used to build the backbone tree from per-cluster representatives.",
+                    "enum": [
+                        "parsnp",
+                        "fasttree"
+                    ]
+                },
+                "backbone_fasttree_opts": {
+                    "type": "string",
+                    "default": "-nt -gtr",
+                    "description": "Command-line flags passed to FastTree when building the backbone tree."
+                },
+                "backbone_container": {
+                    "type": "string",
+                    "description": "Optional override for the container used by BUILD_BACKBONE_TREE."
+                },
+                "integrate_results": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Integrate per-cluster outputs into combined summaries at the end of the workflow."
+                },
+                "rescale_grafted_branches": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "When grafting is enabled (currently disabled in the recombination-aware workflow), rescale grafted-subtree branch lengths to match the backbone."
                 }
             }
         }
@@ -401,6 +543,9 @@
         },
         {
             "$ref": "#/definitions/generic_options"
+        },
+        {
+            "$ref": "#/definitions/recombination_aware_workflow_options"
         }
     ]
 }
