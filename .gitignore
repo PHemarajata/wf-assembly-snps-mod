@@ -22,6 +22,9 @@ contextual_fasta/
 downsample_out/
 # Pipeline result directories (large outputs)
 results_downsampled*/
+results_a100*/
+# Reference genome staged via Drive (not committed)
+reference/
 # Python bytecode
 __pycache__/
 # Ad-hoc run logs
