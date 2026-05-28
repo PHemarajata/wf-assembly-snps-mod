@@ -15,3 +15,15 @@ timeline.html
 *.swp
 *.bak
 *.orig
+# Assembly databases
+cdc_fasta/
+contextual_fasta/
+# Downsampling outputs (generated artifacts)
+downsample_out/
+# Pipeline result directories (large outputs)
+results_downsampled*/
+# Python bytecode
+__pycache__/
+# Ad-hoc run logs
+resume_*.log
+downsample_out_sweep.log

@@ -317,6 +317,83 @@ chmod +x run_workflow.sh
 ./run_workflow.sh --input assemblies/ --mode scalable -- --mash_threshold 0.025
 ```
 
+## 🧮 Downsampling Contextual Genomes
+
+When you have far more contextual (public) assemblies than you can analyze — especially for a homogeneous species like *B. pseudomallei*, where dense, redundant sampling causes single‑linkage Mash clustering to chain unrelated clades into one mega‑cluster (which then gets sliced into arbitrary `max_cluster_size` chunks) — use the standalone `bin/downsample_contextual.py` script to build a balanced, de‑redundant input **before** running the pipeline.
+
+It applies a **hybrid strategy**: (1) collapse near‑identical genomes *within each country* using Mash distance (one representative per redundancy group — this breaks the chaining and auto‑scales how many genomes are kept per region to the diversity actually present), then (2) enforce a per‑country floor and cap so rare regions stay represented and an over‑sampled region cannot dominate. Study isolates (e.g. CDC `IP-`/`IE-`) are **always kept in full**. The output is a `sample,file` samplesheet that `--input` accepts directly, so the expensive high‑resolution Mash run (`--mash_sketch_size 100000`) happens only on the reduced set.
+
+### Prerequisites
+
+```bash
+# Only the `mash` binary (>=2.x) and Python 3 standard library are required.
+mash --version
+```
+
+### Workflow
+
+```bash
+# Make the script executable
+chmod +x bin/downsample_contextual.py
+
+# Step 1 (optional): sweep dereplication thresholds to see how aggressively the
+# population collapses, then pick --derep-threshold from the report.
+./bin/downsample_contextual.py \
+  --contextual-dir contextual_fasta \
+  --cdc-dir cdc_fasta \
+  --metadata contextual_fasta/megamix_bestshot_cleaned_dropGCF_on_Fdups.tsv \
+  --derep-sketch-size 50000 --threads 16 \
+  --sweep 0.0001,0.0005,0.001,0.005,0.01 \
+  --outdir downsample_out
+#   -> downsample_out/derep_sweep.tsv  (and a cached downsample_out/mash_distances.tsv)
+
+# Step 2: select genomes. Reuse the cached distances from Step 1 with --mash-dist.
+./bin/downsample_contextual.py \
+  --contextual-dir contextual_fasta \
+  --cdc-dir cdc_fasta \
+  --metadata contextual_fasta/megamix_bestshot_cleaned_dropGCF_on_Fdups.tsv \
+  --mash-dist downsample_out/mash_distances.tsv \
+  --derep-threshold 0.001 \
+  --target-total 1000 \
+  --min-per-country 3 --max-per-country 200 \
+  --seed 42 \
+  --outdir downsample_out
+
+# Step 3: feed the samplesheet to the pipeline at high Mash resolution.
+nextflow run main.nf \
+  -profile bp,docker \
+  --input downsample_out/samplesheet.csv \
+  --recombination_aware_mode --integrate_results \
+  --mash_sketch_size 100000 \
+  --mash_threshold 0.001 --max_cluster_size 50 \
+  -resume
+```
+
+### Key Options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--target-total` | 1000 | Target total genomes (study isolates + downsampled contextual). |
+| `--derep-threshold` | 0.0005 | Mash distance at/below which genomes are treated as redundant. |
+| `--derep-sketch-size` | 50000 | Sketch size for the one‑time selection Mash run. |
+| `--min-per-country` / `--max-per-country` | 3 / 200 | Per‑country floor and cap for geographic balancing. |
+| `--mash-dist` | — | Reuse a precomputed `mash triangle`/`mash dist` file (skips running Mash). |
+| `--sweep` | — | Comma‑separated thresholds; write a group‑count report and exit. |
+| `--unmatched` | drop | `drop` excludes genomes with no metadata row; `unknown` keeps them in an `Unknown` bucket. |
+| `--seed` | 42 | Seed for reproducible representative selection. |
+
+### Outputs (in `--outdir`)
+
+- **`samplesheet.csv`** — `sample,file` for the pipeline (study isolates + selected contextual).
+- **`selection_report.tsv`** — per‑genome fate: country, subregion, date, group, role (`cdc`/`representative`/`redundant`), kept, reason.
+- **`country_summary.tsv`** — per‑country `n_input`, `n_after_derep`, `n_final`.
+- **`unmatched_no_metadata.tsv`** — genomes with no metadata row and how they were dispositioned.
+- **`mash_distances.tsv`** — cached Mash distances (reuse via `--mash-dist`).
+
+### Metadata matching notes
+
+Genomes are matched to the metadata TSV by **accession with the version ignored** (e.g. on‑disk `GCA_000182195.1.fasta` matches a `GCA_000182195_2` metadata row), with `FASTA_name`/`sample_id` as fallbacks; this is robust to the dot‑vs‑underscore version style differences between filenames and the TSV. Duplicate filename copies of the same genome (e.g. `GCA_x.2.fasta` and `GCA_x_2.fasta`) are collapsed automatically.
+
 ## 🌳 Standalone Tree Grafting
 
 When the main workflow encounters issues in the final tree grafting step, you can use the standalone `graft_trees.py` script to complete the phylogenetic analysis separately.

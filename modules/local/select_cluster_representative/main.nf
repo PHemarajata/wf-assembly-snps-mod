@@ -74,20 +74,52 @@ print(f"Representative for cluster {cluster_id}: {representative_id}")
 with open("representative_id.txt", "w") as f:
     f.write(representative_id + "\\n")
 
+def version_stripped(name):
+    # Drop a trailing assembly version ('.1' or '_1', up to 3 digits) so that a
+    # version-stripped matrix label ('GCA_000259775') matches a file that keeps
+    # the version ('GCA_000259775.1.fasta').
+    b = normalize_name(name)
+    if '.' in b:
+        head, tail = b.rsplit('.', 1)
+        if tail.isdigit() and len(tail) <= 3:
+            return head
+    if '_' in b:
+        head, tail = b.rsplit('_', 1)
+        if tail.isdigit() and len(tail) <= 3:
+            return head
+    return b
+
 assembly_files = [f for f in os.listdir('.') if f.endswith('.fa') or f.endswith('.fasta') or f.endswith('.fna')]
 representative_file = None
 
+# 1) exact normalized match
 for assembly_file in assembly_files:
-    base_name = normalize_name(assembly_file)
-    if base_name == representative_id:
+    if normalize_name(assembly_file) == representative_id:
         representative_file = assembly_file
         break
+
+# 2) version-tolerant match: MASH_TAB_TO_MATRIX strips the assembly version from
+#    its labels, so representative_id (e.g. 'GCA_000259775') can lack the version
+#    that the staged file keeps ('GCA_000259775.1.fasta'). Compare both stripped.
+if representative_file is None:
+    for assembly_file in assembly_files:
+        if (version_stripped(assembly_file) == representative_id
+                or version_stripped(assembly_file) == version_stripped(representative_id)):
+            representative_file = assembly_file
+            break
 
 if representative_file:
     shutil.copy(representative_file, f"{representative_id}.fa")
     print(f"Copied {representative_file} to {representative_id}.fa")
+elif assembly_files:
+    # Never emit a 1-bp placeholder: an empty/degenerate reference collapses the
+    # per-cluster Snippy core alignment and makes Gubbins fail. Fall back to a
+    # real assembly from the cluster instead.
+    shutil.copy(assembly_files[0], f"{representative_id}.fa")
+    print(f"WARNING: could not match representative {representative_id}; "
+          f"using {assembly_files[0]} as representative instead")
 else:
-    print(f"Warning: Could not find assembly file for representative {representative_id}")
+    print(f"ERROR: no assembly files staged for cluster {cluster_id}")
     with open(f"{representative_id}.fa", 'w') as f:
         f.write(f">{representative_id}\\nN\\n")
 EOF
