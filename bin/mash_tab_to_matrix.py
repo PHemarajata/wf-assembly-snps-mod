@@ -1,44 +1,42 @@
 #!/usr/bin/env python3
 """
-Convert Mash tabular output to a square distance matrix for downstream clustering/medoid selection.
-Usage:
-    python mash_tab_to_matrix.py mash_tabular.tsv mash_matrix.tsv
-"""
-import sys
-import pandas as pd
-import numpy as np
-import os
+Convert Mash tabular output to a square distance matrix for downstream
+clustering / medoid selection.
 
-def normalize_name(name):
-    return os.path.splitext(os.path.basename(str(name)))[0]
+Behaviour-compatible drop-in for the original script.  The original filled the
+matrix with
 
-def main(tabular_file, matrix_file):
-    # Mash tabular columns: ref, query, distance, p_value, shared_hashes
-    df = pd.read_csv(tabular_file, sep='\t', header=None,
-                     names=['ref', 'query', 'distance', 'p_value', 'shared_hashes'])
-    # Filter out rows where ref or query is not a string
-    df = df[df['ref'].apply(lambda x: isinstance(x, str))]
-    df = df[df['query'].apply(lambda x: isinstance(x, str))]
-    # Normalize sample names
-    df['ref'] = df['ref'].apply(normalize_name)
-    df['query'] = df['query'].apply(normalize_name)
-    # Get all unique sample names
-    samples = sorted(set(df['ref'].tolist() + df['query'].tolist()))
-    # Initialize square matrix
-    matrix = pd.DataFrame(np.nan, index=samples, columns=samples)
-    # Fill in distances
     for _, row in df.iterrows():
         matrix.at[row['ref'], row['query']] = row['distance']
-        matrix.at[row['query'], row['ref']] = row['distance']  # symmetric
-    # Fill diagonal with zeros
-    np.fill_diagonal(matrix.values, 0)
-    # Normalize matrix row/col names
-    matrix.index = [normalize_name(x) for x in matrix.index]
-    matrix.columns = [normalize_name(x) for x in matrix.columns]
-    # Save as TSV
-    matrix.to_csv(matrix_file, sep='\t')
+        matrix.at[row['query'], row['ref']] = row['distance']
 
-if __name__ == '__main__':
+which is O(n^2) Python-level iterations with two label lookups each: at n = 2000
+that is 4,000,000 rows.  The fill is now a single pair of numpy fancy-index
+assignments (see bin/mash_matrix_io.read_mash_edges).
+
+Semantics preserved exactly:
+  - sample labels are basename-minus-one-extension, sorted;
+  - unreported pairs remain NaN;
+  - the matrix is symmetrized by assigning both (i,j) and (j,i);
+  - the diagonal is forced to 0.
+
+Usage:
+    python3 mash_tab_to_matrix.py mash_tabular.tsv mash_matrix.tsv
+"""
+
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from mash_matrix_io import read_mash_edges, write_square  # noqa: E402
+
+
+def main(tabular_file, matrix_file):
+    labels, matrix = read_mash_edges(tabular_file)
+    write_square(labels, matrix, matrix_file)
+
+
+if __name__ == "__main__":
     if len(sys.argv) != 3:
         print("Usage: python mash_tab_to_matrix.py mash_tabular.tsv mash_matrix.tsv")
         sys.exit(1)

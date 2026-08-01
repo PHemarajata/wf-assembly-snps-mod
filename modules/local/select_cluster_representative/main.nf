@@ -1,134 +1,65 @@
 #!/usr/bin/env nextflow
 nextflow.enable.dsl=2
 
+/*
+ * SELECT_CLUSTER_REPRESENTATIVE
+ *
+ * Changes relative to the original module:
+ *
+ * 1. No more runtime `pip install pandas numpy`.  Container pinned to
+ *    quay.io/biocontainers/pyseer:1.4.2--pyhdfd78af_0, whose contents were
+ *    verified by pulling the image manifest from the quay.io registry API and
+ *    listing the conda-meta/ records in its layers:
+ *        python 3.8.20, pandas 2.0.3, numpy 1.22.4, scipy 1.7.0,
+ *        scikit-learn 1.3.2, mash 2.3
+ *    (biocontainers/python:3.9--1, used before, ships none of them.)
+ *
+ * 2. The 100-line inline Python heredoc moved to bin/select_representative.py.
+ *    Heredocs interpolate Nextflow's ${...} into Python source, so every `$` in
+ *    the script had to be escaped and the script could not be run or tested
+ *    outside a pipeline execution.
+ *
+ * 3. The matrix input is now the CLUSTER'S OWN submatrix, written once by
+ *    CLUSTER_GENOMES (--emit-submatrices).  The original staged and re-parsed
+ *    the full n x n mash_matrix.tsv in every per-cluster task: with n = 2000 and
+ *    ~40-60 clusters that is 40-60 full parses of a 2000-column TSV to answer a
+ *    question about <= max_cluster_size rows.  If a full matrix is passed
+ *    instead (e.g. the merged_small_clusters pseudo-cluster, which has no
+ *    submatrix), the script falls back to reading it with pandas usecols so only
+ *    the cluster's columns are materialized.
+ *
+ * The medoid computation itself is unchanged: argmin of the NaN-skipping row
+ * sums, O(k^2) per cluster, which is negligible at k <= max_cluster_size.
+ */
+
 process SELECT_CLUSTER_REPRESENTATIVE {
     tag "cluster_${cluster_id}"
-    label 'process_low'
-    container "quay.io/biocontainers/python:3.9--1"
+    label 'process_single'
+    container "quay.io/biocontainers/pyseer:1.4.2--pyhdfd78af_0"
 
     input:
-    tuple val(cluster_id), val(sample_ids), path(assemblies)
-    path mash_distances
+    tuple val(cluster_id), val(sample_ids), path(assemblies), path(cluster_matrix)
 
     output:
-        tuple val(cluster_id), path("representative_id.txt"), path("*.fa"), emit: representative
-        path "versions.yml", emit: versions
+    tuple val(cluster_id), path("representative_id.txt"), path("*.fa"), emit: representative
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
     """
-    pip install pandas numpy
+    python3 ${projectDir}/bin/select_representative.py \\
+        --cluster-id '${cluster_id}' \\
+        --sample-ids '${sample_ids}' \\
+        --matrix '${cluster_matrix}' \\
+        --out-id representative_id.txt
 
-python3 << 'EOF'
-import pandas as pd
-import numpy as np
-import os
-import shutil
-
-def normalize_name(name):
-    return os.path.splitext(os.path.basename(name))[0]
-
-def select_medoid(cluster_id, sample_ids, mash_distances_file):
-    print(f"Selecting representative for cluster {cluster_id}")
-    print(f"Samples in cluster: {sample_ids}")
-
-    try:
-        distances_df = pd.read_csv(mash_distances_file, sep='\t', index_col=0)
-        distances_df.index = [normalize_name(x) for x in distances_df.index]
-        distances_df.columns = [normalize_name(x) for x in distances_df.columns]
-        print(f"Loaded distance matrix with shape: {distances_df.shape}")
-    except Exception as e:
-        print(f"Error reading distance matrix: {e}")
-        return normalize_name(sample_ids[0])
-
-    # Normalize all sample_ids
-    normalized_ids = [normalize_name(s) for s in sample_ids]
-    cluster_samples = [s for s in normalized_ids if s in distances_df.index and s in distances_df.columns]
-
-    if len(cluster_samples) < len(normalized_ids):
-        print(f"Warning: Only {len(cluster_samples)} of {len(normalized_ids)} samples found in distance matrix")
-        if not cluster_samples:
-            print("No samples found in distance matrix, selecting first sample")
-            return normalized_ids[0]
-
-    if len(cluster_samples) == 1:
-        return cluster_samples[0]
-
-    cluster_distances = distances_df.loc[cluster_samples, cluster_samples]
-    distance_sums = cluster_distances.sum(axis=1)
-    medoid = distance_sums.idxmin()
-
-    print(f"Selected medoid: {medoid} (sum of distances: {distance_sums[medoid]:.6f})")
-    return medoid
-
-cluster_id = "${cluster_id}"
-sample_ids = "${sample_ids}".strip('[]').replace(' ', '').split(',')
-mash_distances_file = "${mash_distances}"
-
-representative_id = select_medoid(cluster_id, sample_ids, mash_distances_file)
-print(f"Representative for cluster {cluster_id}: {representative_id}")
-
-# Write representative_id to file for Nextflow output
-with open("representative_id.txt", "w") as f:
-    f.write(representative_id + "\\n")
-
-def version_stripped(name):
-    # Drop a trailing assembly version ('.1' or '_1', up to 3 digits) so that a
-    # version-stripped matrix label ('GCA_000259775') matches a file that keeps
-    # the version ('GCA_000259775.1.fasta').
-    b = normalize_name(name)
-    if '.' in b:
-        head, tail = b.rsplit('.', 1)
-        if tail.isdigit() and len(tail) <= 3:
-            return head
-    if '_' in b:
-        head, tail = b.rsplit('_', 1)
-        if tail.isdigit() and len(tail) <= 3:
-            return head
-    return b
-
-assembly_files = [f for f in os.listdir('.') if f.endswith('.fa') or f.endswith('.fasta') or f.endswith('.fna')]
-representative_file = None
-
-# 1) exact normalized match
-for assembly_file in assembly_files:
-    if normalize_name(assembly_file) == representative_id:
-        representative_file = assembly_file
-        break
-
-# 2) version-tolerant match: MASH_TAB_TO_MATRIX strips the assembly version from
-#    its labels, so representative_id (e.g. 'GCA_000259775') can lack the version
-#    that the staged file keeps ('GCA_000259775.1.fasta'). Compare both stripped.
-if representative_file is None:
-    for assembly_file in assembly_files:
-        if (version_stripped(assembly_file) == representative_id
-                or version_stripped(assembly_file) == version_stripped(representative_id)):
-            representative_file = assembly_file
-            break
-
-if representative_file:
-    shutil.copy(representative_file, f"{representative_id}.fa")
-    print(f"Copied {representative_file} to {representative_id}.fa")
-elif assembly_files:
-    # Never emit a 1-bp placeholder: an empty/degenerate reference collapses the
-    # per-cluster Snippy core alignment and makes Gubbins fail. Fall back to a
-    # real assembly from the cluster instead.
-    shutil.copy(assembly_files[0], f"{representative_id}.fa")
-    print(f"WARNING: could not match representative {representative_id}; "
-          f"using {assembly_files[0]} as representative instead")
-else:
-    print(f"ERROR: no assembly files staged for cluster {cluster_id}")
-    with open(f"{representative_id}.fa", 'w') as f:
-        f.write(f">{representative_id}\\nN\\n")
-EOF
-
-cat <<-END_VERSIONS > versions.yml
+    cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        python: \$(python --version | sed 's/Python //')
-        pandas: \$(python -c "import pandas; print(pandas.__version__)")
-        numpy: \$(python -c "import numpy; print(numpy.__version__)")
-END_VERSIONS
+        python: \$(python3 --version | sed 's/Python //')
+        pandas: \$(python3 -c "import pandas; print(pandas.__version__)")
+        numpy: \$(python3 -c "import numpy; print(numpy.__version__)")
+    END_VERSIONS
     """
 }
