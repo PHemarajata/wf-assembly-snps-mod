@@ -62,7 +62,19 @@ include { MASH_TAB_TO_MATRIX                               } from "../modules/lo
 // MODULES: Step 2 - Per-cluster whole/core alignment
 //
 include { SELECT_CLUSTER_REPRESENTATIVE                    } from "../modules/local/select_cluster_representative/main"
-include { SNIPPY_ALIGN                                     } from "../modules/local/snippy_align/main"
+// Snippy is now scatter (one task per cluster-sample) + snippy-core gather. The old
+// monolithic SNIPPY_ALIGN ran every sample serially inside a single task.
+include { SNIPPY_SCATTER                                   } from "../modules/local/snippy_align/main"
+include { SNIPPY_CORE_GATHER                               } from "../modules/local/snippy_align/main"
+// SKA2 reference-anchored path (alignment_method='ska'): fast low-spec alternative.
+// NOTE: `ska map`, not `ska align`. ska's own help calls `align` an "unordered
+// alignment" and `map` an "ordered alignment using a reference sequence"; Gubbins
+// scans for recombination spatially along the genome, so unordered columns are
+// invalid input. Measured here with ska 0.5.1 on 30 draft assemblies: map 0.49 s ->
+// 376,564 columns, align 0.29 s -> 284,078 columns (both ~99.9% constant, so column
+// COUNT is not the discriminator -- ordering is).
+include { SKA_BUILD_SAMPLE                                 } from "../modules/local/ska_map_align/main"
+include { SKA_MAP_ALIGN                                    } from "../modules/local/ska_map_align/main"
 include { CORE_GENOME_ALIGNMENT_PARSNP                     } from "../modules/local/core_genome_alignment_parsnp/main"
 include { KEEP_INVARIANT_ATCG                              } from "../modules/local/keep_invariant_atcg/main"
 
@@ -268,16 +280,104 @@ workflow RECOMBINATION_AWARE_SNPS {
             }
     }
 
-    // Choose alignment method: Snippy (preferred) or Parsnp (fallback)
+    // Choose alignment method: Snippy (scatter/gather), SKA2 (fast low-spec), or Parsnp
     if (params.alignment_method == 'snippy' || !params.alignment_method) {
-        log.info "Using Snippy for per-cluster whole genome alignment"
-        
-        SNIPPY_ALIGN (
-            ch_for_alignment
+        log.info "Using Snippy (scattered per sample) for per-cluster whole genome alignment"
+
+        // SCATTER: explode [cluster, [sample_ids], [assemblies], rep_id, ref] into one
+        // emission per (cluster, sample). sample_id and assembly are transposed
+        // TOGETHER, so the sample->file binding is carried by the channel. This
+        // replaces the old in-task `[[ "$file" == *"$sample"* ]]` substring search,
+        // which mis-bound any sample id that was a substring of another.
+        ch_snippy_scatter = ch_for_alignment
+            .flatMap { cluster_id, sample_ids, assemblies, rep_id, ref ->
+                def ids   = sample_ids  instanceof List ? sample_ids  : [sample_ids]
+                def files = assemblies  instanceof List ? assemblies  : [assemblies]
+                assert ids.size() == files.size() :
+                    "cluster ${cluster_id}: ${ids.size()} sample ids but ${files.size()} assemblies"
+                // Sorting by sample id makes snippy-core's column order deterministic
+                // across resumes, which matters because Gubbins output is order-sensitive.
+                def pairs = [ids, files].transpose().sort { it[0] }
+                pairs
+                    .findAll { sid, asm -> sid != rep_id }   // reference is not aligned to itself
+                    .collect { sid, asm -> tuple(cluster_id, sid, asm, rep_id, ref) }
+            }
+
+        SNIPPY_SCATTER (
+            ch_snippy_scatter
         )
-        ch_versions = ch_versions.mix(SNIPPY_ALIGN.out.versions)
-        ch_core_alignments = SNIPPY_ALIGN.out.core_alignment
-        
+        ch_versions = ch_versions.mix(SNIPPY_SCATTER.out.versions.first())
+
+        // GATHER: regroup per-sample snippy dirs by cluster, rejoin rep_id/reference.
+        // groupTuple with an explicit size makes the gather fire as soon as a cluster
+        // is complete instead of waiting for the whole scatter to drain.
+        ch_cluster_sizes = ch_snippy_scatter
+            .map { cluster_id, sid, asm, rep_id, ref -> tuple(cluster_id, 1) }
+            .groupTuple()
+            .map { cluster_id, ones -> tuple(cluster_id, ones.size()) }
+
+        ch_snippy_gather = SNIPPY_SCATTER.out.sample_dir
+            .groupTuple(by: 0)
+            .join(ch_cluster_sizes, by: 0)
+            .map { cluster_id, sample_ids, dirs, expected ->
+                assert sample_ids.size() == expected :
+                    "cluster ${cluster_id}: expected ${expected} snippy samples, got ${sample_ids.size()}"
+                tuple(cluster_id, sample_ids, dirs)
+            }
+            .join(
+                ch_for_alignment.map { cluster_id, sids, asms, rep_id, ref ->
+                    tuple(cluster_id, rep_id, ref)
+                }, by: 0
+            )
+            .map { cluster_id, sample_ids, dirs, rep_id, ref ->
+                tuple(cluster_id, sample_ids, dirs, rep_id, ref)
+            }
+
+        SNIPPY_CORE_GATHER (
+            ch_snippy_gather
+        )
+        ch_versions = ch_versions.mix(SNIPPY_CORE_GATHER.out.versions.first())
+        ch_core_alignments = SNIPPY_CORE_GATHER.out.core_alignment
+
+    } else if (params.alignment_method == 'ska') {
+        log.info "Using SKA2 (ska build per sample + ska map) for per-cluster whole genome alignment"
+
+        // Same scatter shape as Snippy: per-sample k-mer counting, then a per-cluster
+        // reference-anchored map. `ska map` yields a full-length, genome-ORDERED
+        // alignment with invariant sites retained (measured: 30 taxa x 376,564
+        // columns); `ska align` is unordered and cannot be used as Gubbins input.
+        ch_ska_scatter = ch_for_alignment
+            .flatMap { cluster_id, sample_ids, assemblies, rep_id, ref ->
+                def ids   = sample_ids instanceof List ? sample_ids : [sample_ids]
+                def files = assemblies instanceof List ? assemblies : [assemblies]
+                assert ids.size() == files.size() :
+                    "cluster ${cluster_id}: ${ids.size()} sample ids but ${files.size()} assemblies"
+                [ids, files].transpose().sort { it[0] }
+                    .collect { sid, asm -> tuple(cluster_id, sid, asm) }
+            }
+
+        SKA_BUILD_SAMPLE (
+            ch_ska_scatter
+        )
+        ch_versions = ch_versions.mix(SKA_BUILD_SAMPLE.out.versions.first())
+
+        ch_ska_gather = SKA_BUILD_SAMPLE.out.skf
+            .groupTuple(by: 0)
+            .join(
+                ch_for_alignment.map { cluster_id, sids, asms, rep_id, ref ->
+                    tuple(cluster_id, rep_id, ref)
+                }, by: 0
+            )
+            .map { cluster_id, sample_ids, skfs, rep_id, ref ->
+                tuple(cluster_id, sample_ids, skfs, rep_id, ref)
+            }
+
+        SKA_MAP_ALIGN (
+            ch_ska_gather
+        )
+        ch_versions = ch_versions.mix(SKA_MAP_ALIGN.out.versions.first())
+        ch_core_alignments = SKA_MAP_ALIGN.out.core_alignment
+
     } else if (params.alignment_method == 'parsnp') {
         log.info "Using Parsnp for per-cluster core genome alignment"
         
@@ -308,7 +408,7 @@ workflow RECOMBINATION_AWARE_SNPS {
                 tuple(cluster_id, alignment_file)
             }
     } else {
-        error "Unknown alignment method: ${params.alignment_method}. Use 'snippy' or 'parsnp'"
+        error "Unknown alignment method: ${params.alignment_method}. Use 'snippy', 'ska', or 'parsnp'"
     }
 
     // Keep invariant A/T/C/G sites (guardrail: do not feed SNP-only to Gubbins)

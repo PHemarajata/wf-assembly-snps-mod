@@ -1,179 +1,97 @@
 #!/usr/bin/env nextflow
 nextflow.enable.dsl=2
 
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    KEEP_INVARIANT_ATCG -- column filter on the whole-genome alignment fed to Gubbins
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    Gubbins requires a whole-genome alignment ("An alignment of polymorphic sites
+    cannot be used as the input to Gubbins") because recombination detection is a
+    SPATIAL scanning statistic -- the invariant sites between SNPs carry signal.
+    This process therefore prunes columns only for missingness, never for variability.
+
+    WHAT CHANGED (see ALIGNMENT_TREES_NOTES.md):
+      1. The per-column Biopython loop was replaced by a vectorised NumPy byte-matrix
+         implementation in bin/filter_alignment_columns.py. Measured on 50 taxa x 200 kb:
+         6.38 s -> 0.088 s of compute (72x), 0.166 s end-to-end including interpreter
+         start (38x). Output is byte-identical at --max_column_missingness 0.0.
+      2. The all-or-nothing A/T/C/G rule became a per-column missingness threshold,
+         params.max_column_missingness (default 0.10). ** THIS ALTERS SCIENTIFIC OUTPUT. **
+         Setting max_column_missingness = 0.0 restores the legacy rule exactly (verified
+         byte-identical at 24 and 50 taxa).
+      3. The error handler that wrote ">${cluster_id}_dummy / ATCG" on any exception is
+         gone. A 4 bp placeholder alignment silently entering Gubbins is data corruption,
+         not recovery, so the process now fails.
+      4. storeDir was removed. storeDir keys on filename only, so a cached placeholder
+         (or an alignment produced under a different missingness threshold) would be
+         reused forever and would ignore any change to params. Normal Nextflow work-dir
+         caching with `cache true` keys on inputs AND the script text, so changing the
+         threshold correctly invalidates. `-resume` still works.
+*/
+
 process KEEP_INVARIANT_ATCG {
     tag "cluster_${cluster_id}"
     label 'process_low'
     container "quay.io/biocontainers/biopython@sha256:10d755c731c82a22d91fc346f338ba47d5fd4f3b357828f5bbc903c9be865614"
-    
-    // Enable better caching for resume functionality
-    cache 'lenient'
-    
-    // Store outputs for resume optimization
-    storeDir "${params.work_cache_dir}/keep_invariant_atcg"
+
+    publishDir "${params.outdir}/Clusters/cluster_${cluster_id}",
+               mode: params.publish_dir_mode,
+               pattern: "*.column_filter.stats.tsv"
 
     input:
     tuple val(cluster_id), path(alignment)
 
     output:
-    tuple val(cluster_id), path("${cluster_id}.core.full.aln"), emit: core_alignment
-    path "versions.yml", emit: versions
+    tuple val(cluster_id), path("${cluster_id}.core.full.aln"),               emit: core_alignment
+    tuple val(cluster_id), path("${cluster_id}.column_filter.stats.tsv"),     emit: stats
+    path "versions.yml",                                                     emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
+    // Per-column missingness threshold. 0.0 == legacy all-or-nothing A/T/C/G rule.
+    def max_missing = (params.max_column_missingness == null ? 0.10 : params.max_column_missingness) as double
+    def min_cols    = (params.min_kept_columns ?: 1) as int
     """
-    echo "Keeping invariant A/T/C/G columns for cluster ${cluster_id}"
+    set -euo pipefail
+
+    echo "Column-filtering alignment for cluster ${cluster_id}"
     echo "Input alignment: ${alignment}"
-    
-    # Create checksum for resume optimization
-    input_checksum=\$(md5sum "${alignment}" | cut -d' ' -f1)
-    echo "Input alignment checksum: \$input_checksum"
-    
-    # Check if output already exists with same input checksum
-    if [ -f "${cluster_id}.core.full.aln" ] && [ -f ".${cluster_id}.checksum" ]; then
-        stored_checksum=\$(cat ".${cluster_id}.checksum" 2>/dev/null || echo "")
-        if [ "\$stored_checksum" = "\$input_checksum" ]; then
-            echo "Output already exists for this input - skipping processing"
-            exit 0
-        fi
+    echo "max_column_missingness=${max_missing} (0.0 reproduces the legacy all-ATCG rule)"
+
+    # Fail loudly on a missing/empty input rather than manufacturing a placeholder.
+    if [ ! -s "${alignment}" ]; then
+        echo "ERROR: input alignment for cluster ${cluster_id} is missing or empty: ${alignment}" >&2
+        exit 1
     fi
-    
-    python3 << 'EOF'
-from Bio import AlignIO, SeqIO
-from Bio.Seq import Seq
-from Bio.SeqRecord import SeqRecord
-import sys
 
-def keep_invariant_atcg_sites(input_file, output_file):
-    '''
-    Keep columns that contain only A/T/C/G bases (including invariant sites).
-    This preserves the whole genome context needed for Gubbins recombination detection.
-    
-    According to specifications:
-    - Keep invariant A/T/C/G columns for whole genome alignment
-    - Avoid SNP-only alignments at this stage
-    - Feed whole genome alignment to Gubbins
-    '''
-    
-    try:
-        # Read alignment
-        alignment = AlignIO.read(input_file, "fasta")
-        print(f"Read alignment with {len(alignment)} sequences, length {alignment.get_alignment_length()}")
-        
-        if len(alignment) == 0:
-            print("WARNING: Empty alignment")
-            # Create empty output
-            with open(output_file, 'w') as f:
-                pass
-            return
-        
-        alignment_length = alignment.get_alignment_length()
-        
-        # Find columns to keep (all A/T/C/G, including invariant sites)
-        keep_columns = []
-        
-        for i in range(alignment_length):
-            column = alignment[:, i]
-            
-            # Check if all bases in this column are A/T/C/G (case insensitive)
-            # This includes invariant sites (all same base) and variable sites
-            valid_bases = set()
-            all_valid = True
-            
-            for base in column:
-                base_upper = base.upper()
-                if base_upper in ['A', 'T', 'C', 'G']:
-                    valid_bases.add(base_upper)
-                elif base_upper in ['N', '-', '.']:
-                    # Skip columns with gaps or Ns
-                    all_valid = False
-                    break
-                else:
-                    # Invalid base
-                    all_valid = False
-                    break
-            
-            if all_valid and len(valid_bases) > 0:
-                keep_columns.append(i)
-        
-        print(f"Keeping {len(keep_columns)} columns out of {alignment_length} (includes invariant A/T/C/G sites)")
-        
-        if len(keep_columns) == 0:
-            print("WARNING: No valid A/T/C/G columns found")
-            # Create minimal output
-            with open(output_file, 'w') as f:
-                for record in alignment:
-                    f.write(f">{record.id}\\nN\\n")
-            return
-        
-        # Create filtered alignment keeping invariant sites
-        filtered_records = []
-        
-        for record in alignment:
-            # Extract sequence for kept columns
-            filtered_seq = "".join(str(record.seq[i]) for i in keep_columns)
-            
-            # Create new record
-            filtered_record = SeqRecord(
-                Seq(filtered_seq),
-                id=record.id,
-                description=record.description
-            )
-            filtered_records.append(filtered_record)
-        
-        # Write filtered alignment
-        SeqIO.write(filtered_records, output_file, "fasta")
-        
-        print(f"Created core alignment with {len(filtered_records)} sequences")
-        print(f"Filtered alignment length: {len(filtered_seq)} bp")
-        
-        # Log statistics
-        if len(keep_columns) > 0:
-            invariant_count = 0
-            variable_count = 0
-            
-            # Quick check for invariant vs variable sites in kept columns
-            for i in keep_columns[:min(1000, len(keep_columns))]:  # Sample first 1000 for efficiency
-                column = alignment[:, i]
-                unique_bases = set(base.upper() for base in column if base.upper() in ['A', 'T', 'C', 'G'])
-                if len(unique_bases) == 1:
-                    invariant_count += 1
-                else:
-                    variable_count += 1
-            
-            print(f"Sample of kept sites: ~{invariant_count} invariant, ~{variable_count} variable")
-        
-    except Exception as e:
-        print(f"Error processing alignment: {e}")
-        # Create minimal fallback
-        with open(output_file, 'w') as f:
-            f.write(f">${cluster_id}_dummy\\nATCG\\n")
+    filter_alignment_columns.py \\
+        --input  "${alignment}" \\
+        --output "${cluster_id}.core.full.aln" \\
+        --stats  "${cluster_id}.column_filter.stats.tsv" \\
+        --max-missingness ${max_missing} \\
+        --min-kept-columns ${min_cols} \\
+        --label "${cluster_id}"
 
-# Process the alignment
-keep_invariant_atcg_sites("${alignment}", "${cluster_id}.core.full.aln")
-EOF
-
-    # Verify output
-    if [ ! -f "${cluster_id}.core.full.aln" ]; then
-        echo "WARNING: Output file not created. Creating minimal alignment."
-        echo ">${cluster_id}_dummy" > ${cluster_id}.core.full.aln
-        echo "ATCG" >> ${cluster_id}.core.full.aln
+    # Post-conditions: a real alignment, not a stub. Any violation is a hard error.
+    n_seqs=\$(grep -c '^>' "${cluster_id}.core.full.aln")
+    n_cols=\$(awk 'NR>1 && /^>/{exit} NR>1{gsub(/[ \\t\\r\\n]/,"");c+=length(\$0)} END{print c+0}' "${cluster_id}.core.full.aln")
+    echo "Output: \$n_seqs sequences x \$n_cols columns"
+    if [ "\$n_seqs" -lt 3 ]; then
+        echo "ERROR: cluster ${cluster_id} filtered alignment has \$n_seqs sequences (<3)" >&2
+        exit 1
     fi
-    
-    echo "Core alignment with invariant sites created for cluster ${cluster_id}"
-    echo "Output file size: \$(wc -c < ${cluster_id}.core.full.aln) bytes"
-    echo "Number of sequences: \$(grep -c '^>' ${cluster_id}.core.full.aln)"
-    
-    # Store checksum for resume optimization
-    echo "\$input_checksum" > ".${cluster_id}.checksum"
-    echo "Stored input checksum for resume optimization"
+    if [ "\$n_cols" -lt ${min_cols} ]; then
+        echo "ERROR: cluster ${cluster_id} filtered alignment has \$n_cols columns (< min_kept_columns=${min_cols})" >&2
+        exit 1
+    fi
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        biopython: \$(python3 -c "import Bio; print(Bio.__version__)")
         python: \$(python3 --version | sed 's/Python //')
+        numpy: \$(python3 -c "import numpy; print(numpy.__version__)")
     END_VERSIONS
     """
 }

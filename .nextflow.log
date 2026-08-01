@@ -1,0 +1,145 @@
+Aug-02 01:01:32.636 [main] DEBUG nextflow.cli.Launcher - Setting HTTP proxy: ProxyConfig[protocol=http; host=localhost; port=3128]
+Aug-02 01:01:32.665 [main] DEBUG nextflow.cli.Launcher - Setting HTTPS proxy: ProxyConfig[protocol=https; host=localhost; port=3128]
+Aug-02 01:01:32.665 [main] DEBUG nextflow.cli.Launcher - Setting FTP proxy: ProxyConfig[protocol=ftp; host=localhost; port=3128]
+Aug-02 01:01:32.666 [main] DEBUG nextflow.cli.Launcher - Setting http proxy: ProxyConfig[protocol=http; host=localhost; port=3128]
+Aug-02 01:01:32.666 [main] DEBUG nextflow.cli.Launcher - Setting https proxy: ProxyConfig[protocol=https; host=localhost; port=3128]
+Aug-02 01:01:32.666 [main] DEBUG nextflow.cli.Launcher - Setting ftp proxy: ProxyConfig[protocol=ftp; host=localhost; port=3128]
+Aug-02 01:01:32.668 [main] DEBUG nextflow.cli.Launcher - $> nextflow run main.nf -profile low_spec --input test_input --outdir /tmp/o --help
+Aug-02 01:01:32.701 [main] DEBUG nextflow.cli.CmdRun - N E X T F L O W  ~  version 25.04.6
+Aug-02 01:01:32.730 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; embedded=false; plugins-dir=/home/phemarajata/.nextflow/plugins; core-plugins: nf-amazon@2.15.0,nf-azure@1.16.0,nf-cloudcache@0.4.3,nf-codecommit@0.2.3,nf-console@1.2.1,nf-google@1.21.1,nf-k8s@1.0.0,nf-tower@1.11.4,nf-wave@1.12.1
+Aug-02 01:01:32.747 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+Aug-02 01:01:32.748 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+Aug-02 01:01:32.750 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.12.0 in 'deployment' mode
+Aug-02 01:01:32.763 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+Aug-02 01:01:32.780 [main] DEBUG nextflow.config.ConfigBuilder - Found config local: /home/phemarajata/.claude-science/orgs/8d25f7aa-2b44-4107-b2af-585a3b4e1c65/workspaces/b96ede92-1bdc-4969-936b-10e63199f938/repo/nextflow.config
+Aug-02 01:01:32.783 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /home/phemarajata/.claude-science/orgs/8d25f7aa-2b44-4107-b2af-585a3b4e1c65/workspaces/b96ede92-1bdc-4969-936b-10e63199f938/repo/nextflow.config
+Aug-02 01:01:32.807 [main] DEBUG n.secret.LocalSecretsProvider - Secrets store: /home/phemarajata/.nextflow/secrets/store.json
+Aug-02 01:01:32.812 [main] DEBUG nextflow.secret.SecretsLoader - Discovered secrets providers: [nextflow.secret.LocalSecretsProvider@1450078a] - activable => nextflow.secret.LocalSecretsProvider@1450078a
+Aug-02 01:01:32.822 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `low_spec`
+Aug-02 01:01:33.863 [main] DEBUG nextflow.config.ConfigBuilder - Available config profiles: [aspen_hpc, debug, test, local_workstation, bp, docker, local_workstation_rtx4070, dgx_station_a100_updated, low_spec, shifter, conda, dgx_station, singularity, rosalind_hpc, test_full]
+Aug-02 01:01:33.919 [main] DEBUG nextflow.cli.CmdRun - Applied DSL=2 from script declaration
+Aug-02 01:01:33.934 [main] DEBUG nextflow.cli.CmdRun - Launching `main.nf` [intergalactic_angela] DSL2 - revision: e09a5c4ead
+Aug-02 01:01:33.936 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+Aug-02 01:01:33.936 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins resolved requirement=[]
+Aug-02 01:01:33.988 [main] DEBUG nextflow.Session - Session UUID: c789732b-a6e8-4790-a8c3-b8488324ecf6
+Aug-02 01:01:33.989 [main] DEBUG nextflow.Session - Run name: intergalactic_angela
+Aug-02 01:01:33.989 [main] DEBUG nextflow.Session - Executor pool size: 22
+Aug-02 01:01:33.998 [main] DEBUG nextflow.file.FilePorter - File porter settings maxRetries=3; maxTransfers=50; pollTimeout=null
+Aug-02 01:01:34.002 [main] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'FileTransfer' minSize=10; maxSize=66; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
+Aug-02 01:01:34.012 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 25.04.6 build 5954
+  Created: 01-07-2025 11:27 UTC (18:27 ICST)
+  System: Linux 7.0.0-28-generic
+  Runtime: Groovy 4.0.26 on Java HotSpot(TM) 64-Bit Server VM 17.0.12+8-LTS-286
+  Encoding: UTF-8 (UTF-8)
+  Process: 113@localhost [127.0.0.1]
+  CPUs: 22 - Mem: 62.3 GB (26.5 GB) - Swap: 8 GB (8 GB)
+Aug-02 01:01:34.025 [main] DEBUG nextflow.Session - Work-dir: /home/phemarajata/.claude-science/orgs/8d25f7aa-2b44-4107-b2af-585a3b4e1c65/workspaces/b96ede92-1bdc-4969-936b-10e63199f938/repo/work [ext2/ext3]
+Aug-02 01:01:34.064 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+Aug-02 01:01:34.078 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+Aug-02 01:01:34.113 [main] DEBUG nextflow.Session - Observer factory (v2): LinObserverFactory
+Aug-02 01:01:34.148 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
+Aug-02 01:01:34.159 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 23; maxThreads: 1000
+Aug-02 01:01:34.194 [main] DEBUG nextflow.Session - Session start
+Aug-02 01:01:34.196 [main] DEBUG nextflow.trace.TraceFileObserver - Workflow started -- trace file: /tmp/o/pipeline_info/execution_trace_2026-08-02_01-01-33.txt
+Aug-02 01:01:34.201 [main] DEBUG nextflow.Session - Using default localLib path: /home/phemarajata/.claude-science/orgs/8d25f7aa-2b44-4107-b2af-585a3b4e1c65/workspaces/b96ede92-1bdc-4969-936b-10e63199f938/repo/lib
+Aug-02 01:01:34.204 [main] DEBUG nextflow.Session - Adding to the classpath library: /home/phemarajata/.claude-science/orgs/8d25f7aa-2b44-4107-b2af-585a3b4e1c65/workspaces/b96ede92-1bdc-4969-936b-10e63199f938/repo/lib
+Aug-02 01:01:34.204 [main] DEBUG nextflow.Session - Adding to the classpath library: /home/phemarajata/.claude-science/orgs/8d25f7aa-2b44-4107-b2af-585a3b4e1c65/workspaces/b96ede92-1bdc-4969-936b-10e63199f938/repo/lib/nfcore_external_java_deps.jar
+Aug-02 01:01:34.694 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+Aug-02 01:01:34.738 [main] INFO  nextflow.Nextflow - 
+
+-[2m----------------------------------------------------[0m-
+[0;34m     __         __ __ __     __            __     __  __    [0m
+[0;34m|  ||_  __  /\ (_ (_ |_ |\/||__)|  \_/ __ (_ |\ ||__)(_ [0m
+[0;34m|/\||      /--\__)__)|__|  ||__)|__ |     __)| \||   __) [0m
+
+[0;32m       Identify SNPs from genome assemblies.               [0m
+
+
+[0;35m     PHemarajata/wf-assembly-snps-mod v1.0.3-mod[0m
+-[2m----------------------------------------------------[0m-
+Typical pipeline command:
+
+  [0;36m
+nextflow run PHemarajata/wf-assembly-snps-mod \ 
+
+    -profile <docker|singularity> \ 
+
+    --input <input samplesheet OR directory> \ 
+
+    --outdir <directory for results>
+[0m
+
+[4m[1mInput/output options[0m
+  --input                       [2m[string]  [0mPath to directory ** OR ** samplesheet containing FastA/Genbank files. Recognized extensions are 
+                                          {fasta,fas,fna,fsa,fa} with optional gzip compression.[2m[0m 
+  --ref                         [2m[string]  [0mPath to file ** OR ** samplesheet containing a FastA file. Recognized extensions are {fasta,fas,fna,fsa,fa} with 
+                                          optional gzip compression.[2m[0m 
+  --outdir                      [2m[string]  [0mThe output directory where the results will be saved. You have to use absolute paths to storage on Cloud 
+                                          infrastructure.[2m[0m 
+  --use_global_reference        [2m[boolean] [0mIf true, force every per-cluster alignment (and the backbone tree) to use --ref as the reference instead of the 
+                                          per-cluster medoid. Recommended for BP studies wanting cross-cluster comparability against a canonical reference such 
+                                          as K96243.[2m [default: false][0m 
+
+[4m[1mAnalysis options[0m
+  --snp_package                 [2m[string]  [0mSpecify what alignment tool to use to identify SNPs.[2m [default: parsnp][0m
+  --tree_method                 [2m[string]  [0mTool used to infer phylogeny after masking positions due to recombination.[2m [default: fasttree][0m
+  --recombination               [2m[string]  [0mTool used to classify SNPs due to recombination.[2m [default: both][0m
+
+[4m[1mScalable workflow options[0m
+  --scalable_mode               [2m[boolean] [0mEnable scalable mode using clustering-based approach for large datasets.[2m [default: false][0m
+  --workflow_mode               [2m[string]  [0mWorkflow mode for scalable analysis.[2m [default: cluster][0m
+  --mash_threshold              [2m[number]  [0mMash distance threshold for clustering genomes.[2m [default: 0.03][0m
+  --max_cluster_size            [2m[integer] [0mMaximum number of genomes per cluster.[2m [default: 100][0m
+  --run_gubbins                 [2m[boolean] [0mRun Gubbins for recombination detection in clusters.[2m [default: true][0m
+  --gubbins_iterations          [2m[integer] [0mNumber of Gubbins iterations.[2m [default: 3][0m
+  --gubbins_tree_builder        [2m[string]  [0mTree builder method for Gubbins.[2m [default: iqtree][0m
+  --gubbins_min_snps            [2m[integer] [0mMinimum number of SNPs for Gubbins analysis.[2m [default: 2][0m
+  --iqtree_model                [2m[string]  [0mSubstitution model for IQ-TREE.[2m [default: GTR+ASC][0m
+  --build_usher_mat             [2m[boolean] [0mBuild UShER mutation-annotated tree for incremental updates.[2m [default: false][0m
+  --existing_mat                [2m[string]  [0mPath to existing UShER MAT file for incremental placement.[2m[0m
+  --merge_singletons            [2m[boolean] [0mMerge singleton clusters into their nearest non-singleton neighbor cluster, subject to mash_threshold and 
+                                          max_cluster_size.[2m [default: false][0m 
+  --mash_sketch_size            [2m[integer] [0mMash sketch size. Larger values stabilize the distance distribution near tight thresholds. The BP profile bumps this 
+                                          to 50000.[2m [default: 10000][0m 
+  --mash_kmer_size              [2m[integer] [0mK-mer size used for Mash sketching.[2m [default: 21][0m
+  --mash_min_copies             [2m[integer] [0mMinimum number of copies of each k-mer required for inclusion in a Mash sketch.[2m [default: 1][0m
+  --gubbins_use_hybrid          [2m[boolean] [0mWhen no starting tree is available, use the hybrid first-builder + tree-builder pathway in Gubbins.[2m [default: 
+                                          true][0m 
+  --gubbins_first_tree_builder  [2m[string]  [0mFirst-tree builder used by Gubbins in hybrid or no-starting-tree mode.[2m [default: rapidnj][0m
+  --iqtree_asc_model            [2m[string]  [0mSubstitution model passed to IQ-TREE for the final per-cluster ML tree on Gubbins-filtered SNPs.[2m [default: 
+                                          GTR+ASC][0m 
+  --iqtree_fconst               [2m[string]  [0mOptional constant-site counts for IQ-TREE ascertainment bias correction when using full alignments (e.g. 'a,c,g,t' or 
+                                          '100,120,98,115').[2m[0m 
+
+[4m[1mGeneric options[0m
+  --help                        [2m[boolean] [0mDisplay help text.[2m[0m
+  --email                       [2m[string]  [0mEmail address for completion summary.[2m[0m
+
+[4m[1mRecombination-aware workflow options[0m
+  --recombination_aware_mode    [2m[boolean] [0mRun the recombination-aware workflow (per-cluster Gubbins + IQ-TREE with ASC correction + backbone tree). The BP 
+                                          profile enables this by default.[2m [default: false][0m 
+  --alignment_method            [2m[string]  [0mPer-cluster alignment tool used in recombination-aware mode.[2m [default: snippy][0m
+  --backbone_method             [2m[string]  [0mTool used to build the backbone tree from per-cluster representatives.[2m [default: parsnp][0m
+  --backbone_fasttree_opts      [2m[string]  [0mCommand-line flags passed to FastTree when building the backbone tree.[2m [default: -nt -gtr][0m
+  --backbone_container          [2m[string]  [0mOptional override for the container used by BUILD_BACKBONE_TREE.[2m[0m
+  --integrate_results           [2m[boolean] [0mIntegrate per-cluster outputs into combined summaries at the end of the workflow.[2m [default: true][0m
+  --rescale_grafted_branches    [2m[boolean] [0mWhen grafting is enabled (currently disabled in the recombination-aware workflow), rescale grafted-subtree branch 
+                                          lengths to match the backbone.[2m [default: false][0m 
+  --enable_grafting             [2m[boolean] [0mRun GRAFT_TREES (graft_trees.py) at the end of the recombination-aware workflow. When false, the backbone tree is used 
+                                          as the final tree.[2m [default: true][0m 
+  --graft_parent_edge_mode      [2m[string]  [0mBranch-length handling at the join node during grafting. 'keep' preserves the representative leaf's original branch 
+                                          length on the new internal node; 'zero' sets the join branch to 0.[2m [default: keep][0m 
+  --graft_rename_conflicts      [2m[boolean] [0mRename cluster tip labels that collide with backbone labels (excluding the representative) by appending _dup<N> before 
+                                          grafting.[2m [default: false][0m 
+
+[2m!! Hiding 31 params, use --show_hidden_params to show them !!
+[0m-[2m----------------------------------------------------[0m-
+If you use PHemarajata/wf-assembly-snps-mod for your analysis please cite:
+
+* The nf-core framework
+  https://doi.org/10.1038/s41587-020-0439-x
+
+* Software dependencies
+  https://github.com/bacterial-genomics/wf-assembly-snps/blob/main/CITATIONS.md
+-[2m----------------------------------------------------[0m-

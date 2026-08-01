@@ -33,6 +33,11 @@ process GUBBINS_CLUSTER {
   def use_hybrid_flag = ((params.gubbins_use_hybrid == null)
                           ? true
                           : params.gubbins_use_hybrid.toString().toLowerCase() in ['true','1','yes'])
+  // Gubbins' per-taxon missingness filter. The pipeline previously never set it, so
+  // Gubbins' own default (25%) applied invisibly -- measured to silently exclude 7 of
+  // 30 genomes on a real SKA-mapped set, and default vs 100 produced DIFFERENT final
+  // trees. Now explicit, and every exclusion is echoed into the diagnostics log.
+  def filter_pct      = (params.gubbins_filter_percentage == null ? 25 : params.gubbins_filter_percentage) as double
 
   """
   set -euo pipefail
@@ -44,8 +49,12 @@ process GUBBINS_CLUSTER {
   {
     echo "=== Gubbins Diagnostics for cluster ${cluster_id} ==="
     echo "Container: gubbins 3.3.5 | CPUs: ${task.cpus}"
-    echo "Params: iterations=${iterations}, tree_builder=${tree_builder}, first_builder=${first_builder}, min_snps=${min_snps}, use_hybrid=${use_hybrid_flag}"
+    echo "Params: iterations=${iterations}, tree_builder=${tree_builder}, first_builder=${first_builder}, min_snps=${min_snps}, use_hybrid=${use_hybrid_flag}, filter_percentage=${filter_pct}"
   } >> "\${DIAG}"
+
+  # Record the taxa GOING IN, so the post-run comparison can name any taxon that
+  # Gubbins' --filter-percentage dropped. Gubbins does this silently otherwise.
+  grep '^>' "${alignment}" | sed 's/^>//' | awk '{print \$1}' | sort > .taxa_in.txt || true
 
   # --- Input checks ---
   if [ ! -s "${alignment}" ]; then
@@ -103,6 +112,7 @@ END_VERSIONS
       --tree-builder "${tree_builder}" \\
       --iterations ${iterations} \\
       --min-snps ${min_snps} \\
+      --filter-percentage ${filter_pct} \\
       --threads ${task.cpus} \\
       ${args} \\
       "${alignment}" >> "\${DIAG}" 2>&1
@@ -116,6 +126,7 @@ END_VERSIONS
         --tree-builder "${tree_builder}" \\
         --iterations ${iterations} \\
         --min-snps ${min_snps} \\
+        --filter-percentage ${filter_pct} \\
         --threads ${task.cpus} \\
         ${args} \\
         "${alignment}" >> "\${DIAG}" 2>&1
@@ -127,6 +138,7 @@ END_VERSIONS
         --tree-builder "${first_builder}" \\
         --iterations ${iterations} \\
         --min-snps ${min_snps} \\
+        --filter-percentage ${filter_pct} \\
         --threads ${task.cpus} \\
         ${args} \\
         "${alignment}" >> "\${DIAG}" 2>&1
@@ -141,6 +153,27 @@ END_VERSIONS
     : > "${cluster_id}.filtered_polymorphic_sites.fasta"
     : > "${cluster_id}.recombination_predictions.gff"
     : > "${cluster_id}.node_labelled.final_tree.tre"
+  fi
+
+  # --- Report taxa dropped by Gubbins --filter-percentage ---
+  # Gubbins excludes taxa above the missingness threshold WITHOUT a visible error.
+  # Measured on a real 30-genome SKA-mapped set: 7 of 30 genomes were silently
+  # excluded at the default 25%, and default vs 100 produced DIFFERENT final trees.
+  if [ -s "${cluster_id}.filtered_polymorphic_sites.fasta" ] && [ -s .taxa_in.txt ]; then
+    grep '^>' "${cluster_id}.filtered_polymorphic_sites.fasta" | sed 's/^>//' \\
+      | awk '{print \$1}' | sort > .taxa_out.txt || true
+    n_in=\$(wc -l < .taxa_in.txt)
+    n_out=\$(wc -l < .taxa_out.txt)
+    {
+      echo "Taxa in alignment: \$n_in ; taxa in Gubbins output: \$n_out"
+      if [ "\$n_in" -ne "\$n_out" ]; then
+        echo "WARNING: Gubbins excluded \$(( n_in - n_out )) taxa at --filter-percentage ${filter_pct}:"
+        comm -23 .taxa_in.txt .taxa_out.txt | sed 's/^/  EXCLUDED_TAXON: /'
+        echo "  (set --gubbins_filter_percentage 100 to disable taxon dropping)"
+      else
+        echo "No taxa excluded by --filter-percentage ${filter_pct}"
+      fi
+    } >> "\${DIAG}"
   fi
 
   # --- Output integrity checks ---
