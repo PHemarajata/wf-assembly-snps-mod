@@ -7,7 +7,16 @@ trace.txt
 report.html
 timeline.html
 .nextflow_schema.json
-!.nextflow.log
+
+# .nextflow.log is a per-run artifact containing absolute paths from whoever ran
+# it last. Tracking it makes `git pull` abort with "Your local changes to the
+# following files would be overwritten by merge" for every user who has run the
+# pipeline. The `!.nextflow.log` negation that used to live here is removed.
+.nextflow.log
+.nextflow.log.*
+
+# Nextflow writes here when a publishDir path resolves to a null param
+null/
 # Common development files
 .DS_Store
 .vscode/
