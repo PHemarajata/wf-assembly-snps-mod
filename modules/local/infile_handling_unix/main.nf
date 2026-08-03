@@ -29,6 +29,17 @@ process INFILE_HANDLING_UNIX {
     # gunzip all files that end in .{gz,Gz,GZ,gZ}
     find -L inputfiles/ -type f -name '*.[gG][zZ]' -exec gunzip -f {} +
 
+    # Make contig IDs unique within each assembly. A header like ">SAMPLE.fasta 1"
+    # puts its only distinguishing part in the DESCRIPTION, so every contig shares
+    # the ID "SAMPLE.fasta"; snippy then refuses the reference with
+    # "Duplicate sequence ... in <ref>". Files whose IDs are already unique are
+    # rewritten byte-for-byte, so this is a no-op for conforming assemblies.
+    msg "Ensuring contig IDs are unique.."
+    for file in inputfiles/*; do
+      awk -f !{projectDir}/bin/dedupe_contig_ids.awk "${file}" > "${file}.dedup"
+      mv "${file}.dedup" "${file}"
+    done
+
     # Filter out small inputfiles
     msg "Checking input file sizes.."
     echo -e "Sample name\tQC step\tOutcome (Pass/Fail)" > "!{meta.id}.Initial_Input_File.tsv"
