@@ -22,6 +22,7 @@ nextflow.enable.dsl=2
 process MASH_PASTE {
     tag "combine_sketches"
     label 'process_low'
+    conda "bioconda::mash=2.3"
     container "quay.io/biocontainers/mash:2.3--he348c14_1"
 
     publishDir "${params.outdir}/Clustering/Sketches", mode: params.publish_dir_mode, pattern: "combined.msh"

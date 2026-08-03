@@ -45,6 +45,7 @@ nextflow.enable.dsl=2
 process SKA_BUILD_SAMPLE {
     tag "cluster_${cluster_id}:${sample_id}"
     label 'process_low'
+    conda "bioconda::ska2=0.3.7"
     container "quay.io/biocontainers/ska2:0.3.7--h4349ce8_2"
 
     input:
@@ -94,6 +95,7 @@ process SKA_BUILD_SAMPLE {
 process SKA_MAP_ALIGN {
     tag "cluster_${cluster_id}"
     label 'process_medium'
+    conda "bioconda::ska2=0.3.7"
     container "quay.io/biocontainers/ska2:0.3.7--h4349ce8_2"
 
     publishDir "${params.outdir}/Clusters/cluster_${cluster_id}",

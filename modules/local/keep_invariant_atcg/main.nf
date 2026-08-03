@@ -33,6 +33,7 @@ nextflow.enable.dsl=2
 process KEEP_INVARIANT_ATCG {
     tag "cluster_${cluster_id}"
     label 'process_low'
+    conda "conda-forge::python=3.10 conda-forge::numpy"
     container "quay.io/biocontainers/biopython@sha256:10d755c731c82a22d91fc346f338ba47d5fd4f3b357828f5bbc903c9be865614"
 
     publishDir "${params.outdir}/Clusters/cluster_${cluster_id}",

@@ -1,0 +1,29 @@
+# Full native environment for wf-assembly-snps-mod (recombination-aware path).
+# Use this when you want to run WITHOUT any container engine:
+#   conda env create -f environment.yml && conda activate wf-assembly-snps
+#   nextflow run . -profile low_spec ...        (no docker/singularity profile)
+#
+# NOTE ON samtools: snippy 4.6.0 parses `samtools --version` as a FLOAT and compares
+# it against 1.3, so "1.23" evaluates as 1.23 < 1.3 and snippy aborts with
+# "Need samtools --version >= 1.3". samtools is pinned to 1.9 for that reason.
+# Verified against snippy line 89: parse_version('samtools --version', 1.3, ...).
+name: wf-assembly-snps
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.10          # gubbins requires <=3.10
+  - mash=2.3
+  - ska2
+  - snippy=4.6.0
+  - samtools=1.9         # see note above -- do NOT bump without re-testing snippy
+  - snp-sites
+  - gubbins=3.3.5
+  - iqtree=2.2.6
+  - rapidnj
+  - veryfasttree
+  - numpy
+  - scipy
+  - pandas
+  - biopython

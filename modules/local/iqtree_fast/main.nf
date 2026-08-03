@@ -37,6 +37,7 @@ nextflow.enable.dsl=2
 process IQTREE_FAST {
     tag "cluster_${cluster_id}"
     label 'process_medium'
+    conda "bioconda::iqtree=2.2.6 bioconda::rapidnj bioconda::veryfasttree"
     container "quay.io/biocontainers/iqtree:2.2.6--h21ec9f0_0"
 
     publishDir "${params.outdir}/Clusters/cluster_${cluster_id}", mode: params.publish_dir_mode, pattern: "*.{treefile,iqtree}"

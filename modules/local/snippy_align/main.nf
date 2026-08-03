@@ -37,6 +37,7 @@ nextflow.enable.dsl=2
 process SNIPPY_SCATTER {
     tag "cluster_${cluster_id}:${sample_id}"
     label 'process_medium'
+    conda "bioconda::snippy=4.6.0 bioconda::samtools=1.9"
     container "staphb/snippy:4.6.0"
 
     input:
@@ -92,6 +93,7 @@ process SNIPPY_SCATTER {
 process SNIPPY_CORE_GATHER {
     tag "cluster_${cluster_id}"
     label 'process_medium'
+    conda "bioconda::snippy=4.6.0 bioconda::samtools=1.9"
     container "staphb/snippy:4.6.0"
 
     publishDir "${params.outdir}/Clusters/cluster_${cluster_id}",
@@ -171,6 +173,7 @@ alignment). Gubbins cannot use a SNP-only alignment, so no substitution is made.
 process SNIPPY_ALIGN {
     tag "cluster_${cluster_id}"
     label 'process_high'
+    conda "bioconda::snippy=4.6.0 bioconda::samtools=1.9"
     container "staphb/snippy:4.6.0"
 
     input:

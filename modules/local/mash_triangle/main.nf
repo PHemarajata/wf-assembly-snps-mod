@@ -41,6 +41,7 @@ nextflow.enable.dsl=2
 process MASH_TRIANGLE {
     tag "pairwise_distances"
     label 'process_medium'
+    conda "bioconda::mash=2.3 conda-forge::python=3.10 conda-forge::numpy conda-forge::pandas conda-forge::scipy"
     container "quay.io/biocontainers/pyseer:1.4.2--pyhdfd78af_0"
 
     publishDir "${params.outdir}/Clustering", mode: params.publish_dir_mode, pattern: "mash_distances.*"
@@ -96,6 +97,7 @@ process MASH_TRIANGLE {
 process MASH_DIST_COMPAT {
     tag "pairwise_distances_compat"
     label 'process_medium'
+    conda "bioconda::mash=2.3 conda-forge::python=3.10 conda-forge::numpy conda-forge::pandas conda-forge::scipy"
     container "quay.io/biocontainers/mash:2.3--he348c14_1"
 
     publishDir "${params.outdir}/Summaries", mode: params.publish_dir_mode, pattern: "*.tsv"

@@ -4,6 +4,7 @@ nextflow.enable.dsl=2
 process GUBBINS_CLUSTER {
   tag "cluster_${cluster_id}"
   label 'process_high'
+  conda "bioconda::gubbins=3.3.5"
   container "quay.io/biocontainers/gubbins:3.3.5--py39pl5321he4a0461_0"
 
   publishDir "${params.outdir}/Clusters/cluster_${cluster_id}/Gubbins",

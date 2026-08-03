@@ -60,6 +60,7 @@ nextflow.enable.dsl=2
 process IQTREE_ASC {
   tag "cluster_${cluster_id}"
   label 'process_high'
+  conda "bioconda::iqtree=2.2.6 conda-forge::python=3.10 conda-forge::numpy"
   container "quay.io/biocontainers/iqtree:2.2.6--h21ec9f0_0"
 
   publishDir "${params.outdir}/Clusters/cluster_${cluster_id}",

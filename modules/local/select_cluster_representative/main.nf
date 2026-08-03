@@ -35,6 +35,7 @@ nextflow.enable.dsl=2
 process SELECT_CLUSTER_REPRESENTATIVE {
     tag "cluster_${cluster_id}"
     label 'process_single'
+    conda "conda-forge::python=3.10 conda-forge::numpy conda-forge::pandas conda-forge::scipy"
     container "quay.io/biocontainers/pyseer:1.4.2--pyhdfd78af_0"
 
     input:
