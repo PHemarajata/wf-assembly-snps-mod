@@ -141,7 +141,42 @@ process SKA_MAP_ALIGN {
         ${args} \\
         "${reference}" \\
         "${cluster_id}.merged.skf" \\
-        -o "${cluster_id}.core.full.aln"
+        -o "${cluster_id}.ska_raw.aln"
+
+    # ska map emits IUPAC ambiguity codes where a split k-mer matched more than one
+    # allele. Gubbins rejects the whole alignment on the first one it sees:
+    #
+    #   Error with the input FASTA file: <sample> contains disallowed characters,
+    #   only ACGTNacgtn- are permitted
+    #
+    # and exits 1, so the SKA path could never reach recombination detection on real
+    # data. It is rare but not negligible at scale -- measured on the 21-taxon
+    # cluster_12 of the 112-genome set, 841 of 145,542,579 bases (0.00058%): R 315,
+    # Y 290, S 107, M 59, K 40, W 26, V 4. A 3-taxon smoke cluster has too few
+    # samples to hit one, which is why this never surfaced before.
+    #
+    # Ambiguity is folded to N rather than resolved: an ambiguous base is exactly
+    # "unknown" for recombination detection, which is what N means to Gubbins.
+    # Guessing a majority allele would invent data at the sites least able to
+    # support it.
+    awk '/^>/ { print; next } { gsub(/[RYSWKMBDHVryswkmbdhv]/, "N"); print }' \\
+        "${cluster_id}.ska_raw.aln" > "${cluster_id}.core.full.aln"
+
+    n_amb=\$(grep -v '^>' "${cluster_id}.ska_raw.aln" \\
+        | tr -cd 'RYSWKMBDHVryswkmbdhv' | wc -c)
+    echo "Folded \$n_amb IUPAC ambiguity code(s) to N for Gubbins compatibility"
+    rm -f "${cluster_id}.ska_raw.aln"
+
+    # Nothing outside the Gubbins-permitted set may survive, or Gubbins fails late
+    # and the diagnosis is a container error rather than this message.
+    n_bad=\$(grep -v '^>' "${cluster_id}.core.full.aln" | tr -d 'ACGTNacgtn\\n-' | wc -c)
+    if [ "\$n_bad" -ne 0 ]; then
+        echo "ERROR: \$n_bad character(s) outside ACGTNacgtn- remain in \\
+${cluster_id}.core.full.aln; Gubbins will reject it" >&2
+        grep -v '^>' "${cluster_id}.core.full.aln" | tr -d 'ACGTNacgtn\\n-' \\
+            | fold -w1 | sort -u | tr '\\n' ' ' >&2
+        exit 1
+    fi
 
     n_seqs=\$(grep -c '^>' "${cluster_id}.core.full.aln")
     echo "Alignment sequences: \$n_seqs"
