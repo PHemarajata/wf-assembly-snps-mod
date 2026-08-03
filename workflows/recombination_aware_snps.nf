@@ -86,6 +86,7 @@ include { GUBBINS_CLUSTER                                  } from "../modules/lo
 // MODULES: Step 4 - Per-cluster final ML tree
 //
 include { IQTREE_FAST                                      } from "../modules/local/iqtree_fast/main"
+include { ASC_PREFLIGHT                                    } from "../modules/local/asc_preflight/main"
 include { IQTREE_ASC                                       } from "../modules/local/iqtree_asc/main"
 
 //
@@ -531,8 +532,15 @@ workflow RECOMBINATION_AWARE_SNPS {
             tuple(cluster_id, rep_id)
         }, by: 0)
 
-    IQTREE_ASC (
+    // The ASC decision is computed in its own process because the IQ-TREE 2.2.6
+    // container ships no python; see modules/local/asc_preflight/main.nf.
+    ASC_PREFLIGHT (
         ch_for_final_tree
+    )
+    ch_versions = ch_versions.mix(ASC_PREFLIGHT.out.versions)
+
+    IQTREE_ASC (
+        ch_for_final_tree.join(ASC_PREFLIGHT.out.decision, by: 0)
     )
     ch_versions = ch_versions.mix(IQTREE_ASC.out.versions)
 

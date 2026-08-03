@@ -60,7 +60,10 @@ nextflow.enable.dsl=2
 process IQTREE_ASC {
   tag "cluster_${cluster_id}"
   label 'process_high'
-  conda "bioconda::iqtree=2.2.6 conda-forge::python=3.10 conda-forge::numpy"
+  // No python here on purpose: the ASC preflight moved to its own process
+  // (modules/local/asc_preflight) because this container has no python at all,
+  // so the inline `asc_preflight.py` call only ever worked under -profile conda.
+  conda "bioconda::iqtree=2.2.6"
   container "quay.io/biocontainers/iqtree:2.2.6--h21ec9f0_0"
 
   publishDir "${params.outdir}/Clusters/cluster_${cluster_id}",
@@ -68,7 +71,8 @@ process IQTREE_ASC {
              pattern: "*.{treefile,iqtree,asc_preflight.txt}"
 
   input:
-    tuple val(cluster_id), path(filtered_snps), val(representative_id)
+    tuple val(cluster_id), path(filtered_snps), val(representative_id),
+          path(asc_decision), path(asc_stripped)
 
   output:
     tuple val(cluster_id), path("${cluster_id}.final.treefile"), val(representative_id), emit: final_tree
@@ -108,35 +112,32 @@ process IQTREE_ASC {
       exit 1
     fi
 
-    seq_count=\$(grep -c "^>" ${filtered_snps} || echo 0)
-    if [ "\$seq_count" -lt 3 ]; then
+    # ---- ASC preflight -------------------------------------------------------
+    # +ASC aborts on constant columns and writes NO tree. Gubbins'
+    # filtered_polymorphic_sites.fasta contains them routinely for clonal clusters
+    # (a 30-taxon 1500-site SNP alignment had 611), so the decision is made BEFORE
+    # IQ-TREE runs rather than by catching the failure and inventing a topology.
+    #
+    # ASC_PREFLIGHT computes it in a python-bearing container and hands over
+    # <cluster_id>.asc_decision.txt; this container has no python. Republished
+    # under the historical name so the published filename does not change.
+    cp ${cluster_id}.asc_decision.txt ${cluster_id}.asc_preflight.txt
+
+    # shellcheck disable=SC1090
+    . ./${cluster_id}.asc_preflight.txt
+
+    if [ "\${DEGENERATE_TREE:-0}" = "1" ]; then
       # With 1-2 tips there is genuinely no topology to infer. This is the ONLY
-      # remaining case that writes a degenerate Newick string, and it is recorded
-      # in the preflight file so the summary can distinguish it from a real tree.
-      echo "WARNING: cluster ${cluster_id} has \$seq_count sequences; <3 tips means no topology exists."
+      # remaining case that writes a degenerate Newick string, and DEGENERATE_TREE=1
+      # in the preflight file is what lets the summary distinguish it from a real tree.
+      echo "WARNING: cluster ${cluster_id} has \${N_TAXA:-?} sequences; <3 tips means no topology exists."
       names=\$(grep "^>" ${filtered_snps} | sed 's/^>//' | tr '\\n' ',' | sed 's/,\$//')
       echo "(\$names);" > ${cluster_id}.final.treefile
       : > ${cluster_id}.final.iqtree
-      printf 'N_TAXA=%s\\nASC_ACTION=skipped_too_few_taxa\\nDEGENERATE_TREE=1\\n' "\$seq_count" \\
-        > ${cluster_id}.asc_preflight.txt
       printf '"%s":\\n    iqtree: %s\\n' "${task.process}" "\$("\$IQTREE" --version 2>&1 | head -1)" > versions.yml
       exit 0
     fi
 
-    # ---- ASC preflight -------------------------------------------------------
-    # +ASC aborts on constant columns and writes NO tree. Gubbins'
-    # filtered_polymorphic_sites.fasta contains them routinely for clonal clusters
-    # (a 30-taxon 1500-site SNP alignment had 611), so decide BEFORE running IQ-TREE
-    # rather than catching the failure and inventing a topology.
-    asc_preflight.py \\
-      --input "${filtered_snps}" \\
-      --out "${cluster_id}.asc_preflight.txt" \\
-      --model "${model}" \\
-      --strategy "${asc_fb}" \\
-      --stripped-output "${cluster_id}.asc_stripped.fasta"
-
-    # shellcheck disable=SC1090
-    . ./${cluster_id}.asc_preflight.txt
     echo "ASC decision: action=\$ASC_ACTION model=\$IQ_MODEL alignment=\$IQ_ALIGNMENT fconst='\$IQ_FCONST'"
 
     EXTRA="${args}"
