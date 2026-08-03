@@ -43,6 +43,17 @@ process GUBBINS_CLUSTER {
   """
   set -euo pipefail
 
+  # Gubbins' pyjar JIT-compiles with numba using @njit(cache=True), and numba
+  # writes that cache next to the source file -- inside site-packages. The
+  # container runs as the invoking user (docker.runOptions -u), who cannot write
+  # there, and numba raises
+  #     RuntimeError: cannot cache function 'seq_to_int': no locator available
+  # which kills the whole run. Point the cache at the task work dir instead.
+  # Running the container as root would also "fix" it, at the cost of root-owned
+  # files in work/ that then break publish_dir_mode='link'.
+  export NUMBA_CACHE_DIR="\${PWD}/.numba_cache"
+  mkdir -p "\${NUMBA_CACHE_DIR}"
+
   DIAG="${cluster_id}.diagnostics.log"
   : > "\${DIAG}"  # start fresh
 
@@ -150,10 +161,15 @@ END_VERSIONS
 
   echo "Gubbins exit code: \${gubbins_exit_code:-NA}" >> "\${DIAG}"
   if [ "\${gubbins_exit_code:-1}" -ne 0 ]; then
-    echo "ERROR: Gubbins failed; creating placeholder outputs." >> "\${DIAG}"
-    : > "${cluster_id}.filtered_polymorphic_sites.fasta"
-    : > "${cluster_id}.recombination_predictions.gff"
-    : > "${cluster_id}.node_labelled.final_tree.tre"
+    # This used to write three empty placeholder files and exit 0. Gubbins then
+    # reported COMPLETED with no recombination calls at all, which is the same
+    # silent-success failure as the star trees: downstream cannot tell "no
+    # recombination detected" from "Gubbins crashed". A cluster that Gubbins
+    # could not process is not a result. Fail, and surface why.
+    echo "ERROR: Gubbins failed with exit \${gubbins_exit_code:-NA} for cluster ${cluster_id}." >> "\${DIAG}"
+    echo "----- ${cluster_id}.diagnostics.log -----" >&2
+    cat "\${DIAG}" >&2
+    exit "\${gubbins_exit_code:-1}"
   fi
 
   # --- Report taxa dropped by Gubbins --filter-percentage ---
@@ -182,8 +198,12 @@ END_VERSIONS
            "${cluster_id}.recombination_predictions.gff" \\
            "${cluster_id}.node_labelled.final_tree.tre"; do
     if [ ! -s "\$f" ]; then
-      echo "WARNING: Output file \$f is empty; leaving placeholder." >> "\${DIAG}"
-      : > "\$f"
+      # Gubbins exited 0 but produced nothing usable. Same reasoning as above:
+      # an empty filtered alignment is not a finding, it is a broken run.
+      echo "ERROR: Gubbins exited 0 but \$f is empty." >> "\${DIAG}"
+      echo "----- ${cluster_id}.diagnostics.log -----" >&2
+      cat "\${DIAG}" >&2
+      exit 1
     else
       sz=\$(wc -c < "\$f" || echo 0)
       echo "Output file \$f size: \$sz bytes" >> "\${DIAG}"
