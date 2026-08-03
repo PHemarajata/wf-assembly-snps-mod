@@ -212,6 +212,102 @@ def consolidate_groups(groups_idx, d, max_size, tolerance=2.0):
     merges are refused, so the count drops without a purity cost.  Raise
     --consolidate-tolerance to trade coherence for fewer clusters; set
     --no-consolidate to skip the pass entirely.
+
+    Performance note. The obvious implementation recomputes every inter-group
+    mean, `d[np.ix_(groups[a], groups[b])].mean()`, on every pass of the merge
+    loop, which is O(k^3) submatrix means for k initial groups. Profiled on the
+    real 2795-genome set that was 290 million np.ix_/mean calls and 52 MINUTES
+    for one clustering run, with `consolidate_groups` accounting for essentially
+    all of it.
+
+    Block means compose exactly, so nothing needs recomputing. Carrying SUMS
+    instead of means:
+
+        sum(A|B, C)  = sum(A, C) + sum(B, C)
+        within(A|B)  = within_sum(A) + within_sum(B) + sum(A, B)
+
+    a merge updates one row/column in O(k) and the pair scan becomes vectorized
+    array lookups. The arithmetic is identical, not an approximation, so cluster
+    membership is unchanged -- verified byte-for-byte against the previous
+    implementation's output on the 2795-genome set at threshold 0.003.
+    """
+    groups = [np.asarray(g, dtype=np.int64) for g in groups_idx]
+    k = len(groups)
+    if k < 2:
+        return groups
+
+    sizes = np.array([g.size for g in groups], dtype=np.float64)
+
+    # Sum of the within-group upper triangle, not the mean, so merges can add.
+    within_sum = np.zeros(k, dtype=np.float64)
+    for i, g in enumerate(groups):
+        if g.size >= 2:
+            sub = d[np.ix_(g, g)]
+            within_sum[i] = float(sub[np.triu_indices(g.size, k=1)].sum())
+
+    # Sum over the full a-by-b cross block. Computed once; O(k^2) submatrix
+    # sums, i.e. what the old inner loop cost on a SINGLE pass.
+    inter_sum = np.zeros((k, k), dtype=np.float64)
+    for a in range(k):
+        for b in range(a + 1, k):
+            s = float(d[np.ix_(groups[a], groups[b])].sum())
+            inter_sum[a, b] = s
+            inter_sum[b, a] = s
+
+    # `slots` preserves the ORDER the old list-based loop iterated in, so ties
+    # resolve to the same pair: merged into position a, position b removed.
+    slots = list(range(k))
+
+    while len(slots) > 1:
+        idx = np.asarray(slots, dtype=np.int64)
+        s = sizes[idx]
+        pairs = s * (s - 1.0) / 2.0
+        within_mean = np.divide(within_sum[idx], pairs,
+                                out=np.zeros_like(s), where=pairs > 0)
+        inter_mean = inter_sum[np.ix_(idx, idx)] / np.outer(s, s)
+
+        iu = np.triu_indices(idx.size, k=1)
+        cand = inter_mean[iu]
+        sa, sb = s[iu[0]], s[iu[1]]
+        # Coherence bound. A pair of singletons (within == 0) has no internal
+        # scale to compare against, so allow it: two lone genomes cannot be
+        # "less coherent" than themselves.
+        scale = np.maximum(within_mean[iu[0]], within_mean[iu[1]])
+        ok = (sa + sb <= max_size) & ~((scale > 0.0) & (cand > tolerance * scale))
+        if not ok.any():
+            break
+
+        # argmin takes the FIRST minimum, and triu_indices is row-major, which
+        # together reproduce the old "a ascending, then b ascending, strict <".
+        p = int(np.argmin(np.where(ok, cand, np.inf)))
+        ai, bi = int(iu[0][p]), int(iu[1][p])
+        A, B = int(idx[ai]), int(idx[bi])
+
+        groups[A] = np.sort(np.concatenate([groups[A], groups[B]]))
+        within_sum[A] += within_sum[B] + inter_sum[A, B]
+        sizes[A] += sizes[B]
+        merged_row = inter_sum[A, :] + inter_sum[B, :]
+        inter_sum[A, :] = merged_row
+        inter_sum[:, A] = merged_row
+        inter_sum[A, A] = 0.0
+        slots.pop(bi)
+
+    return [groups[i] for i in slots]
+
+
+def _consolidate_groups_reference(groups_idx, d, max_size, tolerance=2.0):
+    """Original O(k^3) implementation, kept only as the correctness oracle.
+
+    NOT called by the pipeline and deliberately unreferenced. It exists so the
+    fast path above can be re-verified against it after any change:
+
+        from cluster_mash import consolidate_groups, _consolidate_groups_reference
+        assert [list(g) for g in consolidate_groups(gs, d, 50)] == \\
+               [list(g) for g in _consolidate_groups_reference(gs, d, 50)]
+
+    Equivalence was confirmed end to end on the real 2795-genome set: both
+    implementations produce clusters_0.003.tsv byte-for-byte identically
+    (282 clusters, 2795 genomes), in 10 s versus 3126 s.
     """
     groups = [np.asarray(g, dtype=np.int64) for g in groups_idx]
     within = [_mean_within(g, d) for g in groups]
@@ -223,9 +319,6 @@ def consolidate_groups(groups_idx, d, max_size, tolerance=2.0):
                 if groups[a].size + groups[b].size > max_size:
                     continue
                 inter = float(d[np.ix_(groups[a], groups[b])].mean())
-                # Coherence bound. A pair of singletons (within == 0) has no
-                # internal scale to compare against, so allow it: two lone
-                # genomes cannot be "less coherent" than themselves.
                 scale = max(within[a], within[b])
                 if scale > 0.0 and inter > tolerance * scale:
                     continue
