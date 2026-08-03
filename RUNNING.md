@@ -120,6 +120,33 @@ grep -r "EXCLUDED_TAXON" results_smoke/ | head        # taxa Gubbins dropped
 
 ---
 
+## Validation status — what has and has not actually run
+
+Measured on 10 real *B. pseudomallei* assemblies in the development sandbox, which has **no container
+engine** and therefore no snippy/gubbins/iqtree on PATH. From `pipeline_info/execution_trace_*.txt`:
+
+| Process | Status | Notes |
+|---|---|---|
+| `INFILE_HANDLING_UNIX` | COMPLETED (10/10) | |
+| `MASH_SKETCH_BATCH` | COMPLETED | |
+| `MASH_PASTE` | COMPLETED | |
+| `MASH_TRIANGLE` | COMPLETED | publishes `Clustering/mash_distances.phylip` |
+| `CLUSTER_GENOMES` | COMPLETED | publishes `Summaries/clusters.tsv` |
+| `SELECT_CLUSTER_REPRESENTATIVE` | COMPLETED (2/2) | emits `representative.fa` |
+| `SNIPPY_SCATTER` | **FAILED, exit 127** | `.command.sh: line 20: snippy: command not found` |
+| everything downstream | **NEVER RAN** | blocked by the SNIPPY_SCATTER failure |
+
+**What the SNIPPY_SCATTER failure does and does not tell us.** The task got past the module's own
+reference guard (which previously aborted with `reference for cluster ... is missing or empty`) and
+reached the `snippy` invocation on line 20, so the representative-FASTA wiring is fixed as far as
+argument construction goes. It is **not** evidence that snippy runs correctly: exit 127 is the shell
+failing to find the binary. `snippy-core`, Gubbins, IQ-TREE, grafting, and `publish_dir_mode='link'`
+remain **entirely unvalidated**.
+
+Step 3 above is what closes these gaps, and it needs a machine with Docker.
+
+---
+
 ## Step 4 — reproduce your previous results
 
 Every behaviour change is reversible. To confirm the optimizations alone did not alter your output:
