@@ -42,11 +42,19 @@ process SELECT_CLUSTER_REPRESENTATIVE {
     tuple val(cluster_id), val(sample_ids), path(assemblies), path(cluster_matrix)
 
     output:
-    // EXACT filename, not path("*.fa"): input assemblies are staged into this same
+    // EXACT filenames, not path("*.fa"): input assemblies are staged into this same
     // work dir, and any input already named *.fa would also match the glob, making
     // `reference` a LIST of two files. Downstream snippy then interpolates both
     // into --ref and fails with "reference is missing or empty: a.fa representative.fa".
-    tuple val(cluster_id), path("representative_id.txt"), path("representative.fa"), emit: representative
+    //
+    // The names are also CLUSTER-SCOPED. They used to be the bare `representative.fa`
+    // / `representative_id.txt`, which is unique within one task dir but collides the
+    // moment COLLECT_REPRESENTATIVES stages every cluster's copy into a single dir
+    // ("input file name collision"). It also silently corrupted the backbone tree:
+    // that module derived each sequence header from `basename <file> .fa`, so every
+    // representative was relabelled `representative` and no tip could ever match the
+    // cluster_id -> rep_label map GRAFT_TREES joins on.
+    tuple val(cluster_id), path("${cluster_id}.rep_id.txt"), path("${cluster_id}.rep.fa"), emit: representative
     path "versions.yml", emit: versions
 
     when:
@@ -58,17 +66,17 @@ process SELECT_CLUSTER_REPRESENTATIVE {
         --cluster-id '${cluster_id}' \\
         --sample-ids '${sample_ids}' \\
         --matrix '${cluster_matrix}' \\
-        --out-id representative_id.txt
+        --out-id ${cluster_id}.rep_id.txt
 
-    # Emit the representative's ASSEMBLY as *.fa. The output block declares
-    # path("*.fa") and downstream SNIPPY_SCATTER / SKA_MAP_ALIGN consume it as the
-    # reference FASTA -- if no .fa exists Nextflow binds representative_id.txt in
+    # Emit the representative's ASSEMBLY under the cluster-scoped name declared in
+    # the output block. Downstream SNIPPY_SCATTER / SKA_MAP_ALIGN consume it as the
+    # reference FASTA -- if it does not exist Nextflow binds the rep-id text file in
     # its place and snippy is handed a one-line text file as its reference.
-    REP_ID=\$(head -n1 representative_id.txt | tr -d '[:space:]')
+    REP_ID=\$(head -n1 ${cluster_id}.rep_id.txt | tr -d '[:space:]')
     REP_SRC=""
     for f in *.fasta *.fa *.fna *.fas; do
         [ -e "\$f" ] || continue
-        case "\$f" in representative.fa) continue ;; esac
+        case "\$f" in ${cluster_id}.rep.fa) continue ;; esac
         # strip one or two extensions to match the normalized sample id
         b=\$(basename "\$f"); b1="\${b%.*}"; b2="\${b1%.*}"
         if [ "\$b" = "\$REP_ID" ] || [ "\$b1" = "\$REP_ID" ] || [ "\$b2" = "\$REP_ID" ]; then
@@ -80,7 +88,7 @@ process SELECT_CLUSTER_REPRESENTATIVE {
         echo "staged files: \$(ls *.fasta *.fa *.fna *.fas 2>/dev/null | tr '\\n' ' ')" >&2
         exit 1
     fi
-    cp "\$REP_SRC" representative.fa
+    cp "\$REP_SRC" ${cluster_id}.rep.fa
     echo "Representative for ${cluster_id}: \$REP_ID (\$REP_SRC)"
 
     cat <<-END_VERSIONS > versions.yml

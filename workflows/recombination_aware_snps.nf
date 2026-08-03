@@ -544,9 +544,13 @@ workflow RECOMBINATION_AWARE_SNPS {
 
     log.info "STEP 5: Collecting cluster representatives"
 
-    // Collect all representative files
+    // Collect all representative files. The rep-id text files travel alongside the
+    // FASTAs because the module needs the real representative label for each
+    // sequence header -- it used to derive that from the filename, which produced
+    // one tip named `representative` per cluster.
     COLLECT_REPRESENTATIVES (
-        SELECT_CLUSTER_REPRESENTATIVE.out.representative.map { cluster_id, rep_id, rep_file -> rep_file }.collect(),
+        SELECT_CLUSTER_REPRESENTATIVE.out.representative.map { cluster_id, rep_id_file, rep_fasta -> rep_fasta }.collect(),
+        SELECT_CLUSTER_REPRESENTATIVE.out.representative.map { cluster_id, rep_id_file, rep_fasta -> rep_id_file }.collect(),
         CLUSTER_GENOMES.out.clusters
     )
     ch_versions = ch_versions.mix(COLLECT_REPRESENTATIVES.out.versions)

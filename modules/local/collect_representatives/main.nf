@@ -12,13 +12,16 @@ process COLLECT_REPRESENTATIVES {
     publishDir "${params.outdir}", mode: params.publish_dir_mode, pattern: "cluster_representatives.tsv"
 
     input:
-    path representative_files
+    // Both are collected across every cluster, so they MUST arrive under
+    // cluster-scoped names (`<cluster_id>.rep.fa` / `<cluster_id>.rep_id.txt`).
+    // SELECT_CLUSTER_REPRESENTATIVE emitted bare `representative.fa` /
+    // `representative_id.txt` until this was fixed, which made Nextflow abort with
+    // "input file name collision" as soon as there were two clusters.
+    path rep_fastas
+    path rep_id_files
     path cluster_info
 
     output:
-    // Publish the representative FASTA and mapping at the run outdir root so
-    // downstream scripts can find `cluster_representatives.tsv` and
-    // `representatives.fa` directly under the pipeline output directory.
     path "representatives.fa", emit: representatives_fasta
     path "cluster_representatives.tsv", emit: representatives_mapping
     path "versions.yml", emit: versions
@@ -28,88 +31,76 @@ process COLLECT_REPRESENTATIVES {
 
     script:
     """
+    set -euo pipefail
+
     echo "Collecting cluster representatives into single FASTA file"
-    
-    # Initialize output files
+
     > representatives.fa
-    echo -e "cluster_id\\trepresentative_id\\tfile_path" > cluster_representatives.tsv
-    
-    # Count input files
-    rep_count=\$(ls *.fa 2>/dev/null | wc -l)
-    echo "Found \$rep_count representative files"
-    
-    if [ \$rep_count -eq 0 ]; then
-        echo "WARNING: No representative files found"
-        echo "Creating empty output files"
-        
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-            ubuntu: \$(awk -F ' ' '{print \$2,\$3}' /etc/issue | tr -d '\n')
-END_VERSIONS
-        
-        exit 0
+    printf 'cluster_id\\trepresentative_id\\tsource_file\\n' > cluster_representatives.tsv
+
+    rep_count=\$(ls *.rep.fa 2>/dev/null | wc -l)
+    echo "Found \$rep_count representative FASTA file(s)"
+
+    if [ "\$rep_count" -eq 0 ]; then
+        echo "ERROR: no *.rep.fa staged -- SELECT_CLUSTER_REPRESENTATIVE produced nothing." >&2
+        echo "staged files: \$(ls -A | tr '\\n' ' ')" >&2
+        exit 1
     fi
-    
-    # Process each representative file
-    for rep_file in *.fa; do
-        if [ "\$rep_file" = "*.fa" ] || [ "\$rep_file" = "representatives.fa" ]; then
-            continue  # No files matched or skip output file
+
+    for rep_file in *.rep.fa; do
+        # cluster_id is carried by the filename, which SELECT_CLUSTER_REPRESENTATIVE
+        # controls; it is not guessed from the sample name the way it used to be.
+        cluster_id="\${rep_file%.rep.fa}"
+        id_file="\${cluster_id}.rep_id.txt"
+
+        if [ ! -s "\$id_file" ]; then
+            echo "ERROR: missing or empty \$id_file for \$cluster_id" >&2
+            exit 1
         fi
 
-        echo "Processing representative file: \$rep_file"
-
-        # Extract representative ID from filename (remove .fa extension)
-        rep_id=\$(basename \$rep_file .fa)
-
-        # Try to determine cluster ID
-        # This assumes the file naming convention includes cluster information
-        cluster_id=""
-
-        # Method 1: Look for cluster info in filename
-        if [[ "\$rep_file" == *"cluster_"* ]]; then
-            cluster_id=\$(echo \$rep_file | sed 's/.*cluster_\\([^_]*\\).*/\\1/')
+        # The REAL representative label, as written by select_representative.py.
+        # This must match the rep_label that the workflow feeds GRAFT_TREES in
+        # cluster_representatives.tsv, otherwise no backbone tip can be matched to
+        # its cluster subtree. Deriving it from the filename (the old behaviour)
+        # relabelled every representative `representative`.
+        rep_id=\$(head -n1 "\$id_file" | tr -d '[:space:]')
+        if [ -z "\$rep_id" ]; then
+            echo "ERROR: \$id_file contains no representative id for \$cluster_id" >&2
+            exit 1
         fi
 
-        # Method 2: Use representative ID as cluster ID if not found
-        if [ -z "\$cluster_id" ]; then
-            cluster_id=\$rep_id
+        if [ ! -s "\$rep_file" ]; then
+            echo "ERROR: empty representative FASTA for \$cluster_id (\$rep_file)" >&2
+            exit 1
         fi
 
-        echo "Representative: \$rep_id, Cluster: \$cluster_id"
+        echo "Cluster \$cluster_id -> representative \$rep_id"
 
-        # Check if file has content
-        if [ -s "\$rep_file" ]; then
-            # Standardize sequence headers in FASTA to match representative ID
-            # This ensures backbone tree uses consistent naming
-            awk -v rep_id="\$rep_id" '
-                /^>/ { print ">" rep_id; next }
-                { print }
-            ' "\$rep_file" >> representatives.fa
+        # Every contig header becomes the representative label. Draft assemblies
+        # here carry a median of ~91 contigs; BUILD_BACKBONE_TREE splits this file
+        # back apart on the header, so all contigs of one representative must share
+        # that one label for them to regroup into a single per-rep FASTA.
+        awk -v rep_id="\$rep_id" '
+            /^>/ { print ">" rep_id; next }
+            { print }
+        ' "\$rep_file" >> representatives.fa
 
-            # Add to mapping
-            echo -e "\$cluster_id\t\$rep_id\t\$rep_file" >> cluster_representatives.tsv
-        else
-            echo "WARNING: Empty representative file: \$rep_file"
-        fi
+        printf '%s\\t%s\\t%s\\n' "\$cluster_id" "\$rep_id" "\$rep_file" >> cluster_representatives.tsv
     done
-    
-    # Verify output
-    final_count=\$(grep -c "^>" representatives.fa 2>/dev/null || echo "0")
-    echo "Collected \$final_count representatives in final FASTA"
-    
-    if [ "\$final_count" -eq 0 ]; then
-        echo "WARNING: No sequences collected. Creating minimal representative."
-        echo ">dummy_representative" > representatives.fa
-        echo "ATCG" >> representatives.fa
-        echo -e "dummy\\tdummy_representative\\tdummy.fa" >> cluster_representatives.tsv
+
+    # Distinct labels, not sequence count: a multi-contig representative writes one
+    # '>' per contig, so grep -c '^>' would far exceed the number of clusters.
+    final_count=\$(grep '^>' representatives.fa | sort -u | wc -l)
+    echo "Collected \$final_count distinct representative(s) from \$rep_count cluster(s)"
+
+    if [ "\$final_count" -ne "\$rep_count" ]; then
+        # Previously this fabricated a '>dummy_representative / ATCG' entry and
+        # exited 0, which poisoned the backbone tree the same way the star-tree
+        # fallback poisoned cluster trees. Failures fail now.
+        echo "ERROR: \$rep_count clusters produced \$final_count distinct labels -- duplicate or missing representative ids." >&2
+        grep '^>' representatives.fa | sort | uniq -d >&2
+        exit 1
     fi
-    
-    # Summary
-    echo "Representative collection summary:"
-    echo "- Input files: \$rep_count"
-    echo "- Output sequences: \$final_count"
-    echo "- Output file: representatives.fa"
-    echo "- Mapping file: cluster_representatives.tsv"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
