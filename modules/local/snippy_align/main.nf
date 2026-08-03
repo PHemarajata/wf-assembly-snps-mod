@@ -113,6 +113,14 @@ process SNIPPY_CORE_GATHER {
 
     script:
     def args = task.ext.args ?: ''
+    // See conf/params.config: with the default medoid reference, snippy-core's
+    // "Reference" taxon duplicates a sample already in the cluster. Unset means
+    // "drop it only when it is a duplicate"; an explicit value forces the choice,
+    // and false restores the legacy alignment.
+    def using_global_ref = (params.use_global_reference && params.ref) ? true : false
+    def drop_ref = (params.drop_reference_taxon == null)
+                     ? !using_global_ref
+                     : (params.drop_reference_taxon.toString().toLowerCase() in ['true','1','yes'])
     """
     set -euo pipefail
 
@@ -139,7 +147,29 @@ snippy-core needs >=2 to produce a usable alignment" >&2
     # The whole-genome alignment is the one Gubbins needs -- never substitute
     # <prefix>.aln, which is SNP-only.
     if [ -s "${cluster_id}.full.aln" ]; then
-        mv "${cluster_id}.full.aln" "${cluster_id}.core.full.aln"
+        if ${drop_ref}; then
+            # Drop the "Reference" record: with the medoid reference it is the same
+            # genome as one of the samples below it in this very alignment.
+            n_before=\$(grep -c "^>" "${cluster_id}.full.aln")
+            awk '/^>/ { keep = (\$0 != ">Reference") } keep' \\
+                "${cluster_id}.full.aln" > "${cluster_id}.core.full.aln"
+            n_after=\$(grep -c "^>" "${cluster_id}.core.full.aln")
+            echo "Dropped duplicate Reference taxon: \$n_before -> \$n_after sequences"
+            if [ "\$n_after" -ne \$(( n_before - 1 )) ]; then
+                echo "ERROR: expected to remove exactly one 'Reference' record, went \\
+\$n_before -> \$n_after" >&2
+                exit 1
+            fi
+            # CLUSTER_GENOMES only emits clusters of >=3 samples, so >=3 must survive.
+            if [ "\$n_after" -lt 3 ]; then
+                echo "ERROR: only \$n_after taxa remain in cluster ${cluster_id} after \\
+dropping Reference; a tree needs >=3. Re-run with --drop_reference_taxon false to \\
+restore the legacy alignment." >&2
+                exit 1
+            fi
+        else
+            mv "${cluster_id}.full.aln" "${cluster_id}.core.full.aln"
+        fi
     else
         echo "ERROR: snippy-core did not produce ${cluster_id}.full.aln (the whole-genome \\
 alignment). Gubbins cannot use a SNP-only alignment, so no substitution is made." >&2
