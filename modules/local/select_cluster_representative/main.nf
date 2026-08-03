@@ -42,7 +42,11 @@ process SELECT_CLUSTER_REPRESENTATIVE {
     tuple val(cluster_id), val(sample_ids), path(assemblies), path(cluster_matrix)
 
     output:
-    tuple val(cluster_id), path("representative_id.txt"), path("*.fa"), emit: representative
+    // EXACT filename, not path("*.fa"): input assemblies are staged into this same
+    // work dir, and any input already named *.fa would also match the glob, making
+    // `reference` a LIST of two files. Downstream snippy then interpolates both
+    // into --ref and fails with "reference is missing or empty: a.fa representative.fa".
+    tuple val(cluster_id), path("representative_id.txt"), path("representative.fa"), emit: representative
     path "versions.yml", emit: versions
 
     when:
@@ -55,6 +59,29 @@ process SELECT_CLUSTER_REPRESENTATIVE {
         --sample-ids '${sample_ids}' \\
         --matrix '${cluster_matrix}' \\
         --out-id representative_id.txt
+
+    # Emit the representative's ASSEMBLY as *.fa. The output block declares
+    # path("*.fa") and downstream SNIPPY_SCATTER / SKA_MAP_ALIGN consume it as the
+    # reference FASTA -- if no .fa exists Nextflow binds representative_id.txt in
+    # its place and snippy is handed a one-line text file as its reference.
+    REP_ID=\$(head -n1 representative_id.txt | tr -d '[:space:]')
+    REP_SRC=""
+    for f in *.fasta *.fa *.fna *.fas; do
+        [ -e "\$f" ] || continue
+        case "\$f" in representative.fa) continue ;; esac
+        # strip one or two extensions to match the normalized sample id
+        b=\$(basename "\$f"); b1="\${b%.*}"; b2="\${b1%.*}"
+        if [ "\$b" = "\$REP_ID" ] || [ "\$b1" = "\$REP_ID" ] || [ "\$b2" = "\$REP_ID" ]; then
+            REP_SRC="\$f"; break
+        fi
+    done
+    if [ -z "\$REP_SRC" ]; then
+        echo "ERROR: no staged assembly matches representative id '\$REP_ID' for ${cluster_id}" >&2
+        echo "staged files: \$(ls *.fasta *.fa *.fna *.fas 2>/dev/null | tr '\\n' ' ')" >&2
+        exit 1
+    fi
+    cp "\$REP_SRC" representative.fa
+    echo "Representative for ${cluster_id}: \$REP_ID (\$REP_SRC)"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

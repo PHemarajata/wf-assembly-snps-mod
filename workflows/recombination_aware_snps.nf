@@ -53,10 +53,10 @@ include { INFILE_HANDLING_UNIX as REF_INFILE_HANDLING_UNIX } from "../modules/lo
 //
 // MODULES: Step 1 - Clustering with Mash
 //
-include { MASH_SKETCH                                      } from "../modules/local/mash_sketch/main"
-include { MASH_DIST                                        } from "../modules/local/mash_dist/main"
+include { MASH_SKETCH_BATCH                                } from "../modules/local/mash_sketch_batch/main"
+include { MASH_PASTE                                       } from "../modules/local/mash_paste/main"
+include { MASH_TRIANGLE                                    } from "../modules/local/mash_triangle/main"
 include { CLUSTER_GENOMES                                  } from "../modules/local/cluster_genomes/main"
-include { MASH_TAB_TO_MATRIX                               } from "../modules/local/mash_tab_to_matrix/main"
 
 //
 // MODULES: Step 2 - Per-cluster whole/core alignment
@@ -202,27 +202,41 @@ workflow RECOMBINATION_AWARE_SNPS {
 
     log.info "STEP 1: Clustering genomes with Mash distances"
 
-    // Create Mash sketches for each assembly
-    MASH_SKETCH (
-        ch_assemblies
-    )
-    ch_versions = ch_versions.mix(MASH_SKETCH.out.versions)
+    // Sketch in BATCHES rather than one task per genome. The original scattered
+    // MASH_SKETCH over every assembly, so 2000 genomes meant 2000 tasks (and 2000
+    // container starts) to do work that `mash sketch -p` parallelizes internally.
+    // params.mash_batch_size genomes per task; ~10 tasks at n=2000, batch=200.
+    ch_sketch_batches = ch_assemblies
+        .collate( params.mash_batch_size ?: 200 )
+        .toList()
+        .flatMap { batches ->
+            batches.withIndex().collect { batch, i ->
+                tuple( i, batch.collect { it[0] }, batch.collect { it[1] } )
+            }
+        }
 
-    // Calculate pairwise distances
-    MASH_DIST (
-        MASH_SKETCH.out.sketch.map{ sample_id, sketch -> sketch }.collect()
+    MASH_SKETCH_BATCH (
+        ch_sketch_batches
     )
-    ch_versions = ch_versions.mix(MASH_DIST.out.versions)
+    ch_versions = ch_versions.mix(MASH_SKETCH_BATCH.out.versions.first())
 
-    // Convert Mash tabular output to square matrix
-    MASH_TAB_TO_MATRIX (
-        MASH_DIST.out.distances
+    // Merge the per-batch sketches into one .msh
+    MASH_PASTE (
+        MASH_SKETCH_BATCH.out.sketch.collect()
     )
-    ch_versions = ch_versions.mix(MASH_TAB_TO_MATRIX.out.versions)
+    ch_versions = ch_versions.mix(MASH_PASTE.out.versions)
+
+    // `mash triangle -p` computes each pair once and writes lower-triangular
+    // Phylip directly, replacing MASH_DIST + MASH_TAB_TO_MATRIX (the old path
+    // never passed -p despite cpus=4, and built an n^2-row TSV intermediate).
+    MASH_TRIANGLE (
+        MASH_PASTE.out.sketch
+    )
+    ch_versions = ch_versions.mix(MASH_TRIANGLE.out.versions)
 
     // Cluster genomes based on matrix
     CLUSTER_GENOMES (
-        MASH_TAB_TO_MATRIX.out.matrix
+        MASH_TRIANGLE.out.matrix
     )
     ch_versions = ch_versions.mix(CLUSTER_GENOMES.out.versions)
 
@@ -250,9 +264,39 @@ workflow RECOMBINATION_AWARE_SNPS {
     log.info "STEP 2: Creating per-cluster whole genome alignments"
 
     // Select cluster representative (medoid/high-quality)
+    // The module now takes ONE channel whose 4th element is the cluster's own
+    // submatrix, written by CLUSTER_GENOMES --emit-submatrices. The original
+    // passed the full n x n matrix as a second channel and re-parsed it in every
+    // per-cluster task. Clusters with no submatrix (e.g. merged_small_clusters)
+    // fall back to the full matrix, which the script reads with pandas usecols.
+    // cluster_mash.py writes cluster_matrices/cluster_<id>.matrix.tsv, and
+    // Nextflow's simpleName strips at the first dot, giving exactly the
+    // cluster_id used in clusters.tsv (verified against real output).
+    ch_submatrix_by_cluster = CLUSTER_GENOMES.out.submatrices
+        .flatten()
+        .map { f -> tuple(f.simpleName, f) }
+
+    ch_rep_input = ch_clustered_assemblies
+        .join( ch_submatrix_by_cluster, by: 0, remainder: true )
+        .combine( MASH_TRIANGLE.out.matrix )
+        .map { row ->
+            // join(remainder:true) yields [cluster_id, sample_ids, assemblies, submatrix]
+            // with submatrix == null when the cluster has none (e.g. merged_small_clusters);
+            // combine() appends the full matrix as the last element.
+            def cluster_id  = row[0]
+            def sample_ids  = row[1]
+            def assemblies  = row[2]
+            def submatrix   = row[3]
+            def full_matrix = row[-1]
+            tuple(cluster_id, sample_ids, assemblies, submatrix ?: full_matrix)
+        }
+        .filter { cluster_id, sample_ids, assemblies, matrix ->
+            // remainder:true also emits submatrices with no matching cluster; drop those
+            sample_ids != null && assemblies != null
+        }
+
     SELECT_CLUSTER_REPRESENTATIVE (
-        ch_clustered_assemblies,
-        MASH_TAB_TO_MATRIX.out.matrix
+        ch_rep_input
     )
     ch_versions = ch_versions.mix(SELECT_CLUSTER_REPRESENTATIVE.out.versions)
 
