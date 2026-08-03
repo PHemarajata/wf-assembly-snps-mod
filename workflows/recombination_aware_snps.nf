@@ -664,11 +664,19 @@ workflow RECOMBINATION_AWARE_SNPS {
     ================================================================================
     */
 
+    // Both strings used to be hardcoded, so a completed run with grafting ENABLED
+    // still reported "(grafting disabled)" and called its grafted output a
+    // backbone tree -- the log said the opposite of what the run had done.
     ch_final_tree
         .subscribe { tree ->
             log.info "✅ WORKFLOW COMPLETE!"
-            log.info "Final tree (backbone): ${tree}"
-            log.info "Recombination-aware per-cluster analysis finished (grafting disabled)"
+            if (params.enable_grafting) {
+                log.info "Final tree (grafted): ${tree}"
+                log.info "Recombination-aware per-cluster analysis finished (per-cluster trees grafted onto backbone)"
+            } else {
+                log.info "Final tree (backbone): ${tree}"
+                log.info "Recombination-aware per-cluster analysis finished (grafting disabled)"
+            }
         }
 }
 
