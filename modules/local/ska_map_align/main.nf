@@ -10,6 +10,48 @@ nextflow.enable.dsl=2
     snippy-core) and therefore produces a FULL-LENGTH alignment with invariant sites
     retained, which is what Gubbins requires.
 
+    *** DO NOT USE THIS PATH FOR RECOMBINATION-AWARE ANALYSIS. ***
+
+    It is 2.7x faster end to end (9m11s vs 24m53s on the 112-genome set, 1.0 vs 3.0
+    CPU-hours, alignment CPU 652 s vs 7333 s) and it is WRONG for this workflow,
+    because split k-mers cannot see clustered SNPs.
+
+    A split k-mer matches only when both flanking half-k-mers match exactly, so a
+    second SNP inside the flank destroys the match and the SNP is never called. The
+    loss is therefore a function of SNP SPACING. Measured against the Snippy
+    alignment of the same cluster, same samples, same reference -- ratio of SKA
+    variable sites to Snippy variable sites, binned by distance to the next SNP:
+
+        gap to next SNP   cluster_12 (21 taxa)   cluster_9 (12 taxa)
+             1-10 bp            0.11x                  0.05x
+            11-20 bp            0.41x                  0.34x
+            21-31 bp            0.75x                  0.72x
+            32-50 bp            0.78x                  0.75x
+           51-100 bp            0.86x                  0.83x
+          101-500 bp            0.96x                  0.93x
+         501-5000 bp            1.09x                  1.06x
+
+    Monotonic in spacing and at parity beyond ~100 bp, which is the signature of the
+    k-mer flank and not of coverage, missing data or divergence. Both alignments are
+    essentially complete (missing 0.16% Snippy vs 0.13% SKA), so this is not a
+    data-loss artefact. SNPs within 31 bp of a neighbour: 27.1% of Snippy intervals
+    vs 12.2% of SKA's on cluster_12; 24.2% vs 9.1% on cluster_9.
+
+    Dense SNP clusters are exactly what Gubbins keys on -- it detects recombination
+    as regions of elevated SNP density. Deleting ~90% of the tightest clusters
+    deletes the signal, and the error is amplified on the way through: 23% fewer
+    variable sites produced 54% FEWER RECOMBINATION BLOCKS on the 112-genome set
+    (2,388 vs 5,148). Per-cluster topologies then disagreed in 3 of the 4 clusters
+    large enough to have a non-trivial topology.
+
+    The failure mode is systematic FALSE NEGATIVES for recombination in a highly
+    recombinogenic organism, i.e. the one error this workflow exists to avoid. The
+    less-recombination result also looks perfectly plausible in the output, which is
+    what makes it dangerous.
+
+    SKA may still be reasonable for a recombination-FREE use (quick clustering or
+    distance estimates). It is not an alternative to Snippy here.
+
     SUBCOMMAND CHOICE IS LOAD-BEARING. Measured here with REAL ska 0.5.1 on 30
     synthetic clonal draft assemblies (400,000 bp source, 8 contigs each):
         ska build   30 samples, 2 threads each, serially   2.43 s total

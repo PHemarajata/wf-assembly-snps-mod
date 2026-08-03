@@ -414,6 +414,23 @@ workflow RECOMBINATION_AWARE_SNPS {
     } else if (params.alignment_method == 'ska') {
         log.info "Using SKA2 (ska build per sample + ska map) for per-cluster whole genome alignment"
 
+        // Measured, not theoretical -- see modules/local/ska_map_align/main.nf.
+        // Split k-mers cannot call a SNP whose flank contains another SNP, so SKA
+        // recovers only ~11% of SNPs within 10 bp of a neighbour while matching
+        // Snippy beyond ~100 bp. Gubbins detects recombination as elevated SNP
+        // density, so this removes the signal: on the 112-genome set SKA produced
+        // 54% fewer recombination blocks (2,388 vs 5,148) and disagreed with Snippy
+        // on 3 of 4 non-trivial topologies. The result looks plausible, which is
+        // what makes it dangerous.
+        if (params.run_gubbins) {
+            log.warn "ALIGNMENT METHOD 'ska' UNDERCALLS RECOMBINATION. Split k-mers miss " +
+                     "clustered SNPs (~11% recovery within 10 bp), which is precisely the " +
+                     "signal Gubbins uses. Measured on 112 B. pseudomallei genomes: 54% " +
+                     "fewer recombination blocks than snippy and different per-cluster " +
+                     "topologies. Use --alignment_method snippy for recombination-aware " +
+                     "analysis; see modules/local/ska_map_align/main.nf for the measurements."
+        }
+
         // Same scatter shape as Snippy: per-sample k-mer counting, then a per-cluster
         // reference-anchored map. `ska map` yields a full-length, genome-ORDERED
         // alignment with invariant sites retained (measured: 30 taxa x 376,564
