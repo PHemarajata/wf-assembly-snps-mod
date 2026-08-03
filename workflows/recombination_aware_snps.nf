@@ -248,11 +248,38 @@ workflow RECOMBINATION_AWARE_SNPS {
             tuple(row.cluster_id, sample_id)
         }
 
-    ch_clustered_assemblies = ch_cluster_assignments
+    ch_grouped_clusters = ch_cluster_assignments
         .map { cluster_id, sample_id -> tuple(sample_id, cluster_id) }
         .join(ch_assemblies, by: 0)
         .map { sample_id, cluster_id, assembly -> tuple(cluster_id, sample_id, assembly) }
         .groupTuple(by: 0)
+
+    // Clusters with <3 taxa cannot yield a tree. Previously they were dropped by a
+    // bare .filter with no accounting, so genomes could vanish from the analysis
+    // silently -- at a tight --mash_threshold that is a large fraction of the input
+    // (measured: 37 of 112 real genomes at 0.002 vs 16 at 0.003). Report it.
+    ch_grouped_clusters
+        .filter { cluster_id, sample_ids, assemblies -> sample_ids.size() < 3 }
+        .map { cluster_id, sample_ids, assemblies -> sample_ids.size() }
+        .sum()
+        .subscribe { dropped ->
+            if (dropped > 0) {
+                log.warn "EXCLUDED_FROM_ANALYSIS: ${dropped} genome(s) are in clusters of <3 taxa " +
+                         "and cannot produce a tree (mash_threshold=${params.mash_threshold}, " +
+                         "merge_singletons=${params.merge_singletons})."
+                if (!params.merge_singletons) {
+                    log.warn "  These genomes are DROPPED entirely. Raise --mash_threshold so they " +
+                             "join real clusters, or set --merge_singletons true to pool them."
+                } else {
+                    log.warn "  --merge_singletons=true pools them into one 'merged_small_clusters' " +
+                             "bin regardless of similarity; on real data that bin spanned nearly the " +
+                             "full diversity of the collection, so treat its recombination calls with " +
+                             "caution (see AUDIT_REPORT.md section G.3)."
+                }
+            }
+        }
+
+    ch_clustered_assemblies = ch_grouped_clusters
         .filter { cluster_id, sample_ids, assemblies -> sample_ids.size() >= 3 }
 
     /*
