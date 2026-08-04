@@ -49,6 +49,58 @@ chmod +x bin/*.py          # Nextflow puts bin/ on PATH; scripts must be executa
 
 ---
 
+## Step 2a — the run, on a 22-core / 64 GB laptop (Core Ultra 9 185H + RTX 4070)
+
+If you have this exact machine, use its profile and let the workflow pick the
+threshold. Nothing needs tuning; every resource number in
+`conf/profiles/local_workstation_rtx4070.config` is measured on this hardware.
+
+```bash
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+export PATH="$JAVA_HOME/bin:$PATH"
+
+nextflow run . \
+    -profile local_workstation_rtx4070,docker \
+    --recombination_aware_mode true \
+    --input  /path/to/assemblies \
+    --outdir results_run \
+    --mash_threshold auto \
+    --max_cluster_size 50 \
+    --gubbins_tree_builder rapidnj \
+    --publish_dir_mode link \
+    -resume
+```
+
+- **`JAVA_HOME` is required.** A miniforge base environment puts Java 11 on
+  `PATH` and Nextflow needs 17–24; `JAVA_HOME` wins over `PATH`. Launch from a
+  clean shell or set it as above.
+- **`--mash_threshold auto`** sweeps candidate thresholds and picks one from the
+  collection's own distance distribution, writing `Summaries/threshold_sweep.tsv`
+  and `Summaries/chosen_threshold.txt`. Read them — the choice is a scientific
+  one and the sweep shows what was rejected and why. A fixed threshold does not
+  transfer between collections: 0.003 was derived on 112 genomes and drops 203 of
+  2795 on a wider set.
+- **`--gubbins_tree_builder rapidnj`** is set explicitly because this profile does
+  not own that parameter; without it you inherit `iqtree` from `params.config`.
+- **`--publish_dir_mode link`** hard-links results instead of copying, so a run
+  costs no extra disk. It needs `outdir` and `work/` on one filesystem.
+
+Do **not** compose this with `low_spec`. Profile precedence follows the order the
+profiles are DEFINED in `nextflow.config`, not the order you list them, so
+`low_spec` always wins and would clamp this machine to 16 cores / 30 GB. (The
+claim in `HANDOFF_TO_CLAUDE_CODE.md` §7 that reordering flips which one wins is
+wrong: `-profile bp,low_spec` and `-profile low_spec,bp` both give
+`max_cluster_size=25`.)
+
+### Budget at ~2800 genomes on this laptop
+
+Measured, not estimated: disk ≈200 GB of `work/` (68 MB per SNIPPY_SCATTER task
+× one per genome per cluster, plus 180 MB per SNIPPY_CORE_GATHER), peak RSS
+12.8 GB (BUILD_BACKBONE_TREE over 138 representatives), wall time roughly
+10–15 h. Clear `work/` first and keep 250 GB free.
+
+---
+
 ## Step 2 — the run
 
 For 112 genomes in `~/Downloads/subset_100/`, on a 16-core / 32 GB workstation:
