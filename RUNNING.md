@@ -76,10 +76,24 @@ nextflow run . \
   clean shell or set it as above.
 - **`--mash_threshold auto`** sweeps candidate thresholds and picks one from the
   collection's own distance distribution, writing `Summaries/threshold_sweep.tsv`
-  and `Summaries/chosen_threshold.txt`. Read them — the choice is a scientific
-  one and the sweep shows what was rejected and why. A fixed threshold does not
-  transfer between collections: 0.003 was derived on 112 genomes and drops 203 of
-  2795 on a wider set.
+  and `Summaries/chosen_threshold.txt`. A fixed threshold does not transfer
+  between collections: 0.003 was derived on 112 genomes and drops 203 of 2795 on
+  a wider set.
+
+  **Read the sweep; do not take the number on faith.** Acceptance is not
+  monotonic in the threshold — raising it changes which component a borderline
+  genome lands in, and average-linkage re-splitting can then *lower* a cluster's
+  span, so accepted and rejected values interleave. On the 2795-genome set the
+  chosen 0.006425 (1 genome dropped) sits between rejected neighbours at 0.006300
+  and 0.006549. That means the clustering is genuinely sensitive near the chosen
+  value, which is worth knowing before you build a phylogeny on it. The sweep
+  records every candidate with its coverage, its largest within-cluster distance,
+  and why it was rejected.
+
+  On the same collection this beat a careful manual choice (0.006, 5 dropped) at
+  identical coherence — but it is a starting point for judgement, not a
+  substitute for it. Override with an explicit `--mash_threshold <value>` when the
+  sweep tells you something the criterion cannot see.
 - **`--gubbins_tree_builder rapidnj`** is set explicitly because this profile does
   not own that parameter; without it you inherit `iqtree` from `params.config`.
 - **`--publish_dir_mode link`** hard-links results instead of copying, so a run
