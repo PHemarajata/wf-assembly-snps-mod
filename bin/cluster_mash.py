@@ -352,6 +352,213 @@ def mean_within_distance(matrix, idx_of, members):
     return float(vals.mean()) if vals.size else 0.0
 
 
+def max_within_distance(matrix, idx_of, members):
+    """Largest pairwise Mash distance inside one cluster (NaN-safe)."""
+    if len(members) < 2:
+        return 0.0
+    sel = np.array([idx_of[m] for m in members if m in idx_of], dtype=np.int64)
+    if sel.size < 2:
+        return 0.0
+    sub = matrix[np.ix_(sel, sel)]
+    vals = sub[np.triu_indices(sel.size, k=1)]
+    vals = vals[np.isfinite(vals)]
+    return float(vals.max()) if vals.size else 0.0
+
+
+def cluster_at(matrix, labels, idx_of, threshold, max_cluster_size,
+               split_method, consolidate, consolidate_tolerance, verbose=True):
+    """Connected components at `threshold`, oversized ones split. Returns dict."""
+    adj = build_adjacency(matrix, threshold)
+    components, _ = components_in_label_order(adj, labels)
+    if verbose:
+        print("Found %d connected components at threshold %s"
+              % (len(components), threshold))
+
+    final_clusters = {}
+    counter = 0
+    for _, members in components.items():
+        if len(members) <= max_cluster_size:
+            final_clusters[counter] = members
+            counter += 1
+            continue
+        before = mean_within_distance(matrix, idx_of, members)
+        if split_method == "order":
+            parts = split_by_order(members, max_cluster_size)
+        else:
+            sel = np.array([idx_of[m] for m in members], dtype=np.int64)
+            parts = split_by_similarity(members, matrix[np.ix_(sel, sel)],
+                                        max_cluster_size,
+                                        consolidate=consolidate,
+                                        consolidate_tolerance=consolidate_tolerance)
+        if verbose:
+            after = [mean_within_distance(matrix, idx_of, p) for p in parts]
+            print("  component of %d samples split into %d parts by '%s' "
+                  "(mean within-component distance %.6f -> mean within-part %.6f)"
+                  % (len(members), len(parts), split_method, before,
+                     float(np.mean(after)) if after else 0.0))
+        for part in parts:
+            final_clusters[counter] = part
+            counter += 1
+    return final_clusters
+
+
+def threshold_stats(final_clusters, matrix, idx_of):
+    """Coverage and coherence of one clustering.
+
+    analysable = genomes in clusters of >= 3 taxa; anything smaller cannot
+    produce a tree and is dropped by the workflow.
+    """
+    analysable = dropped = 0
+    w_max, w_means = 0.0, []
+    n_clusters = 0
+    for members in final_clusters.values():
+        if len(members) >= 3:
+            n_clusters += 1
+            analysable += len(members)
+            w_max = max(w_max, max_within_distance(matrix, idx_of, members))
+            w_means.append(mean_within_distance(matrix, idx_of, members))
+        else:
+            dropped += len(members)
+    return {
+        "clusters": n_clusters,
+        "analysable": analysable,
+        "dropped": dropped,
+        "within_max": w_max,
+        "within_mean": float(np.mean(w_means)) if w_means else 0.0,
+    }
+
+
+def default_threshold_grid(matrix, n=15):
+    """Candidate thresholds as quantiles of the observed pairwise distances.
+
+    Deriving the grid from the data rather than hardcoding values is what makes
+    this transferable: AUDIT_REPORT.md's 0.003 was calibrated on 112 genomes and
+    silently discards 203 of 2795 on a wider collection.
+    """
+    iu = np.triu_indices(matrix.shape[0], k=1)
+    vals = matrix[iu]
+    vals = vals[np.isfinite(vals)]
+    if vals.size == 0:
+        return [0.03]
+    qs = np.linspace(5, 95, n)
+    grid = sorted(set(round(float(v), 6) for v in np.percentile(vals, qs)))
+    return [g for g in grid if g > 0]
+
+
+def select_threshold(matrix, labels, idx_of, grid, max_cluster_size,
+                     split_method, consolidate, consolidate_tolerance,
+                     coherence=0.90, report_path=None, refine=12):
+    """Pick the threshold that analyses the most genomes without incoherent clusters.
+
+    Two things are in tension. A LOW threshold leaves genomes in components of
+    <3 taxa, which cannot produce a tree and are dropped outright. A HIGH one
+    fuses distinct lineages into a single cluster, and Gubbins assumes samples of
+    limited diversity sharing a recent common ancestor -- its recombination calls
+    inside such a bin are not interpretable (AUDIT_REPORT.md G.3).
+
+    The coherence bound is expressed RELATIVE to the collection's own diversity
+    rather than as an absolute Mash distance, so it transfers to any dataset: a
+    cluster may not span more than `coherence` of the largest pairwise distance
+    in the whole collection. Measured on the 2795-genome B. pseudomallei set,
+    whose total span is 0.01088:
+
+        threshold  clusters>=3  dropped  within-MAX  span of collection
+          0.005         67         58     0.00946        87%   accepted
+          0.006         61          5     0.00946        87%   accepted <- chosen
+          0.007         60          0     0.01061        98%   REJECTED
+          0.008         60          0     0.01061        98%   REJECTED
+
+    0.007 gains the last 5 genomes by creating one cluster that spans 98% of the
+    entire collection. Among accepted thresholds the most genomes analysed wins,
+    which is 0.006.
+    """
+    iu = np.triu_indices(matrix.shape[0], k=1)
+    allv = matrix[iu]
+    allv = allv[np.isfinite(allv)]
+    span = float(allv.max()) if allv.size else 0.0
+    limit = coherence * span
+
+    print("Auto-threshold: collection span (max pairwise Mash) = %.6f, "
+          "per-cluster limit = %.6f (%.0f%%)" % (span, limit, 100 * coherence))
+
+    rows = []
+
+    def evaluate(t, tag=""):
+        fc = cluster_at(matrix, labels, idx_of, t, max_cluster_size,
+                        split_method, consolidate, consolidate_tolerance,
+                        verbose=False)
+        st = threshold_stats(fc, matrix, idx_of)
+        st["threshold"] = t
+        st["ok"] = st["within_max"] <= limit and st["clusters"] > 0
+        rows.append(st)
+        print("  threshold %-9.6f clusters>=3=%-5d analysable=%-6d dropped=%-6d "
+              "within_max=%.6f  %s%s"
+              % (t, st["clusters"], st["analysable"], st["dropped"],
+                 st["within_max"], "ok" if st["ok"] else "REJECTED (incoherent)",
+                 tag))
+        return st
+
+    for t in grid:
+        evaluate(t)
+
+    # Refine above the best accepted threshold, where the coverage/coherence
+    # trade-off actually lives. A UNIFORM scan, not a bisection: acceptance is
+    # NOT monotonic in the threshold. Measured on the 2795-genome set, 0.005899
+    # and 0.006180 both exceed the limit (within_max 0.0103) while 0.006000
+    # between them does not (0.00946, 5 genomes dropped) -- one borderline genome
+    # joins a different cluster there and swings that cluster's span across the
+    # bound. A bisection assumes a single boundary and walks straight past such a
+    # window; it converged on 0.005162 (38 dropped) and never sampled 0.006.
+    accepted = [r["threshold"] for r in rows if r["ok"]]
+    if accepted and refine > 0:
+        lo = max(accepted)
+        hi = max(r["threshold"] for r in rows)
+        if hi > lo:
+            step = (hi - lo) / float(refine + 1)
+            print("  refining %.6f..%.6f in %d uniform steps "
+                  "(acceptance is not monotonic, so this scans rather than bisects)"
+                  % (lo, hi, refine))
+            for i in range(1, refine + 1):
+                evaluate(lo + i * step, tag="  [refine]")
+
+    # Chosen over every threshold evaluated, coarse or refined. Acceptance is not
+    # strictly monotonic (within_max can dip as a component re-splits), so this
+    # scans all results rather than trusting the bisection endpoint.
+    best = None
+    for st in rows:
+        if not st["ok"]:
+            continue
+        key = (-st["analysable"], st["within_max"], st["threshold"])
+        if best is None or key < best[0]:
+            best = (key, st)
+
+    if report_path:
+        with open(report_path, "w") as fh:
+            fh.write("threshold\tclusters_ge3\tanalysable\tdropped\t"
+                     "within_mean\twithin_max\tcollection_span\tlimit\taccepted\n")
+            for st in rows:
+                fh.write("%.6f\t%d\t%d\t%d\t%.6f\t%.6f\t%.6f\t%.6f\t%s\n"
+                         % (st["threshold"], st["clusters"], st["analysable"],
+                            st["dropped"], st["within_mean"], st["within_max"],
+                            span, limit, "yes" if st["ok"] else "no"))
+        print("Auto-threshold sweep written to %s" % report_path)
+
+    if best is None:
+        raise SystemExit(
+            "ERROR: no candidate threshold produced coherent clusters "
+            "(every option exceeded %.6f, %.0f%% of the collection span %.6f). "
+            "Widen --auto-grid, raise --auto-coherence, or set --threshold "
+            "explicitly." % (limit, 100 * coherence, span))
+
+    chosen = best[1]
+    print("Auto-threshold: selected %.6f (%d clusters >=3 taxa, %d genomes "
+          "analysable, %d dropped, within_max %.6f = %.0f%% of collection span)"
+          % (chosen["threshold"], chosen["clusters"], chosen["analysable"],
+             chosen["dropped"], chosen["within_max"],
+             100 * chosen["within_max"] / span if span else 0.0))
+    return chosen["threshold"]
+
+
 def write_clusters(final_clusters, output_file):
     with open(output_file, "w") as fh:
         fh.write("cluster_id\tsample_id\n")
@@ -525,6 +732,33 @@ def main():
                              "(compatibility with consumers that still expect "
                              "mash_matrix.tsv).")
 
+    parser.add_argument("--auto-threshold", action="store_true",
+                        help="Sweep candidate thresholds and pick the one that "
+                             "analyses the most genomes without producing a "
+                             "cluster that spans more than --auto-coherence of "
+                             "the collection's own diversity. Overrides "
+                             "--threshold.")
+    parser.add_argument("--auto-grid", default=None,
+                        help="Comma-separated candidate thresholds for "
+                             "--auto-threshold. Default: 15 quantiles of the "
+                             "observed pairwise distances, so the grid adapts "
+                             "to the collection.")
+    parser.add_argument("--auto-coherence", type=float, default=0.90,
+                        help="A cluster may not span more than this fraction "
+                             "of the largest pairwise distance in the whole "
+                             "collection (default: 0.90). Relative, not an "
+                             "absolute Mash distance, so it transfers between "
+                             "datasets.")
+    parser.add_argument("--auto-refine", type=int, default=12,
+                        help="Bisection steps between the best accepted and "
+                             "first rejected threshold (default: 6). The "
+                             "optimum sits at the coherence boundary, which a "
+                             "coarse grid straddles. 0 disables refinement.")
+    parser.add_argument("--auto-report", default=None,
+                        help="Write the full threshold sweep to this TSV.")
+    parser.add_argument("--threshold-out", default=None,
+                        help="Write the chosen threshold to this file.")
+
     args = parser.parse_args()
 
     if args.self_test:
@@ -543,42 +777,29 @@ def main():
         write_square(labels, matrix, args.matrix_out)
         print("Wrote square matrix to %s" % args.matrix_out)
 
-    print("Clustering with threshold %s" % args.threshold)
-    adj = build_adjacency(matrix, args.threshold)
-    clusters, _ = components_in_label_order(adj, labels)
-    print("Found %d connected components at threshold %s"
-          % (len(clusters), args.threshold))
-
     idx_of = {s: i for i, s in enumerate(labels)}
 
-    final_clusters = {}
-    counter = 0
-    n_split = 0
-    for _, members in clusters.items():
-        if len(members) <= args.max_cluster_size:
-            final_clusters[counter] = members
-            counter += 1
-            continue
+    threshold = args.threshold
+    if args.auto_threshold:
+        grid = ([float(x) for x in args.auto_grid.split(",")]
+                if args.auto_grid else default_threshold_grid(matrix))
+        threshold = select_threshold(
+            matrix, labels, idx_of, grid, args.max_cluster_size,
+            args.split_method, not args.no_consolidate,
+            args.consolidate_tolerance,
+            coherence=args.auto_coherence,
+            report_path=args.auto_report,
+            refine=args.auto_refine)
+        if args.threshold_out:
+            with open(args.threshold_out, "w") as fh:
+                fh.write("%.6f\n" % threshold)
+            print("Chosen threshold written to %s" % args.threshold_out)
 
-        n_split += 1
-        before = mean_within_distance(matrix, idx_of, members)
-        if args.split_method == "order":
-            parts = split_by_order(members, args.max_cluster_size)
-        else:
-            sel = np.array([idx_of[m] for m in members], dtype=np.int64)
-            parts = split_by_similarity(members,
-                                        matrix[np.ix_(sel, sel)],
-                                        args.max_cluster_size,
-                                        consolidate=not args.no_consolidate,
-                                        consolidate_tolerance=args.consolidate_tolerance)
-        after = [mean_within_distance(matrix, idx_of, p) for p in parts]
-        print("  component of %d samples split into %d parts by '%s' "
-              "(mean within-component distance %.6f -> mean within-part %.6f)"
-              % (len(members), len(parts), args.split_method,
-                 before, float(np.mean(after)) if after else 0.0))
-        for part in parts:
-            final_clusters[counter] = part
-            counter += 1
+    print("Clustering with threshold %s" % threshold)
+    final_clusters = cluster_at(matrix, labels, idx_of, threshold,
+                                args.max_cluster_size, args.split_method,
+                                not args.no_consolidate,
+                                args.consolidate_tolerance, verbose=True)
 
     print("Found %d clusters" % len(final_clusters))
     for cluster_id, members in final_clusters.items():

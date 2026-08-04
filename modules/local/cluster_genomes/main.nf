@@ -53,6 +53,8 @@ process CLUSTER_GENOMES {
     path "clusters.tsv", emit: clusters
     path "cluster_summary.txt", emit: summary
     path "cluster_matrices/*.matrix.tsv", emit: submatrices, optional: true
+    path "threshold_sweep.tsv",  emit: threshold_sweep,  optional: true
+    path "chosen_threshold.txt", emit: chosen_threshold, optional: true
     path "versions.yml", emit: versions
 
     when:
@@ -60,17 +62,25 @@ process CLUSTER_GENOMES {
 
     script:
     def args             = task.ext.args ?: ''
-    def threshold        = params.mash_threshold ?: 0.03
     def max_cluster_size = params.max_cluster_size ?: 100
     def split_method     = params.cluster_split_method ?: 'similarity'
     def consol_tol       = params.cluster_consolidate_tolerance ?: 2.0
+    // `--mash_threshold auto` sweeps candidate thresholds and picks one from the
+    // collection's own distance distribution. A fixed threshold does not transfer
+    // between collections: 0.003, derived on 112 genomes, silently drops 203 of
+    // 2795 on a wider set because they land in components of <3 taxa.
+    def auto             = (params.mash_threshold ?: '').toString().trim().toLowerCase() == 'auto'
+    def threshold        = auto ? '' : (params.mash_threshold ?: 0.03)
+    def coherence        = params.auto_threshold_coherence ?: 0.90
+    def grid             = params.auto_threshold_grid ? "--auto-grid ${params.auto_threshold_grid}" : ''
+    def mode             = auto ? "--auto-threshold --auto-coherence ${coherence} ${grid} --auto-report threshold_sweep.tsv --threshold-out chosen_threshold.txt" : "--threshold ${threshold}"
     """
     mkdir -p cluster_matrices
 
     python3 ${projectDir}/bin/cluster_mash.py \\
         ${mash_distances} \\
         clusters.tsv \\
-        --threshold ${threshold} \\
+        ${mode} \\
         --max-cluster-size ${max_cluster_size} \\
         --split-method ${split_method} \\
         --consolidate-tolerance ${consol_tol} \\
