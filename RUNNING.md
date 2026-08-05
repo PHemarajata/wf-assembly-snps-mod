@@ -108,10 +108,28 @@ wrong: `-profile bp,low_spec` and `-profile low_spec,bp` both give
 
 ### Budget at ~2800 genomes on this laptop
 
-Measured, not estimated: disk ≈200 GB of `work/` (68 MB per SNIPPY_SCATTER task
-× one per genome per cluster, plus 180 MB per SNIPPY_CORE_GATHER), peak RSS
-12.8 GB (BUILD_BACKBONE_TREE over 138 representatives), wall time roughly
-10–15 h. Clear `work/` first and keep 250 GB free.
+MEASURED on a completed 2795-genome run (61 clusters, threshold 0.006425 chosen
+by `auto`), not estimated:
+
+| resource | measured |
+|---|---|
+| `work/` for ONE clean run | **264 GB** |
+| published `results/` (hardlinked, no extra disk) | 20 GB |
+| peak RSS | **12.8 GB** (`BUILD_BACKBONE_TREE`) |
+| wall time | **~8–14 h** |
+| CPU-hours | ~108 |
+
+**Keep 300 GB free**, not 250. Per-task: `SNIPPY_SCATTER` ~62 MB × one per
+genome, `SNIPPY_CORE_GATHER` ~630 MB × one per cluster, `BUILD_BACKBONE_TREE`
+~1.2 GB.
+
+> **`-resume` is not free after a config change.** Editing `docker.runOptions`
+> (or anything else that feeds the task hash) invalidates cached tasks and
+> re-runs them. On this run a mid-flight `--shm-size` fix re-ran all 2794
+> alignments and left `work/` holding TWO copies of the alignment stage —
+> 510 GB, which filled the disk to 99%. Batch container-option changes BEFORE a
+> long run, and delete `work/` between full runs. Published results are hard
+> links, so `rm -rf work` does **not** delete them.
 
 ---
 
