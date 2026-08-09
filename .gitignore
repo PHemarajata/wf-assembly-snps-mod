@@ -38,4 +38,5 @@ reference/
 __pycache__/
 # Ad-hoc run logs
 resume_*.log
+run_*.log
 downsample_out_sweep.log
