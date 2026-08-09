@@ -112,8 +112,15 @@ Concatenation of output metrics for all samples.
   - `Summary.[snp_package].Distance-Matrix.[tsv,xlsx]`: Core snp distance matrix of all samples.
   - `Summary.[snp_package].Masked-Distance-Matrix.tsv`: Masked core snp distance matrix of all samples.
   - `Summary-Report_yyyy-MM-dd_HH-mm-ss.xlsx`: Excel workbook where each TSV file in the Summaries directory is added to a separate worksheet within the workbook.
+  - `cluster_phylogeny_summary.csv`: One row per cluster from the recombination-aware workflow, rolling up Gubbins and IQ-TREE status, recombination block counts, and a confidence tier.
 
 </details>
+
+> [!NOTE]
+> Two columns in `cluster_phylogeny_summary.csv` describe alignment size and are easy to confuse:
+>
+> - `alignment_total_chars` is the total sequence character count summed over **every** record in the cluster's input alignment, taken verbatim from the Gubbins diagnostics log. For a 49-taxon cluster of a ~7 Mb organism this is ~340,000,000 — it is not an alignment length.
+> - `alignment_length_per_seq` is `alignment_total_chars / seq_count_in_alignment`, i.e. the per-sequence alignment length. This is usually the number you want. It is left blank, with a `ragged_input_alignment` note, when the total is not an exact multiple of the sequence count.
 
 ## Pipeline information
 
