@@ -296,6 +296,9 @@ not as results.
   guarantee — `cluster_69` is Tier 1 on 6 isolates and 28 sites. The tier
   columns for filtered sites and recombination blocks are carried so this can be
   judged per tip.
-- **`alignment_length` in `cluster_phylogeny_summary.csv` is total sequence
-  characters, not columns.** Divide by `seq_count_in_alignment` for the
-  per-sequence length (≈6.8 Mb here).
+- **Older `cluster_phylogeny_summary.csv` files have a misnamed column.** Before
+  the rename in `bin/summarize_cluster_phylogeny.py`, `alignment_length` held
+  total sequence characters rather than columns — 337,737,988 for a 49-taxon
+  cluster of a 6.9 Mb organism. Current runs write `alignment_total_chars` and
+  `alignment_length_per_seq` instead. For a summary produced before that change,
+  divide by `seq_count_in_alignment` yourself.
