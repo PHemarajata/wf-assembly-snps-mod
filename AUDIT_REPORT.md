@@ -391,7 +391,43 @@ picks the best over all candidates.
 accepted window, meaning the clustering is genuinely sensitive there. Read
 `Summaries/threshold_sweep.tsv`.
 
-### G.4 `merge_singletons` produces an incoherent bin
+### G.4 Cluster structure is sensitive to which genomes are in the collection
+
+Removing 8 genomes from the 2,795-genome set (0.3% of the collection) changed
+the auto-selected threshold and reorganised most clusters:
+
+| | 2,795 genomes | 2,787 genomes (8 removed) |
+|---|---|---|
+| selected threshold | 0.006425 | **0.005194** |
+| clusters ≥3 | 61 | 93 |
+| genomes dropped | 1 | **34** |
+
+Of 93 groupings in the smaller set, only 42 survive unchanged and only 25 keep
+the same `cluster_id`.
+
+**This is a real data effect, not an artefact of the selection algorithm.** The
+collection span is identical in both cases (0.010879) and so is the coherence
+limit (0.009791); the same grid region is evaluated. What differs is the
+clustering itself — near 0.006 the 2,795-genome set yields a maximum
+within-cluster span of 0.009463 (accepted) while the 2,787-genome set yields
+0.010382 (rejected). Those 8 genomes act as BRIDGES: single-linkage components
+chain through them, so their presence changes which genomes share a component
+and therefore how far that component spans.
+
+Two consequences:
+
+1. **Incremental addition is not viable on this path.** Adding a handful of
+   genomes can reorganise the clustering wholesale, so cached per-cluster work
+   cannot be reused and a clean re-run is required. There is also no supported
+   placement mode here — UShER exists only in `assembly_snps_scalable.nf`, not in
+   the recombination-aware workflow.
+2. **Cluster membership is a property of the sample set, not just of the
+   population.** Two analyses of overlapping collections can partition the same
+   genomes differently. Report the threshold and the collection alongside any
+   cluster-based result, and do not treat cluster identity as stable across
+   analyses.
+
+### G.5 `merge_singletons` produces an incoherent bin
 
 `merge_singletons=true` pools all leftover genomes into one cluster **with no
 similarity criterion**. On the 112-genome set at threshold 0.002 that bin had
