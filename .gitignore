@@ -40,3 +40,5 @@ __pycache__/
 resume_*.log
 run_*.log
 downsample_out_sweep.log
+# Ad-hoc diagnostic artifacts recovered from work/
+diagnostics_*/

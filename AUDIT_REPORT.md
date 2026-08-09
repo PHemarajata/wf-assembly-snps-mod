@@ -427,7 +427,65 @@ Two consequences:
    cluster-based result, and do not treat cluster identity as stable across
    analyses.
 
-### G.5 `merge_singletons` produces an incoherent bin
+### G.5 The Mash-span criterion is necessary but NOT sufficient
+
+`--mash_threshold auto` bounds a cluster by its **Mash-distance span**. Measured
+on the completed 2,802-genome run (76 analysable clusters, threshold 0.004543,
+every cluster passing the 90% coherence bound), the clusters are nonetheless not
+single populations.
+
+Core variable sites per cluster, **after Gubbins recombination masking**:
+
+| | value |
+|---|---|
+| min | 4 |
+| **median** | **19,510** |
+| max | 75,159 |
+| clusters > 10,000 sites | 48 of 76 (63%) |
+| clusters > 20,000 sites | 36 of 76 (47%) |
+
+Root-to-tip regression per cluster (`bin/clock_signal_check.py`) shows the
+consequence. Against an expectation of roughly 1–10 substitutions/genome/year
+for *B. pseudomallei*:
+
+| cluster | r | variable sites | subs/genome/year |
+|---|---|---|---|
+| cluster_9 | 0.50 | **2,026** | **4.70** |
+| cluster_3 | 0.35 | 21,493 | 43 |
+| cluster_50 | 0.52 | 29,843 | 334 |
+| cluster_52 | 0.41 | 43,673 | 708 |
+| cluster_38 | **0.94** | 31,787 | **824** |
+| cluster_40 | 0.55 | 72,415 | 1,535 |
+
+**The rate tracks the variable-site count, and the best correlation has the
+worst rate.** cluster_38 (r = 0.94, near-perfect) implies 824 subs/genome/year —
+two orders of magnitude too fast. Only cluster_9, the one cluster with a
+low-thousands site count, yields a believable rate. An apparent temporal signal
+in the others is lineage membership, not time.
+
+**Why the Mash bound does not catch this.** 20,000 core SNPs in a ~7.2 Mb genome
+is ~0.28% divergence, i.e. ANI ≈ 99.72%, i.e. a Mash distance around 0.003 —
+comfortably inside the 0.009791 limit. Mash sketches shared k-mer content and is
+insensitive to precisely the SNP-level divergence that determines whether a
+cluster is one population. The two measures are not interchangeable, and the
+criterion is bounding the wrong quantity for this purpose.
+
+Note these counts are **post-masking**, so this is vertical divergence that
+survived Gubbins — not a recombination artefact.
+
+**Consequences.**
+
+1. Per-cluster **topologies remain valid**; these are still real phylogenies.
+2. Per-cluster **dating and rate estimation are not** reliable for most
+   clusters. Choose the dating unit by inspecting variable-site count and
+   implied rate, not by `cluster_id`.
+3. A **SNP-based bound would be a genuine improvement** to `--mash_threshold
+   auto` — e.g. reject a threshold whose clusters exceed some variable-site
+   ceiling. It cannot be evaluated during clustering (the count only exists
+   after Snippy and Gubbins), so it would have to be a post-hoc QC gate or a
+   two-pass procedure. Recorded here rather than implemented.
+
+### G.6 `merge_singletons` produces an incoherent bin
 
 `merge_singletons=true` pools all leftover genomes into one cluster **with no
 similarity criterion**. On the 112-genome set at threshold 0.002 that bin had
