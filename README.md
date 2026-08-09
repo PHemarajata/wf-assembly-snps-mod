@@ -249,6 +249,34 @@ breaks and its recombination calls stop being interpretable. Clustering keeps
 each Gubbins run inside a coherent group — which is also why the threshold
 matters so much.
 
+> ### ⚠️ Do not read branch lengths across the grafted tree
+>
+> **Topologies are valid. Branch lengths are not comparable between parts of the
+> grafted tree, and the grafted tree must not be dated.**
+>
+> Every component uses substitutions per *variable site*, but each over a
+> different site set:
+>
+> | component | denominator |
+> |---|---|
+> | backbone | 121,578 SNPs (parsnp builds its tree from `parsnp.snps.mblocks`) |
+> | each cluster | that cluster's Gubbins-filtered count — median 19,510, range 4–75,159 |
+>
+> On a 76-cluster run that is 77 incommensurable scales in one Newick file.
+> Measured whole-tree root-to-tip regression is r ≈ 0 — arithmetic, not weak
+> clock signal.
+>
+> The **backbone also carries no recombination masking** (it is built from raw
+> medoid assemblies via `parsnp --use-fasttree`; no Gubbins output reaches it).
+> Masking it is not a fix: measured on the 2,802-genome run, Gubbins removes only
+> **0.4%** of backbone variable sites, because at ~18,000 SNPs per pair its
+> density-based detection loses power — the same assumption failure that
+> `--auto_threshold_coherence` exists to prevent. See `AUDIT_REPORT.md` §H.
+>
+> For per-cluster dating, choose the unit by **variable-site count and implied
+> rate**, not by `cluster_id` — see §G.5. `bin/clock_signal_check.py` reports
+> both.
+
 ---
 
 ## Choosing a profile

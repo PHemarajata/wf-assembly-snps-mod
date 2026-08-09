@@ -494,7 +494,88 @@ more divergent than a genuine cluster. It is not a clade. Leave it `false`.
 
 ---
 
-## H. Performance measurements
+## H. The backbone tree: what it is, and the 77-scale branch-length problem
+
+### H.1 The backbone carries no recombination masking
+
+`BUILD_BACKBONE_TREE` consumes only
+`COLLECT_REPRESENTATIVES.out.representatives_fasta` — a concatenation of the RAW
+medoid assemblies (`cp "$REP_SRC" <cluster>.rep.fa`). No Gubbins output reaches
+it. The tree comes from `parsnp --use-fasttree`, so it is also FastTree, not
+IQ-TREE.
+
+### H.2 Branch lengths are per VARIABLE site, not per core-genome site
+
+This was initially misread — including in earlier notes in this session — as the
+backbone branch lengths being implausibly inflated. They are not.
+
+parsnp builds its tree from `parsnp.snps.mblocks`, a **76 x 121,578 SNP-only**
+alignment, not from the 5,993,126-column core alignment. Measured on the
+2,802-genome run:
+
+| | as published | x 121,578/5,993,126 |
+|---|---|---|
+| median branch | 0.020523 | 0.000416 |
+| max branch | 0.113881 | 0.002310 |
+| total tree length | 5.1461 | 0.1044 |
+
+Observed pairwise p-distance **in the core alignment**: median 0.00302, max
+0.00379. Converted, the branches are consistent with the alignment. The apparent
+"25x inflation against a Mash distance of 0.011" was a units error — comparing
+per-variable-site branch lengths against a genome-wide divergence measure.
+
+### H.3 The real defect: the grafted tree mixes 77 different denominators
+
+| component | branch-length unit |
+|---|---|
+| backbone | subs per variable site over **121,578** SNPs |
+| each cluster | subs per variable site over **that cluster's** Gubbins-filtered count — median 19,510, range 4 to 75,159 |
+
+Grafting concatenates 77 incommensurable scales into one Newick file. This is
+the mechanism behind the whole-tree root-to-tip r near zero: not weak clock
+signal, arithmetic.
+
+**Topologies are unaffected and remain valid.** Per-cluster branch lengths are
+interpretable WITHIN a cluster. What is not valid is reading branch lengths
+across the grafted tree as a single quantity, or dating it.
+
+### H.4 Masking the backbone is not a fix — measured, not assumed
+
+Gubbins was run on the converted core alignment purely as a diagnostic
+(76 taxa x 5,993,126 columns, rapidnj, 423 s):
+
+| | value |
+|---|---|
+| recombination blocks | 2,806 |
+| SNPs inside recombinations | 34,748 of 627,590 (5.5%) |
+| r/m | median 0.054, mean 0.796, max 22.14 |
+| variable sites 121,578 -> after masking | 121,069 (**0.4% removed**) |
+
+Masking removes 0.4% of variable sites. For an organism this recombinogenic that
+is not credible as an absence of recombination; it is Gubbins losing power
+exactly where its assumptions fail. It detects recombination as elevated SNP
+density against a local background, and here the background is ~18,000 SNPs per
+pair across 6 Mb, so tracts do not stand out. The median r/m of 0.054 against a
+mean of 0.796 and max of 22.14 shows a handful of branches carrying nearly all
+the detected signal — patchy detection, not uniform absence.
+
+This is the same limitation that motivates `--auto_threshold_coherence`
+(§G.2, §G.5): a set spanning the whole collection is precisely where Gubbins
+should not be trusted. **Do not wire this into the pipeline.**
+
+### H.5 Incidental findings
+
+- `backbone_alignment.fa` is **XMFA**, not FASTA — parsnp's multi-block format
+  copied to a `.fa` name (4,168 locally collinear blocks x 76 records). Anything
+  treating it as a single-block alignment misparses it. It is also **not
+  published**, surviving only in `work/`.
+- `backbone_report.txt` reports `Representatives: 7608`. There are **76**; it is
+  counting FASTA records (contigs), not genomes. Same class of defect as the
+  `alignment_length` column fixed in PR #3.
+- `backbone.per_branch_statistics.csv` is **tab-delimited** despite the `.csv`
+  extension.
+
+## I. Performance measurements
 
 ### H.1 Where the time goes (112 genomes, 8 clusters)
 
@@ -554,7 +635,7 @@ silently regroup genomes.
 
 ---
 
-## I. Full-scale validation
+## J. Full-scale validation
 
 2,795 genomes, 61 clusters, threshold 0.006425 auto-selected, 22-core laptop:
 
