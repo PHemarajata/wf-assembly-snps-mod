@@ -446,6 +446,7 @@ results_run/
 │   ├── clusters.tsv                  cluster_id → sample_id
 │   ├── chosen_threshold.txt          the threshold auto-selection picked
 │   ├── threshold_sweep.tsv           every candidate, with the reason for rejection
+│   ├── cluster_phylogeny_summary.csv per-cluster Gubbins/IQ-TREE status + tier
 │   └── cluster_summary.txt
 ├── Clusters/
 │   └── cluster_<id>/

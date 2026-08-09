@@ -12,10 +12,23 @@ Inputs (all positional or via flags):
   --output          path to cluster_phylogeny_summary.csv
 
 Columns produced:
-  cluster_id, n_isolates, alignment_length, seq_count_in_alignment,
-  starting_tree_present, gubbins_status, gubbins_exit_code,
-  n_recombination_blocks, n_filtered_polymorphic_sites, iqtree_status,
-  treefile_size_bytes, iqtree_log_size_bytes, confidence_tier, notes
+  cluster_id, n_isolates, alignment_total_chars, alignment_length_per_seq,
+  seq_count_in_alignment, starting_tree_present, gubbins_status,
+  gubbins_exit_code, n_recombination_blocks, n_filtered_polymorphic_sites,
+  iqtree_status, treefile_size_bytes, iqtree_log_size_bytes,
+  confidence_tier, notes
+
+Note on the two alignment size columns:
+  GUBBINS_CLUSTER's diagnostics log reports "Alignment length (non-header
+  chars)", which is the TOTAL sequence character count summed over every
+  record in the input alignment -- not the number of alignment columns. That
+  raw total is reported as `alignment_total_chars`; for a 49-taxon cluster of
+  a ~7 Mb organism it is ~340 Mb, which is not an alignment length in any
+  useful sense. `alignment_length_per_seq` is the per-sequence alignment
+  length (total / seq_count_in_alignment), which is the number readers
+  usually want. If the total is not an exact multiple of the sequence count
+  the alignment is ragged; the per-seq value is then left blank and a
+  `ragged_input_alignment` note is emitted.
 """
 
 import argparse
@@ -30,7 +43,8 @@ from pathlib import Path
 def parse_diagnostics(path):
     """Parse a single .diagnostics.log file produced by GUBBINS_CLUSTER."""
     info = {
-        "alignment_length": "",
+        "alignment_total_chars": "",
+        "alignment_length_per_seq": "",
         "seq_count_in_alignment": "",
         "starting_tree_present": "false",
         "gubbins_status": "unknown",
@@ -48,9 +62,11 @@ def parse_diagnostics(path):
         m = re.match(r"Sequence count:\s*(\d+)", line)
         if m:
             info["seq_count_in_alignment"] = m.group(1)
+        # This is the total character count over ALL records, not the number
+        # of alignment columns -- see the module docstring.
         m = re.match(r"Alignment length \(non-header chars\):\s*(\d+)", line)
         if m:
-            info["alignment_length"] = m.group(1)
+            info["alignment_total_chars"] = m.group(1)
         m = re.match(r"Starting tree present:.*\((\d+) bytes\)", line)
         if m:
             info["starting_tree_present"] = "true"
@@ -65,6 +81,18 @@ def parse_diagnostics(path):
             failed = True
         if line.startswith("ERROR: Alignment file missing or empty"):
             info["notes"].append("input_alignment_empty")
+
+    # Derive the per-sequence alignment length from the raw total. A rectangular
+    # alignment divides exactly; anything else is ragged and gets flagged rather
+    # than reported as a rounded-off length.
+    total = info["alignment_total_chars"]
+    seqs = info["seq_count_in_alignment"]
+    if total.isdigit() and seqs.isdigit() and int(seqs) > 0:
+        total_i, seqs_i = int(total), int(seqs)
+        if total_i % seqs_i == 0:
+            info["alignment_length_per_seq"] = str(total_i // seqs_i)
+        else:
+            info["notes"].append("ragged_input_alignment")
 
     code = info["gubbins_exit_code"]
     if skipped_too_few:
@@ -197,7 +225,8 @@ def main():
     fieldnames = [
         "cluster_id",
         "n_isolates",
-        "alignment_length",
+        "alignment_total_chars",
+        "alignment_length_per_seq",
         "seq_count_in_alignment",
         "starting_tree_present",
         "gubbins_status",
@@ -239,7 +268,8 @@ def main():
             writer.writerow({
                 "cluster_id": cid,
                 "n_isolates": n_iso,
-                "alignment_length": diag["alignment_length"],
+                "alignment_total_chars": diag["alignment_total_chars"],
+                "alignment_length_per_seq": diag["alignment_length_per_seq"],
                 "seq_count_in_alignment": diag["seq_count_in_alignment"],
                 "starting_tree_present": diag["starting_tree_present"],
                 "gubbins_status": diag["gubbins_status"],
