@@ -62,6 +62,7 @@ include { CLUSTER_GENOMES                                  } from "../modules/lo
 // MODULES: Step 2 - Per-cluster whole/core alignment
 //
 include { SELECT_CLUSTER_REPRESENTATIVE                    } from "../modules/local/select_cluster_representative/main"
+include { SPLIT_REFERENCE_REPLICONS                        } from "../modules/local/split_reference_replicons/main"
 // Snippy is now scatter (one task per cluster-sample) + snippy-core gather. The old
 // monolithic SNIPPY_ALIGN ran every sample serially inside a single task.
 include { SNIPPY_SCATTER                                   } from "../modules/local/snippy_align/main"
@@ -435,6 +436,57 @@ workflow RECOMBINATION_AWARE_SNPS {
     ch_clusters_file = CLUSTER_GENOMES.out.clusters
 
     }  // end of default (Mash-clustering) vs curated-mode branch; ch_for_alignment is set either way
+
+    /*
+    ================================================================================
+        STEP 1b (optional): split each cluster's reference into replicons
+    ================================================================================
+    When --split_replicons is set, the per-cluster reference is split into one
+    FASTA per replicon (contig) and each cluster fans out into one analysis unit
+    per replicon, keyed cluster_id__<replicon>. Everything downstream (alignment,
+    Gubbins, tree) then runs per replicon, matching the manual pipeline
+    (close__ska_map__chr1 / chr2). This is why Gubbins never sees a contig
+    junction. Requires a COMPLETE reference (<= max_replicons contigs), so pair it
+    with curated mode / supplied complete references; the split module fails loudly
+    on a draft.
+    */
+    if (params.split_replicons) {
+        log.info "STEP 1b: splitting per-cluster references into replicons (max_replicons=${params.max_replicons ?: 4}); analysis fans out per replicon."
+
+        // Fork so the reference can be split while the per-cluster metadata is
+        // preserved for the rejoin (ch_for_alignment is a queue channel and
+        // cannot be read twice).
+        ch_for_alignment.multiMap { cid, sample_ids, assemblies, rep_id, ref ->
+            meta: tuple(cid, sample_ids, assemblies, rep_id)
+            ref:  tuple(cid, ref)
+        }.set { ch_fa_forked }
+
+        SPLIT_REFERENCE_REPLICONS ( ch_fa_forked.ref )
+        ch_versions = ch_versions.mix(SPLIT_REFERENCE_REPLICONS.out.versions.first())
+
+        ch_replicons = SPLIT_REFERENCE_REPLICONS.out.replicons
+            .transpose()   // one emission per replicon fasta
+
+        // Cross-join metadata (1 per cluster) with replicons (N per cluster) by
+        // cluster_id; re-key each unit as cluster_id__<replicon>.
+        ch_split_units = ch_fa_forked.meta
+            .combine(ch_replicons, by: 0)
+            .map { cid, sample_ids, assemblies, rep_id, replicon_fa ->
+                def compound = "${cid}__${replicon_fa.simpleName}"
+                tuple(compound, sample_ids, assemblies, rep_id, replicon_fa)
+            }
+
+        // Tee the fanned-out units into the alignment channel and the STEP 4
+        // label channel. multiMap forks one source into two so neither read
+        // splits the other's emissions.
+        ch_split_units.multiMap { cid, sample_ids, assemblies, rep_id, ref ->
+            aln:   tuple(cid, sample_ids, assemblies, rep_id, ref)
+            label: tuple(cid, rep_id)
+        }.set { ch_split_forked }
+
+        ch_for_alignment = ch_split_forked.aln
+        ch_cluster_repid = ch_split_forked.label
+    }
 
     // Choose alignment method: Snippy (scatter/gather), SKA2 (fast low-spec), or Parsnp
     if (params.alignment_method == 'snippy' || !params.alignment_method) {

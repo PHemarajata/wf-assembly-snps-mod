@@ -541,6 +541,16 @@
                     "type": "string",
                     "description": "Curated mode: TSV with header cluster_id<TAB>reference_path, one row per cluster. The reference is external (complete or borrowed), not a cluster member. Required together with cluster_assignments.",
                     "fa_icon": "fas fa-folder-open"
+                },
+                "split_replicons": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Split each cluster's complete reference into one FASTA per replicon and run alignment + Gubbins per replicon (keyed cluster_id__<replicon>). Prevents Gubbins scanning across contig junctions. Requires a complete reference (<= max_replicons contigs)."
+                },
+                "max_replicons": {
+                    "type": "integer",
+                    "default": 4,
+                    "description": "Maximum contigs a reference may have for replicon splitting; more than this is treated as a draft and fails. B. pseudomallei has 2 chromosomes."
                 }
             }
         }
