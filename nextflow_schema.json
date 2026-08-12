@@ -531,6 +531,16 @@
                     "type": "boolean",
                     "default": false,
                     "description": "Rename cluster tip labels that collide with backbone labels (excluding the representative) by appending _dup<N> before grafting."
+                },
+                "cluster_assignments": {
+                    "type": "string",
+                    "description": "Curated mode: TSV with header cluster_id<TAB>sample_id, one row per genome. When set together with cluster_references, bypasses Mash clustering and medoid selection and uses this partition directly.",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "cluster_references": {
+                    "type": "string",
+                    "description": "Curated mode: TSV with header cluster_id<TAB>reference_path, one row per cluster. The reference is external (complete or borrowed), not a cluster member. Required together with cluster_assignments.",
+                    "fa_icon": "fas fa-folder-open"
                 }
             }
         }

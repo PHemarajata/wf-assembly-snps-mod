@@ -197,6 +197,80 @@ workflow RECOMBINATION_AWARE_SNPS {
 
     /*
     ================================================================================
+        STEP 1 (CURATED MODE): supplied partition + per-cluster references
+    ================================================================================
+    When --cluster_assignments AND --cluster_references are BOTH given, Mash
+    clustering and medoid selection are skipped entirely; the analysis is driven
+    by the externally-computed partition and the reference decisions that go with
+    it, exactly as reference_sensitivity_bp.py does. This is the faithful-
+    reproduction path for a collection that Mash single-linkage cannot partition:
+    measured, all 2802 B. pseudomallei collapse into ONE component at every
+    threshold >= 0.007, and shatter into hundreds of singletons below that, so a
+    PopPUNK/fastbaps partition supplied here is the only valid clustering.
+
+    clusters.tsv     : header `cluster_id<TAB>sample_id`, one row per genome.
+    references.tsv   : header `cluster_id<TAB>reference_path`, one row per cluster;
+                       the reference is external (complete or borrowed), NOT a
+                       cluster member, matching the manual --reference contract.
+    */
+    def curated_mode = (params.cluster_assignments && params.cluster_references)
+
+    if (curated_mode) {
+
+        log.info "CURATED MODE: partition=${params.cluster_assignments}, references=${params.cluster_references}. Mash clustering and medoid selection are SKIPPED."
+
+        ch_curated_assignments = Channel.fromPath(params.cluster_assignments, checkIfExists: true)
+            .splitCsv(header: true, sep: '\t')
+            .map { row -> tuple(row.sample_id.toString().split('\\.')[0], row.cluster_id.toString()) }
+
+        ch_curated_refs = Channel.fromPath(params.cluster_references, checkIfExists: true)
+            .splitCsv(header: true, sep: '\t')
+            .map { row -> tuple(row.cluster_id.toString(), file(row.reference_path, checkIfExists: true)) }
+
+        ch_clustered_assemblies = ch_curated_assignments
+            .join(ch_assemblies, by: 0)
+            .map { sample_id, cluster_id, assembly -> tuple(cluster_id, sample_id, assembly) }
+            .groupTuple(by: 0)
+
+        // Same <3-taxa accounting as the default path: a cluster of <3 cannot
+        // yield a tree. Report rather than silently drop.
+        ch_clustered_assemblies
+            .filter { cluster_id, sample_ids, assemblies -> sample_ids.size() < 3 }
+            .map { cluster_id, sample_ids, assemblies -> sample_ids.size() }
+            .sum()
+            .subscribe { dropped ->
+                if (dropped > 0) {
+                    log.warn "EXCLUDED_FROM_ANALYSIS: ${dropped} genome(s) are in supplied clusters of <3 taxa and cannot produce a tree."
+                }
+            }
+
+        ch_clustered_assemblies = ch_clustered_assemblies
+            .filter { cluster_id, sample_ids, assemblies -> sample_ids.size() >= 3 }
+
+        // ch_for_alignment shape: [cluster_id, sample_ids, assemblies, rep_id, reference].
+        // rep_id := cluster_id: the reference is external, so there is no medoid
+        // cluster member to name here.
+        ch_for_alignment = ch_clustered_assemblies
+            .join(ch_curated_refs, by: 0)
+            .map { cluster_id, sample_ids, assemblies, reference ->
+                tuple(cluster_id, sample_ids, assemblies, cluster_id, reference)
+            }
+
+        // (cluster_id, rep_id) label channel, consumed once in STEP 4. Re-read
+        // the file rather than ch_curated_refs (a queue channel already consumed
+        // above). rep_id := cluster_id since the reference is external.
+        ch_cluster_repid = Channel.fromPath(params.cluster_references, checkIfExists: true)
+            .splitCsv(header: true, sep: '\t')
+            .map { row -> tuple(row.cluster_id.toString(), row.cluster_id.toString()) }
+
+        // The supplied partition file IS the clusters.tsv the per-cluster summary
+        // needs (same header cluster_id<TAB>sample_id).
+        ch_clusters_file = Channel.fromPath(params.cluster_assignments, checkIfExists: true)
+
+    } else {
+
+    /*
+    ================================================================================
                         STEP 1: Cluster with Mash
     ================================================================================
     */
@@ -351,6 +425,16 @@ workflow RECOMBINATION_AWARE_SNPS {
                 tuple(cluster_id, sample_ids, assemblies, rep_id, rep_file)
             }
     }
+
+    // (cluster_id, rep_id) label channel, mirrored by the curated branch so
+    // STEP 4 works in both modes. Process outputs are re-readable, so this does
+    // not disturb the reads at ch_for_alignment above.
+    ch_cluster_repid = SELECT_CLUSTER_REPRESENTATIVE.out.representative
+        .map { cluster_id, rep_id, rep_file -> tuple(cluster_id, rep_id) }
+
+    ch_clusters_file = CLUSTER_GENOMES.out.clusters
+
+    }  // end of default (Mash-clustering) vs curated-mode branch; ch_for_alignment is set either way
 
     // Choose alignment method: Snippy (scatter/gather), SKA2 (fast low-spec), or Parsnp
     if (params.alignment_method == 'snippy' || !params.alignment_method) {
@@ -545,9 +629,7 @@ workflow RECOMBINATION_AWARE_SNPS {
 
     // Combine Gubbins filtered SNPs with representative info for IQ-TREE
     ch_for_final_tree = GUBBINS_CLUSTER.out.filtered_alignment
-        .join(SELECT_CLUSTER_REPRESENTATIVE.out.representative.map { cluster_id, rep_id, rep_file ->
-            tuple(cluster_id, rep_id)
-        }, by: 0)
+        .join(ch_cluster_repid, by: 0)
 
     // The ASC decision is computed in its own process because the IQ-TREE 2.2.6
     // container ships no python; see modules/local/asc_preflight/main.nf.
@@ -567,6 +649,14 @@ workflow RECOMBINATION_AWARE_SNPS {
     ================================================================================
     */
 
+    // STEP 5 + 6 build the WHOLE-COLLECTION backbone from per-cluster medoid
+    // representatives. Curated mode has no medoids -- its reference is external
+    // and not a cluster member, so it cannot be a backbone tip -- and the
+    // whole-collection tree is a separate (population-level) product anyway. So
+    // these steps run only in the default Mash path. Per-cluster recombination-
+    // corrected trees and r/m (STEP 3/4) are curated mode's deliverable.
+    if (!curated_mode) {
+
     log.info "STEP 5: Collecting cluster representatives"
 
     // Collect all representative files. The rep-id text files travel alongside the
@@ -576,7 +666,7 @@ workflow RECOMBINATION_AWARE_SNPS {
     COLLECT_REPRESENTATIVES (
         SELECT_CLUSTER_REPRESENTATIVE.out.representative.map { cluster_id, rep_id_file, rep_fasta -> rep_fasta }.collect(),
         SELECT_CLUSTER_REPRESENTATIVE.out.representative.map { cluster_id, rep_id_file, rep_fasta -> rep_id_file }.collect(),
-        CLUSTER_GENOMES.out.clusters
+        ch_clusters_file
     )
     ch_versions = ch_versions.mix(COLLECT_REPRESENTATIVES.out.versions)
 
@@ -594,6 +684,8 @@ workflow RECOMBINATION_AWARE_SNPS {
     )
     ch_versions = ch_versions.mix(BUILD_BACKBONE_TREE.out.versions)
 
+    }  // end STEP 5+6 (default mode only)
+
     /*
     ================================================================================
                     STEP 6b: Roll up per-cluster phylogeny status
@@ -603,7 +695,7 @@ workflow RECOMBINATION_AWARE_SNPS {
     log.info "STEP 6b: Aggregating per-cluster diagnostics into cluster_phylogeny_summary.csv"
 
     SUMMARIZE_CLUSTER_PHYLOGENY (
-        CLUSTER_GENOMES.out.clusters,
+        ch_clusters_file,
         GUBBINS_CLUSTER.out.diagnostics.collect(),
         IQTREE_ASC.out.final_tree.map { cluster_id, treefile, rep_id -> treefile }.collect(),
         IQTREE_ASC.out.log.map { cluster_id, iqtree_log -> iqtree_log }.collect(),
@@ -618,7 +710,13 @@ workflow RECOMBINATION_AWARE_SNPS {
     ================================================================================
     */
 
-    if (params.enable_grafting) {
+    if (curated_mode) {
+        // No backbone in curated mode, so nothing to graft onto. The per-cluster
+        // recombination-corrected ML trees are the final product; expose them as
+        // ch_final_tree for the completion log.
+        log.info "STEP 7: Grafting SKIPPED in curated mode; per-cluster trees are the output."
+        ch_final_tree = IQTREE_ASC.out.final_tree.map { cluster_id, treefile, rep_id -> treefile }
+    } else if (params.enable_grafting) {
         log.info "STEP 7: Grafting per-cluster trees onto backbone via graft_trees.py"
 
         // Build cluster_representatives.tsv from SELECT_CLUSTER_REPRESENTATIVE
