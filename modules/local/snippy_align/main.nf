@@ -117,9 +117,17 @@ process SNIPPY_CORE_GATHER {
     // "Reference" taxon duplicates a sample already in the cluster. Unset means
     // "drop it only when it is a duplicate"; an explicit value forces the choice,
     // and false restores the legacy alignment.
-    def using_global_ref = (params.use_global_reference && params.ref) ? true : false
+    // CURATED MODE COUNTS AS AN EXTERNAL REFERENCE. --cluster_references supplies a
+    // reference that is explicitly NOT a cluster member (complete or borrowed), so
+    // snippy-core's "Reference" record is a genuine extra taxon, not a duplicate of
+    // a sample. Dropping it there silently removed a real sequence from the
+    // alignment Gubbins sees. Measured on s1_L1_19 chr1 with identical Gubbins
+    // flags: keeping it (35 taxa, full length) gives r/m 2.00 against the manual
+    // pipeline's 2.03; dropping it plus column-filtering gave 3.23.
+    def external_ref = ((params.use_global_reference && params.ref)
+                        || (params.cluster_assignments && params.cluster_references)) ? true : false
     def drop_ref = (params.drop_reference_taxon == null)
-                     ? !using_global_ref
+                     ? !external_ref
                      : (params.drop_reference_taxon.toString().toLowerCase() in ['true','1','yes'])
     """
     set -euo pipefail
