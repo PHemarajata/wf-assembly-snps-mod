@@ -662,9 +662,18 @@ workflow RECOMBINATION_AWARE_SNPS {
     )
     ch_versions = ch_versions.mix(IQTREE_FAST.out.versions)
 
-    // Prepare input for Gubbins: join alignments with starting trees
-    ch_for_gubbins = KEEP_INVARIANT_ATCG.out.core_alignment
-        .join(IQTREE_FAST.out.tree, by: 0)
+    // Prepare input for Gubbins: join alignments with starting trees.
+    // With gubbins_skip_starting_tree, substitute the 0-byte assets/NO_FILE so
+    // GUBBINS_CLUSTER's `[ -s "$starting_tree" ]` guard falls through to the
+    // no-starting-tree branch and Gubbins builds its own first tree, which is
+    // what the production analysis does (it passes no --starting-tree).
+    ch_for_gubbins = params.gubbins_skip_starting_tree
+        ? KEEP_INVARIANT_ATCG.out.core_alignment
+              .map { cluster_id, alignment ->
+                  tuple(cluster_id, alignment, file("${projectDir}/assets/NO_FILE"))
+              }
+        : KEEP_INVARIANT_ATCG.out.core_alignment
+              .join(IQTREE_FAST.out.tree, by: 0)
 
     GUBBINS_CLUSTER(
         ch_for_gubbins
