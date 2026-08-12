@@ -182,8 +182,8 @@
                 },
                 "gubbins_tree_builder": {
                     "type": "string",
-                    "default": "iqtree",
-                    "description": "Tree builder method for Gubbins.",
+                    "default": "raxml",
+                    "description": "Tree builder method for Gubbins. Pinned to raxml: rapidnj systematically underestimates r/m (median ratio 0.922, 11 of 12 comparisons low, sign test p=0.0063) where IQ-TREE and RAxML agree with no directional bias.",
                     "enum": [
                         "hybrid",
                         "fasttree",
@@ -238,8 +238,8 @@
                 },
                 "gubbins_first_tree_builder": {
                     "type": "string",
-                    "default": "rapidnj",
-                    "description": "First-tree builder used by Gubbins in hybrid or no-starting-tree mode.",
+                    "default": "raxml",
+                    "description": "First-tree builder used by Gubbins in hybrid or no-starting-tree mode. Pinned to raxml: with gubbins_use_hybrid=true this seeds the iterations, so a distance-based value here puts the biased builder in the default path even when gubbins_tree_builder is not rapidnj.",
                     "enum": [
                         "rapidnj",
                         "fasttree",

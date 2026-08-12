@@ -4,8 +4,13 @@ nextflow.enable.dsl=2
 process GUBBINS_CLUSTER {
   tag "cluster_${cluster_id}"
   label 'process_high'
-  conda "bioconda::gubbins=3.3.5"
-  container "quay.io/biocontainers/gubbins:3.3.5--py39pl5321he4a0461_0"
+  // Pinned 2026-08-12 to the SAME BUILD as the validated production analysis:
+  // conda `gubbins 3.4.3 py310h5140242_0 bioconda` == this biocontainer tag.
+  // The bump from 3.3.5 and --invariant-site-correction below MUST move
+  // together: 3.4.2 made that correction OPTIONAL and defaulted it OFF, so
+  // 3.4.3 without the flag silently drops a correction 3.3.5 always applied.
+  conda "bioconda::gubbins=3.4.3"
+  container "quay.io/biocontainers/gubbins:3.4.3--py310h5140242_0"
 
   publishDir "${params.outdir}/Clusters/cluster_${cluster_id}/Gubbins",
              mode: params.publish_dir_mode,
@@ -28,8 +33,12 @@ process GUBBINS_CLUSTER {
   // -------- params / flags --------
   def args            = (task.ext.args ?: '').toString().trim()
   def iterations      = (params.gubbins_iterations ?: 3) as int
-  def tree_builder    = (params.gubbins_tree_builder ?: 'iqtree').toString()
-  def first_builder   = (params.gubbins_first_tree_builder ?: 'rapidnj').toString()
+  // Fallbacks are 'raxml', matching Gubbins' own default and the production
+  // analysis. They were 'iqtree'/'rapidnj', so a null param silently selected a
+  // builder that was never the configured one -- and 'rapidnj' underestimates
+  // r/m systematically (median ratio 0.922, 11/12 low, sign p=0.0063).
+  def tree_builder    = (params.gubbins_tree_builder ?: 'raxml').toString()
+  def first_builder   = (params.gubbins_first_tree_builder ?: 'raxml').toString()
   def min_snps        = (params.gubbins_min_snps ?: 2) as int
   def use_hybrid_flag = ((params.gubbins_use_hybrid == null)
                           ? true
@@ -60,7 +69,12 @@ process GUBBINS_CLUSTER {
   # --- Diagnostics header ---
   {
     echo "=== Gubbins Diagnostics for cluster ${cluster_id} ==="
-    echo "Container: gubbins 3.3.5 | CPUs: ${task.cpus}"
+    # Report the version Gubbins actually reports, not a hardcoded string -- this
+    # read '3.3.5' while the container was being bumped, which is exactly the kind
+    # of stale provenance that makes a diagnostics log worse than none.
+    # NOTE: Gubbins' VERSION file reads 3.4.2 even on tag v3.4.3, so treat this as
+    # indicative; the citation manifest (gubbins.log) is authoritative.
+    echo "Container: gubbins \$(run_gubbins.py --version 2>&1 | tr -d '\\n') | CPUs: ${task.cpus}"
     echo "Params: iterations=${iterations}, tree_builder=${tree_builder}, first_builder=${first_builder}, min_snps=${min_snps}, use_hybrid=${use_hybrid_flag}, filter_percentage=${filter_pct}"
   } >> "\${DIAG}"
 
@@ -124,6 +138,7 @@ END_VERSIONS
       --tree-builder "${tree_builder}" \\
       --iterations ${iterations} \\
       --min-snps ${min_snps} \\
+      --invariant-site-correction \\
       --filter-percentage ${filter_pct} \\
       --threads ${task.cpus} \\
       ${args} \\
@@ -138,6 +153,7 @@ END_VERSIONS
         --tree-builder "${tree_builder}" \\
         --iterations ${iterations} \\
         --min-snps ${min_snps} \\
+        --invariant-site-correction \\
         --filter-percentage ${filter_pct} \\
         --threads ${task.cpus} \\
         ${args} \\
@@ -150,6 +166,7 @@ END_VERSIONS
         --tree-builder "${first_builder}" \\
         --iterations ${iterations} \\
         --min-snps ${min_snps} \\
+        --invariant-site-correction \\
         --filter-percentage ${filter_pct} \\
         --threads ${task.cpus} \\
         ${args} \\

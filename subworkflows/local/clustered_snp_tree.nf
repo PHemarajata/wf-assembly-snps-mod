@@ -25,8 +25,10 @@ process GUBBINS_CLUSTER_DIAGNOSTIC {
 
     script:
     def iterations = params.gubbins_iterations ?: 3
-    def tree_builder = params.gubbins_tree_builder ?: 'iqtree'
-    def first_tree_builder = params.gubbins_first_tree_builder ?: 'rapidnj'
+    // 'raxml' fallbacks match Gubbins' default and production; see
+    // conf/params.config for the measured rapidnj r/m bias.
+    def tree_builder = params.gubbins_tree_builder ?: 'raxml'
+    def first_tree_builder = params.gubbins_first_tree_builder ?: 'raxml'
     def min_snps = params.gubbins_min_snps ?: 5
     def use_hybrid = params.gubbins_use_hybrid ?: true
     def cpus = task.cpus
