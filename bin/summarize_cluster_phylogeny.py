@@ -192,6 +192,36 @@ def load_cluster_sizes(clusters_tsv):
     return sizes
 
 
+def resolve_split_replicons(cluster_sizes, discovered_ids):
+    """Reconcile clusters.tsv with --split_replicons artefact keys.
+
+    Under --split_replicons every Gubbins/IQ-TREE artefact is keyed
+    `<cluster_id>__<replicon>`, while clusters.tsv still carries the unsplit
+    `<cluster_id>`. Without this, the unsplit id matches no artefact and the
+    fallback below emits a phantom row -- no diagnostics, no tree, and a
+    Tier4_no_meaningful_tree verdict for a cluster that in fact succeeded once
+    per replicon. Anything aggregating tiers across units then counts a failure
+    that never happened.
+
+    Matching anchors on known cluster ids (does any artefact key start with
+    `<cluster_id>__`?) rather than splitting artefact keys on "__", because
+    cluster ids may themselves contain "__" and the split would be ambiguous.
+
+    Returns (parent_of, split_parents): a replicon-key -> cluster-id map, and
+    the set of cluster ids that were split and so must not get their own row.
+    """
+    parent_of = {}
+    split_parents = set()
+    for base in cluster_sizes:
+        prefix = f"{base}__"
+        children = [d for d in discovered_ids if d.startswith(prefix)]
+        if children:
+            split_parents.add(base)
+            for child in children:
+                parent_of[child] = base
+    return parent_of, split_parents
+
+
 def discover_cluster_ids(diagnostics_dir, trees_dir):
     ids = set()
     if diagnostics_dir.is_dir():
@@ -216,9 +246,16 @@ def main():
     cluster_sizes = load_cluster_sizes(args.clusters_tsv)
     cluster_ids = discover_cluster_ids(args.diagnostics_dir, args.trees_dir)
 
-    # Fall back: include any cluster mentioned in clusters.tsv even if it has no diagnostic/tree
+    # A cluster that was split per replicon is represented by its replicon rows,
+    # not by its own id -- see resolve_split_replicons.
+    parent_of, split_parents = resolve_split_replicons(cluster_sizes, cluster_ids)
+
+    # Fall back: include any cluster mentioned in clusters.tsv even if it has no
+    # diagnostic/tree. That fallback is what surfaces a genuinely failed cluster,
+    # so it stays -- but a split parent has no artefacts *by design* and must be
+    # excluded, or it reads as a failure.
     for cid in cluster_sizes:
-        if cid not in cluster_ids:
+        if cid not in cluster_ids and cid not in split_parents:
             cluster_ids.append(cid)
     cluster_ids = sorted(set(cluster_ids))
 
@@ -262,7 +299,18 @@ def main():
             treefile_size = tree_path.stat().st_size if tree_path.is_file() else 0
             log_size = log_path.stat().st_size if log_path.is_file() else 0
 
-            n_iso = cluster_sizes.get(cid, n_filtered or 0)
+            # A replicon row inherits its parent's membership count: clusters.tsv
+            # has no entry for the replicon key, and falling through to the
+            # alignment record count would report a different number from the
+            # unsplit case (it includes the external Reference taxon, which is
+            # not a cluster member). seq_count_in_alignment already carries that.
+            parent = parent_of.get(cid)
+            notes = list(diag["notes"])
+            if parent is not None:
+                n_iso = cluster_sizes.get(parent, n_filtered or 0)
+                notes.append(f"replicon_of={parent}")
+            else:
+                n_iso = cluster_sizes.get(cid, n_filtered or 0)
             tier = confidence_tier(n_iso, diag["gubbins_status"], iqtree_status, filtered_cols)
 
             writer.writerow({
@@ -280,7 +328,7 @@ def main():
                 "treefile_size_bytes": treefile_size,
                 "iqtree_log_size_bytes": log_size,
                 "confidence_tier": tier,
-                "notes": ";".join(diag["notes"]),
+                "notes": ";".join(notes),
             })
 
     print(f"Wrote {args.output} with {len(cluster_ids)} cluster rows", file=sys.stderr)
