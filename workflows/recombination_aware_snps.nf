@@ -57,11 +57,17 @@ include { MASH_SKETCH_BATCH                                } from "../modules/lo
 include { MASH_PASTE                                       } from "../modules/local/mash_paste/main"
 include { MASH_TRIANGLE                                    } from "../modules/local/mash_triangle/main"
 include { CLUSTER_GENOMES                                  } from "../modules/local/cluster_genomes/main"
+// Alternative clustering front end: PopPUNK bgmm+refine, for collections Mash
+// single-linkage cannot partition (--clustering_method poppunk).
+include { POPPUNK_CLUSTER                                  } from "../modules/local/poppunk_cluster/main"
 
 //
 // MODULES: Step 2 - Per-cluster whole/core alignment
 //
 include { SELECT_CLUSTER_REPRESENTATIVE                    } from "../modules/local/select_cluster_representative/main"
+// Picks a COMPLETE per-cluster mapping reference (medoid != reference; see the
+// module header). Enabled with --pick_complete_references.
+include { PICK_CLUSTER_REFERENCES                          } from "../modules/local/pick_cluster_references/main"
 include { SPLIT_REFERENCE_REPLICONS                        } from "../modules/local/split_reference_replicons/main"
 // Snippy is now scatter (one task per cluster-sample) + snippy-core gather. The old
 // monolithic SNIPPY_ALIGN ran every sample serially inside a single task.
@@ -310,14 +316,46 @@ workflow RECOMBINATION_AWARE_SNPS {
     )
     ch_versions = ch_versions.mix(MASH_TRIANGLE.out.versions)
 
-    // Cluster genomes based on matrix
-    CLUSTER_GENOMES (
-        MASH_TRIANGLE.out.matrix
-    )
-    ch_versions = ch_versions.mix(CLUSTER_GENOMES.out.versions)
+    // Cluster genomes. Two front ends, same `cluster_id<TAB>sample_id` contract.
+    //
+    // Mash single-linkage CANNOT partition every collection. Measured on the
+    // 2,802-genome B. pseudomallei set: one connected component at threshold
+    // >= 0.007, 786/1,094 singletons below it, nothing workable in between -- so
+    // what comes out is a size-capped chop of one component, an imposed
+    // partition rather than a found one. `--clustering_method poppunk` runs
+    // PopPUNK's bgmm+refine fit instead, which gives 271 strains on the same
+    // input. Mash still runs either way: MASH_TRIANGLE's matrix is what
+    // SELECT_CLUSTER_REPRESENTATIVE uses to pick a medoid, and it is cheap next
+    // to PopPUNK sketching.
+    def clustering_method = (params.clustering_method ?: 'mash').toString().toLowerCase()
+    if (!(clustering_method in ['mash', 'poppunk'])) {
+        error "clustering_method must be 'mash' or 'poppunk', got '${clustering_method}'"
+    }
+
+    if (clustering_method == 'poppunk') {
+        log.info "STEP 1: Clustering with PopPUNK (bgmm + refine)"
+        // ch_assemblies carries [ sample_id, assembly_path ]; PopPUNK builds its
+        // own rfile from the staged files, so pass the paths only.
+        POPPUNK_CLUSTER (
+            ch_assemblies.map { it[1] }.collect()
+        )
+        ch_versions = ch_versions.mix(POPPUNK_CLUSTER.out.versions)
+        ch_clusters_tsv = POPPUNK_CLUSTER.out.clusters
+        // PopPUNK emits no per-cluster submatrices; the ch_rep_input mapping
+        // below already falls back to the full MASH_TRIANGLE matrix when a
+        // cluster has none, so nothing else needs to change.
+        ch_submatrices = Channel.empty()
+    } else {
+        CLUSTER_GENOMES (
+            MASH_TRIANGLE.out.matrix
+        )
+        ch_versions = ch_versions.mix(CLUSTER_GENOMES.out.versions)
+        ch_clusters_tsv = CLUSTER_GENOMES.out.clusters
+        ch_submatrices  = CLUSTER_GENOMES.out.submatrices
+    }
 
     // Create clustered assemblies channel: [ val(cluster_id), val(sample_ids), path(assemblies) ]
-    ch_cluster_assignments = CLUSTER_GENOMES.out.clusters
+    ch_cluster_assignments = ch_clusters_tsv
         .splitCsv(header: true, sep: '\t')
         .map { row -> 
             def sample_id = row.sample_id.split('\\.')[0]
@@ -375,7 +413,7 @@ workflow RECOMBINATION_AWARE_SNPS {
     // cluster_mash.py writes cluster_matrices/cluster_<id>.matrix.tsv, and
     // Nextflow's simpleName strips at the first dot, giving exactly the
     // cluster_id used in clusters.tsv (verified against real output).
-    ch_submatrix_by_cluster = CLUSTER_GENOMES.out.submatrices
+    ch_submatrix_by_cluster = ch_submatrices
         .flatten()
         .map { f -> tuple(f.simpleName, f) }
 
@@ -407,7 +445,32 @@ workflow RECOMBINATION_AWARE_SNPS {
     // If params.use_global_reference is enabled and params.ref was supplied, swap
     // the per-cluster medoid for the global reference so every cluster aligns
     // against the same anchor (e.g., K96243). Default keeps medoid behavior.
-    if (params.use_global_reference && params.ref) {
+    // A complete per-cluster reference, chosen by completeness-gate +
+    // centrality, replacing the medoid for MAPPING only. The medoid still
+    // serves as the cluster's backbone representative -- they are different
+    // objects (see PICK_CLUSTER_REFERENCES). Required for --split_replicons on
+    // a draft-heavy collection, where the medoid is usually multi-contig.
+    if (params.pick_complete_references) {
+        PICK_CLUSTER_REFERENCES (
+            ch_clusters_tsv,
+            MASH_TRIANGLE.out.matrix,
+            ch_assemblies.map { it[1] }.collect()
+        )
+        ch_versions = ch_versions.mix(PICK_CLUSTER_REFERENCES.out.versions)
+
+        ch_picked_ref = PICK_CLUSTER_REFERENCES.out.references
+            .splitCsv(header: true, sep: '\t')
+            .map { row -> tuple(row.cluster_id, file(row.reference_path, checkIfExists: true)) }
+
+        ch_for_alignment = ch_clustered_assemblies
+            .join(SELECT_CLUSTER_REPRESENTATIVE.out.representative.map { cluster_id, rep_id, rep_file ->
+                tuple(cluster_id, rep_id)
+            }, by: 0)
+            .join(ch_picked_ref, by: 0)
+            .map { cluster_id, sample_ids, assemblies, rep_id, picked_ref ->
+                tuple(cluster_id, sample_ids, assemblies, rep_id, picked_ref)
+            }
+    } else if (params.use_global_reference && params.ref) {
         log.info "use_global_reference=true: overriding per-cluster medoid with params.ref for alignment"
         ch_for_alignment = ch_clustered_assemblies
             .join(SELECT_CLUSTER_REPRESENTATIVE.out.representative.map { cluster_id, rep_id, rep_file ->
@@ -433,7 +496,7 @@ workflow RECOMBINATION_AWARE_SNPS {
     ch_cluster_repid = SELECT_CLUSTER_REPRESENTATIVE.out.representative
         .map { cluster_id, rep_id, rep_file -> tuple(cluster_id, rep_id) }
 
-    ch_clusters_file = CLUSTER_GENOMES.out.clusters
+    ch_clusters_file = ch_clusters_tsv
 
     }  // end of default (Mash-clustering) vs curated-mode branch; ch_for_alignment is set either way
 
