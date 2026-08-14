@@ -27,7 +27,19 @@ process SPLIT_REFERENCE_REPLICONS {
     // (e.g. a 115-contig medoid draft). Fail loudly rather than produce plausible
     // nonsense. B. pseudomallei has 2 chromosomes; the default 4 leaves room for
     // plasmids.
+    // SIZE GATE, separate from the count guard above. max_replicons is a COUNT
+    // check and cannot catch a size problem. Measured: strain_12's reference
+    // GCF_027856855.2 has 4 contigs -- the two real chromosomes at 3.95 Mb and
+    // 3.09 Mb, plus two of 2,595 bp and 2,533 bp. Being 4 contigs it passed
+    // max_replicons cleanly, then each 2.5 kb "replicon" spawned its own 37
+    // snippy jobs (148 wasted tasks) and its own analysis unit. A 2.5 kb
+    // alignment cannot yield a meaningful r/m, and units that cannot be
+    // partitioned meaningfully before Gubbins must be dropped, not reported.
+    // In that run both died at SNIPPY_CORE_GATHER anyway (the contig is present
+    // in <2 of 37 genomes), so the only products were wasted compute and two
+    // spurious failure rows in the summary.
     def max_replicons = (params.max_replicons ?: 4) as int
+    def min_replicon_length = (params.min_replicon_length == null ? 100000 : params.min_replicon_length) as long
     """
     set -euo pipefail
     mkdir -p replicons
@@ -56,6 +68,29 @@ process SPLIT_REFERENCE_REPLICONS {
         }
         { print \$0 > out }
     ' "${reference}"
+
+    # Drop anything below min_replicon_length. Report every drop with its length:
+    # a silently discarded contig is indistinguishable from one that was never
+    # there, and the whole point is that the operator can see what was excluded.
+    dropped=0
+    for f in replicons/*.fa; do
+        len=\$(grep -v '^>' "\$f" | tr -d '\\n' | wc -c)
+        if [ "\$len" -lt "${min_replicon_length}" ]; then
+            echo "DROPPED replicon \$(basename "\$f" .fa): \${len} bp < min_replicon_length=${min_replicon_length}" >&2
+            rm -f "\$f"
+            dropped=\$(( dropped + 1 ))
+        fi
+    done
+    if [ "\$dropped" -gt 0 ]; then
+        echo "Dropped \${dropped} sub-threshold replicon(s) for cluster ${cluster_id}" >&2
+    fi
+
+    if [ -z "\$(ls -A replicons/ 2>/dev/null)" ]; then
+        echo "ERROR: every replicon of cluster ${cluster_id} fell below" >&2
+        echo "       --min_replicon_length ${min_replicon_length}. Either the reference is" >&2
+        echo "       not a genome, or the threshold is set too high." >&2
+        exit 1
+    fi
 
     echo "Wrote \$(ls replicons/ | wc -l) replicon file(s):" >&2
     ls -1 replicons/ >&2
