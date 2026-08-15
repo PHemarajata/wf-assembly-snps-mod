@@ -119,9 +119,41 @@ def main():
                          "mismapping, but changing the reference changes r/m, "
                          "so pass the shortlist when results must stay "
                          "comparable to existing baselines.")
+    ap.add_argument("--reference-blocklist",
+                    help="File of accession prefixes never to use as a mapping "
+                         "reference, one per line, '#' comments allowed. This is "
+                         "an EMPIRICAL list, not a quality threshold, and it "
+                         "exists because quality thresholds do not catch the "
+                         "failure: three references made Gubbins fail with RAxML "
+                         "'Unable to fit model to data' for every cluster mapped "
+                         "against them (one of them 0/4) while 23 others gave "
+                         "28/28 successes. Re-running all six failing clusters "
+                         "with ONLY the reference changed recovered 12/12 "
+                         "replicon-units, three of them against a MORE distant "
+                         "reference, so it is not divergence. The three are "
+                         "indistinguishable from working references on fastANI, "
+                         "contiguity, N50, ambiguous bases, GC, duplication "
+                         "ratio and misassembly count. Applies to internal picks "
+                         "and borrow candidates alike -- four of the six failures "
+                         "were clusters that BORROWED a bad reference, so "
+                         "filtering only one path would leave the main route "
+                         "open.")
     ap.add_argument("--out", default="cluster_references.tsv")
     ap.add_argument("--report", default="reference_selection.tsv")
     a = ap.parse_args()
+
+    blocked = []
+    if a.reference_blocklist:
+        with open(a.reference_blocklist) as fh:
+            for line in fh:
+                line = line.split("#", 1)[0].strip()
+                if line:
+                    blocked.append(line)
+        sys.stderr.write("reference blocklist: %d prefixes -- %s\n"
+                         % (len(blocked), ", ".join(blocked)))
+
+    def is_blocked(stem):
+        return any(stem.startswith(p) for p in blocked)
 
     with open(a.membership, newline="") as fh:
         head = fh.readline()
@@ -187,6 +219,8 @@ def main():
     for stem in sorted(listing):
         if allowed is not None and stem not in allowed:
             continue
+        if is_blocked(stem):
+            continue
         v = contig_stats(listing[stem])
         if v and v[0] <= a.max_contigs:
             cache.setdefault(stem, (v, listing[stem]))
@@ -203,6 +237,8 @@ def main():
 
         internal_complete = []
         for s in sids:
+            if is_blocked(s):
+                continue
             v, p = stats(s)
             if v and v[0] <= a.max_contigs and p:
                 internal_complete.append((s, v[0], v[1], p))

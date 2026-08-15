@@ -42,6 +42,7 @@ process PICK_CLUSTER_REFERENCES {
     path clusters_tsv
     path mash_matrix
     path genomes, stageAs: 'genomes/*'
+    path blocklist
 
     output:
     path "cluster_references.tsv",   emit: references
@@ -55,6 +56,10 @@ process PICK_CLUSTER_REFERENCES {
     def max_contigs = params.max_replicons ?: 4
     def min_size    = params.min_cluster_size ?: 2
     def pool        = params.reference_pool ? "--reference-pool ${params.reference_pool}" : ''
+    // The blocklist is staged as a file so its CONTENTS are part of the task
+    // hash: editing it after a bad reference is identified must invalidate the
+    // selection, not silently reuse a cached pick made without it.
+    def block       = blocklist.name != 'NO_BLOCKLIST' ? "--reference-blocklist ${blocklist}" : ''
     """
     set -euo pipefail
 
@@ -65,6 +70,7 @@ process PICK_CLUSTER_REFERENCES {
         --max-contigs ${max_contigs} \\
         --min-size ${min_size} \\
         ${pool} \\
+        ${block} \\
         --out cluster_references.tsv \\
         --report reference_selection.tsv
 

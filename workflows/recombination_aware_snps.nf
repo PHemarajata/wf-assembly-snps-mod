@@ -451,10 +451,18 @@ workflow RECOMBINATION_AWARE_SNPS {
     // objects (see PICK_CLUSTER_REFERENCES). Required for --split_replicons on
     // a draft-heavy collection, where the medoid is usually multi-contig.
     if (params.pick_complete_references) {
+        // Staged as a file, not interpolated as a path, so its contents join the
+        // task hash: adding a newly-identified bad reference must invalidate the
+        // cached selection rather than silently reuse a pick made without it.
+        ch_ref_blocklist = params.reference_blocklist
+            ? Channel.fromPath(params.reference_blocklist, checkIfExists: true)
+            : Channel.fromPath("${projectDir}/assets/NO_BLOCKLIST")
+
         PICK_CLUSTER_REFERENCES (
             ch_clusters_tsv,
             MASH_TRIANGLE.out.matrix,
-            ch_assemblies.map { it[1] }.collect()
+            ch_assemblies.map { it[1] }.collect(),
+            ch_ref_blocklist
         )
         ch_versions = ch_versions.mix(PICK_CLUSTER_REFERENCES.out.versions)
 
