@@ -44,6 +44,11 @@ process SPLIT_REFERENCE_REPLICONS {
     set -euo pipefail
     mkdir -p replicons
 
+    # What Gubbins appends to the unit name before handing it to RAxML as -n.
+    # Measured against a real run: a 99-character unit produced a 136-character
+    # run id, which is exactly 99 + 37.
+    RECON_SUFFIX=".core.full.iteration_1_reconstruction"
+
     n_contigs=\$(grep -c '^>' "${reference}")
     echo "Reference ${reference} has \${n_contigs} contig(s); max_replicons=${max_replicons}" >&2
     if [ "\${n_contigs}" -gt "${max_replicons}" ]; then
@@ -84,6 +89,42 @@ process SPLIT_REFERENCE_REPLICONS {
     if [ "\$dropped" -gt 0 ]; then
         echo "Dropped \${dropped} sub-threshold replicon(s) for cluster ${cluster_id}" >&2
     fi
+
+    # LENGTH GATE. The workflow keys each analysis unit as
+    # <cluster_id>__<replicon id>, and Gubbins hands RAxML
+    # "<unit>.core.full.iteration_N_reconstruction" as its -n run id.
+    #
+    # raxmlHPC v8 SEGFAULTS (exit 139) on a -n run id of 128 characters or more.
+    # Measured directly: identical inputs, only -n length varied -- 127 exits 0,
+    # 128 exits 139 -- and the -w path length is irrelevant. RAxML contains the
+    # string 'Error: run id after "-n" is too long' but crashes before printing
+    # it, and Gubbins wraps the call in a bare `except` that reports only
+    # "Unable to fit model to data". So the whole failure is silent and looks
+    # like a model-fitting problem. It is not: it is the length of the
+    # reference's FASTA defline, which is why no genome quality metric --
+    # fastANI, contiguity, N50, ambiguous bases, GC, duplication ratio,
+    # misassemblies -- separates the references that fail from those that work.
+    #
+    # Measured on a real 82-unit partition before the deflines were normalized:
+    # 40 of 164 replicon-units (24%) were over the limit. Fail here, loudly,
+    # naming the offender -- do not silently truncate, because that would change
+    # unit identities the operator did not ask to change.
+    max_unit=\$(( 127 - \${#RECON_SUFFIX} ))
+    for f in replicons/*.fa; do
+        rid=\$(basename "\$f" .fa)
+        unit="${cluster_id}__\${rid}"
+        if [ "\${#unit}" -gt "\$max_unit" ]; then
+            echo "ERROR: analysis unit id is too long for RAxML." >&2
+            echo "       unit    : \${unit}" >&2
+            echo "       length  : \${#unit} characters; the maximum is \${max_unit}" >&2
+            echo "       because : Gubbins appends '\${RECON_SUFFIX}' and raxmlHPC" >&2
+            echo "                 segfaults at a -n run id of 128 characters or more." >&2
+            echo "       fix     : shorten the reference's FASTA deflines. The replicon" >&2
+            echo "                 id is the first header token, so a defline like" >&2
+            echo "                 '>GCF_000954175_1_1' gives a short, stable unit id." >&2
+            exit 1
+        fi
+    done
 
     if [ -z "\$(ls -A replicons/ 2>/dev/null)" ]; then
         echo "ERROR: every replicon of cluster ${cluster_id} fell below" >&2
