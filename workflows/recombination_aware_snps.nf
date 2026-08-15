@@ -588,19 +588,33 @@ workflow RECOMBINATION_AWARE_SNPS {
         ch_versions = ch_versions.mix(SNIPPY_SCATTER.out.versions.first())
 
         // GATHER: regroup per-sample snippy dirs by cluster, rejoin rep_id/reference.
-        // groupTuple with an explicit size makes the gather fire as soon as a cluster
-        // is complete instead of waiting for the whole scatter to drain.
+        //
+        // The per-cluster size is carried by groupKey, NOT just asserted afterwards.
+        // A bare groupTuple(by: 0) cannot know a group is finished until the whole
+        // upstream channel closes, so EVERY cluster's gather waits for the LAST
+        // snippy task in the entire run. Measured on the 82-unit L1 run: 132 of 164
+        // replicon-units were fully mapped with zero gathers submitted, which
+        // serialises Gubbins behind all 4,140 mappings instead of letting it start
+        // on the units that are already done.
+        //
+        // groupKey(key, size) tells Nextflow the expected group size up front, so a
+        // group emits the moment its last member arrives. The assert is kept: it now
+        // guards the groupKey size rather than substituting for it.
         ch_cluster_sizes = ch_snippy_scatter
             .map { cluster_id, sid, asm, rep_id, ref -> tuple(cluster_id, 1) }
             .groupTuple()
             .map { cluster_id, ones -> tuple(cluster_id, ones.size()) }
 
         ch_snippy_gather = SNIPPY_SCATTER.out.sample_dir
+            .combine(ch_cluster_sizes, by: 0)
+            .map { cluster_id, sid, dir, expected ->
+                tuple(groupKey(cluster_id, expected), sid, dir)
+            }
             .groupTuple(by: 0)
-            .join(ch_cluster_sizes, by: 0)
-            .map { cluster_id, sample_ids, dirs, expected ->
-                assert sample_ids.size() == expected :
-                    "cluster ${cluster_id}: expected ${expected} snippy samples, got ${sample_ids.size()}"
+            .map { key, sample_ids, dirs ->
+                def cluster_id = key.toString()
+                assert sample_ids.size() == key.size :
+                    "cluster ${cluster_id}: expected ${key.size} snippy samples, got ${sample_ids.size()}"
                 tuple(cluster_id, sample_ids, dirs)
             }
             .join(
