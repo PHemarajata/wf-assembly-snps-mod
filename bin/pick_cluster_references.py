@@ -121,23 +121,20 @@ def main():
                          "comparable to existing baselines.")
     ap.add_argument("--reference-blocklist",
                     help="File of accession prefixes never to use as a mapping "
-                         "reference, one per line, '#' comments allowed. This is "
-                         "an EMPIRICAL list, not a quality threshold, and it "
-                         "exists because quality thresholds do not catch the "
-                         "failure: three references made Gubbins fail with RAxML "
-                         "'Unable to fit model to data' for every cluster mapped "
-                         "against them (one of them 0/4) while 23 others gave "
-                         "28/28 successes. Re-running all six failing clusters "
-                         "with ONLY the reference changed recovered 12/12 "
-                         "replicon-units, three of them against a MORE distant "
-                         "reference, so it is not divergence. The three are "
-                         "indistinguishable from working references on fastANI, "
-                         "contiguity, N50, ambiguous bases, GC, duplication "
-                         "ratio and misassembly count. Applies to internal picks "
-                         "and borrow candidates alike -- four of the six failures "
-                         "were clusters that BORROWED a bad reference, so "
-                         "filtering only one path would leave the main route "
-                         "open.")
+                         "reference, one per line, '#' comments allowed. Applies "
+                         "to internal picks and borrow candidates alike. NO "
+                         "REFERENCE IS CURRENTLY KNOWN TO NEED THIS. Three were "
+                         "once listed here after every cluster mapped against "
+                         "them failed Gubbins with 'Unable to fit model to data' "
+                         "while 23 others gave 28/28 successes -- but the cause "
+                         "was raxmlHPC v8 segfaulting at a -n run id of 128+ "
+                         "characters, which Gubbins builds from the unit name, "
+                         "which comes from the reference's FASTA defline. Those "
+                         "three just had long filenames; holding the alignment "
+                         "bytes identical and shortening only the basename made "
+                         "all 12 previously-failing replicon-units succeed. A "
+                         "reference that 'fails' is a claim about the genome: "
+                         "isolate the variable before believing it.")
     ap.add_argument("--out", default="cluster_references.tsv")
     ap.add_argument("--report", default="reference_selection.tsv")
     a = ap.parse_args()
