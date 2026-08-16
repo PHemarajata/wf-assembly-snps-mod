@@ -105,6 +105,7 @@ include { SELECT_UNIT_MEDOID                               } from "../modules/lo
 include { GLOBAL_CORE_ALIGNMENT                            } from "../modules/local/global_core_alignment/main"
 include { GLOBAL_ML_TREE                                   } from "../modules/local/global_ml_tree/main"
 include { SUMMARIZE_CLUSTER_PHYLOGENY                      } from "../modules/local/summarize_cluster_phylogeny/main"
+include { POOL_RECOMBINATION_STATS                         } from "../modules/local/pool_recombination_stats/main"
 include { GRAFT_TREES                                      } from "../modules/local/graft_trees/main"
 
 //
@@ -758,30 +759,35 @@ workflow RECOMBINATION_AWARE_SNPS {
 
     log.info "STEP 3: Running Gubbins for recombination detection"
 
-    // Create starting trees for Gubbins using IQ-TREE fast mode
-    ch_starting_trees = KEEP_INVARIANT_ATCG.out.core_alignment
-        .map { cluster_id, alignment ->
-            tuple(cluster_id, alignment)
-        }
-
-    // Use IQTREE_FAST to create starting trees
-    IQTREE_FAST (
-        ch_starting_trees
-    )
-    ch_versions = ch_versions.mix(IQTREE_FAST.out.versions)
-
-    // Prepare input for Gubbins: join alignments with starting trees.
-    // With gubbins_skip_starting_tree, substitute the 0-byte assets/NO_FILE so
-    // GUBBINS_CLUSTER's `[ -s "$starting_tree" ]` guard falls through to the
+    // Prepare input for Gubbins: alignment + starting tree.
+    //
+    // With gubbins_skip_starting_tree, GUBBINS_CLUSTER is handed the 0-byte
+    // assets/NO_FILE so its `[ -s "$starting_tree" ]` guard falls through to the
     // no-starting-tree branch and Gubbins builds its own first tree, which is
     // what the production analysis does (it passes no --starting-tree).
-    ch_for_gubbins = params.gubbins_skip_starting_tree
-        ? KEEP_INVARIANT_ATCG.out.core_alignment
-              .map { cluster_id, alignment ->
-                  tuple(cluster_id, alignment, file("${projectDir}/assets/NO_FILE"))
-              }
-        : KEEP_INVARIANT_ATCG.out.core_alignment
-              .join(IQTREE_FAST.out.tree, by: 0)
+    //
+    // IQTREE_FAST is then SKIPPED, not run-and-discarded. Its tree is the only
+    // thing it produces and nothing else reads it, so running it under that flag
+    // is one wasted task per replicon-unit -- 164 of them on the production run,
+    // measured at up to 2.50 GB and 765 s each.
+    if (params.gubbins_skip_starting_tree) {
+        log.info "  --gubbins_skip_starting_tree is set: skipping IQTREE_FAST; Gubbins builds its own first tree"
+
+        ch_for_gubbins = KEEP_INVARIANT_ATCG.out.core_alignment
+            .map { cluster_id, alignment ->
+                tuple(cluster_id, alignment, file("${projectDir}/assets/NO_FILE"))
+            }
+    } else {
+        // Create starting trees for Gubbins using IQ-TREE fast mode
+        IQTREE_FAST (
+            KEEP_INVARIANT_ATCG.out.core_alignment
+                .map { cluster_id, alignment -> tuple(cluster_id, alignment) }
+        )
+        ch_versions = ch_versions.mix(IQTREE_FAST.out.versions)
+
+        ch_for_gubbins = KEEP_INVARIANT_ATCG.out.core_alignment
+            .join(IQTREE_FAST.out.tree, by: 0)
+    }
 
     GUBBINS_CLUSTER(
         ch_for_gubbins
@@ -920,6 +926,27 @@ workflow RECOMBINATION_AWARE_SNPS {
         GUBBINS_CLUSTER.out.recombination_gff.map { cluster_id, gff -> gff }.collect()
     )
     ch_versions = ch_versions.mix(SUMMARIZE_CLUSTER_PHYLOGENY.out.versions)
+
+    /*
+    ================================================================================
+                    STEP 6c: Pool r/m per unit, reference branches excluded
+    ================================================================================
+    */
+
+    log.info "STEP 6c: Pooling per-branch recombination statistics into recombination_rm.tsv"
+
+    // The mapping reference is kept as a taxon, so Gubbins reconstructs an
+    // enormous branch for it and scores those substitutions as OUTSIDE
+    // recombination -- 52% of the entire run's outside-recombination SNPs on the
+    // 2,070-genome analysis. Pooling without dropping them gave a median r/m of
+    // 1.85 where the correct figure is 6.30. This used to be a downstream script
+    // run by hand; it belongs where the numbers are produced.
+    POOL_RECOMBINATION_STATS (
+        ch_clusters_file,
+        GUBBINS_CLUSTER.out.per_branch_stats.map { cluster_id, stats -> stats }.collect(),
+        GUBBINS_CLUSTER.out.final_tree.map { cluster_id, tre -> tre }.collect()
+    )
+    ch_versions = ch_versions.mix(POOL_RECOMBINATION_STATS.out.versions)
 
     /*
     ================================================================================

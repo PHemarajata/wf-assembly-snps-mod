@@ -14,7 +14,7 @@ process GUBBINS_CLUSTER {
 
   publishDir "${params.outdir}/Clusters/cluster_${cluster_id}/Gubbins",
              mode: params.publish_dir_mode,
-             pattern: "*.{fasta,gff,tre,log}"
+             pattern: "*.{fasta,gff,tre,log,csv}"
 
   input:
     tuple val(cluster_id), path(alignment), path(starting_tree)
@@ -23,6 +23,11 @@ process GUBBINS_CLUSTER {
     tuple val(cluster_id), path("${cluster_id}.filtered_polymorphic_sites.fasta"), emit: filtered_alignment
     tuple val(cluster_id), path("${cluster_id}.recombination_predictions.gff"),    emit: recombination_gff
     tuple val(cluster_id), path("${cluster_id}.node_labelled.final_tree.tre"),     emit: final_tree
+    // Gubbins' per-branch SNP counts -- the numerator and denominator of r/m.
+    // Emitted so POOL_RECOMBINATION_STATS can pool them with the external
+    // reference's branches excluded, instead of that correction living in a
+    // downstream script run by hand after the pipeline finishes.
+    tuple val(cluster_id), path("${cluster_id}.per_branch_statistics.csv"),        emit: per_branch_stats
     path "${cluster_id}.diagnostics.log",                                          emit: diagnostics
     path "versions.yml",                                                           emit: versions
 
@@ -88,6 +93,7 @@ process GUBBINS_CLUSTER {
     : > "${cluster_id}.filtered_polymorphic_sites.fasta"
     : > "${cluster_id}.recombination_predictions.gff"
     : > "${cluster_id}.node_labelled.final_tree.tre"
+    : > "${cluster_id}.per_branch_statistics.csv"
     cat > versions.yml <<END_VERSIONS
 "${task.process}":
     gubbins: \$(run_gubbins.py --version | sed 's/^/    /')
@@ -115,6 +121,7 @@ END_VERSIONS
     : > "${cluster_id}.filtered_polymorphic_sites.fasta"
     : > "${cluster_id}.recombination_predictions.gff"
     : > "${cluster_id}.node_labelled.final_tree.tre"
+    : > "${cluster_id}.per_branch_statistics.csv"
     cat > versions.yml <<END_VERSIONS
 "${task.process}":
     gubbins: \$(run_gubbins.py --version | sed 's/^/    /')
