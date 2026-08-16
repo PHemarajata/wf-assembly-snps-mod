@@ -101,6 +101,9 @@ include { IQTREE_ASC                                       } from "../modules/lo
 //
 include { COLLECT_REPRESENTATIVES                          } from "../modules/local/collect_representatives/main"
 include { BUILD_BACKBONE_TREE                              } from "../modules/local/build_backbone_tree/main"
+include { SELECT_UNIT_MEDOID                               } from "../modules/local/select_unit_medoid/main"
+include { GLOBAL_CORE_ALIGNMENT                            } from "../modules/local/global_core_alignment/main"
+include { GLOBAL_ML_TREE                                   } from "../modules/local/global_ml_tree/main"
 include { SUMMARIZE_CLUSTER_PHYLOGENY                      } from "../modules/local/summarize_cluster_phylogeny/main"
 include { GRAFT_TREES                                      } from "../modules/local/graft_trees/main"
 
@@ -559,6 +562,26 @@ workflow RECOMBINATION_AWARE_SNPS {
         ch_cluster_repid = ch_split_forked.label
     }
 
+    // Fork off the per-unit assemblies for STEP 4b's medoid selection BEFORE any
+    // alignment consumer reads ch_for_alignment.
+    //
+    // ch_for_alignment is a queue channel: reading it twice SPLITS its emissions
+    // between the readers rather than duplicating them, which is why every other
+    // multi-consumer point in this workflow forks with multiMap. Reading it again
+    // further down (where STEP 4b lives) silently stole emissions from the
+    // alignment path -- measured as KEEP_INVARIANT_ATCG re-executing all 164
+    // units on a resume that should have been fully cached.
+    if (params.global_ml_tree == null ? true : params.global_ml_tree) {
+        ch_for_alignment.multiMap { cid, sample_ids, assemblies, rep_id, ref ->
+            aln:    tuple(cid, sample_ids, assemblies, rep_id, ref)
+            medoid: tuple(cid, sample_ids, assemblies)
+        }.set { ch_fa_gml }
+        ch_for_alignment   = ch_fa_gml.aln
+        ch_unit_assemblies = ch_fa_gml.medoid
+    } else {
+        ch_unit_assemblies = Channel.empty()
+    }
+
     // Choose alignment method: Snippy (scatter/gather), SKA2 (fast low-spec), or Parsnp
     if (params.alignment_method == 'snippy' || !params.alignment_method) {
         log.info "Using Snippy (scattered per sample) for per-cluster whole genome alignment"
@@ -791,16 +814,64 @@ workflow RECOMBINATION_AWARE_SNPS {
 
     /*
     ================================================================================
+                    STEP 4b: Global ML tree across units, with branch support
+    ================================================================================
+    */
+
+    // One medoid per unit -> parsnp core alignment -> IQ-TREE with UFBoot and
+    // SH-aLRT. This runs in BOTH modes, including curated.
+    //
+    // The older comment below said curated mode "has no medoids". Only half of
+    // that was true: its REFERENCE is external and cannot be a backbone tip, but
+    // every unit still has a most-typical member. What curated mode lacks is the
+    // Mash matrix the default path used to find one -- and it does not need it,
+    // because by this point each unit has a Gubbins filtered polymorphic-sites
+    // alignment, and centrality measured on the clonal frame is both cheaper and
+    // more apt than whole-genome k-mer distance.
+    //
+    // Separate from BUILD_BACKBONE_TREE, which runs parsnp with --use-fasttree
+    // and therefore yields a backbone with NO support values while every
+    // per-cluster tree has them.
+    if (params.global_ml_tree == null ? true : params.global_ml_tree) {
+        // Reuse the same tuple IQ-TREE consumes: (cluster_id, filtered_aln) joined
+        // back to the unit's sample ids and assemblies, so the medoid can be
+        // resolved to a genome without re-reading the samplesheet.
+        // ch_unit_assemblies was forked off ch_for_alignment before any
+        // alignment consumer read it (see STEP 1b). Do NOT read ch_for_alignment
+        // here: it is a queue channel and a second reader steals its emissions.
+        ch_medoid_in = GUBBINS_CLUSTER.out.filtered_alignment
+            .join(ch_unit_assemblies, by: 0)
+
+        SELECT_UNIT_MEDOID ( ch_medoid_in )
+        ch_versions = ch_versions.mix(SELECT_UNIT_MEDOID.out.versions.first())
+
+        // Replicon-split runs emit one unit per replicon, and both replicons of a
+        // unit would contribute the SAME genome under a different tip name. Take
+        // the first replicon's medoid per base cluster so each unit is one tip.
+        ch_global_medoids = SELECT_UNIT_MEDOID.out.medoid
+            .map { cid, fa -> tuple(cid.replaceFirst(/__.*$/, ''), fa) }
+            .groupTuple(by: 0)
+            .map { base, fas -> fas.flatten().sort { it.name }.first() }
+            .collect()
+
+        GLOBAL_CORE_ALIGNMENT ( ch_global_medoids )
+        ch_versions = ch_versions.mix(GLOBAL_CORE_ALIGNMENT.out.versions)
+
+        GLOBAL_ML_TREE ( GLOBAL_CORE_ALIGNMENT.out.alignment )
+        ch_versions = ch_versions.mix(GLOBAL_ML_TREE.out.versions)
+    }
+
+    /*
+    ================================================================================
                     STEP 5: Select representatives per cluster
     ================================================================================
     */
 
-    // STEP 5 + 6 build the WHOLE-COLLECTION backbone from per-cluster medoid
-    // representatives. Curated mode has no medoids -- its reference is external
-    // and not a cluster member, so it cannot be a backbone tip -- and the
-    // whole-collection tree is a separate (population-level) product anyway. So
-    // these steps run only in the default Mash path. Per-cluster recombination-
-    // corrected trees and r/m (STEP 3/4) are curated mode's deliverable.
+    // STEP 5 + 6 build the parsnp/FastTree backbone used for GRAFTING. It runs
+    // only in the default Mash path: grafting needs a backbone whose tips are
+    // cluster representatives from the same distance space as the subtrees.
+    // The supported global ML tree above is a separate, better-supported product
+    // and is not a graft target.
     if (!curated_mode) {
 
     log.info "STEP 5: Collecting cluster representatives"
