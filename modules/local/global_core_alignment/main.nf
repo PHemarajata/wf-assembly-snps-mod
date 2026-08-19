@@ -52,7 +52,7 @@ process GLOBAL_CORE_ALIGNMENT {
 
     # Anchor on the medoid with the fewest contigs so the core is as large as the
     # data allow: parsnp's core shrinks toward the most fragmented member.
-    REF=\$(for f in medoids/*; do printf '%s\\t%s\\n' "\$(grep -c '^>' "\$f")" "\$f"; done | sort -n | head -1 | cut -f2)
+    REF=\$(for f in medoids/*; do printf '%s\\t%s\\n' "\$(grep -c '^>' "\$f")" "\$f"; done | sort -n | awk -F'\\t' 'NR==1{print \$2}')
     echo "parsnp reference (fewest contigs): \$REF" | tee -a "\$LOG"
 
     set +e
