@@ -281,13 +281,13 @@ def main():
             report.append((cid, len(sids), "", "", 0, "NO_REFERENCE", "", ""))
 
     with open(a.out, "w", newline="") as fh:
-        w = csv.writer(fh, delimiter="\t")
+        w = csv.writer(fh, delimiter="\t", lineterminator="\n")
         w.writerow(["cluster_id", "reference_path"])
         for cid in sorted(chosen):
             w.writerow([cid, chosen[cid]])
 
     with open(a.report, "w", newline="") as fh:
-        w = csv.writer(fh, delimiter="\t")
+        w = csv.writer(fh, delimiter="\t", lineterminator="\n")
         w.writerow(["cluster_id", "n", "reference", "ref_contigs",
                     "n_complete_members", "source", "mean_mash", "max_mash"])
         for row in report:
