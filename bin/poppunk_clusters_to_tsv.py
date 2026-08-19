@@ -105,7 +105,7 @@ def main():
         (kept if len(ms) >= a.min_cluster_size else dropped)[cid] = ms
 
     with open(a.out, "w", newline="") as fh:
-        w = csv.writer(fh, delimiter="\t")
+        w = csv.writer(fh, delimiter="\t", lineterminator="\n")
         w.writerow(["cluster_id", "sample_id"])
         for cid in sorted(kept, key=lambda c: (-len(kept[c]), str(c))):
             for s in sorted(kept[cid]):
@@ -113,7 +113,7 @@ def main():
 
     if a.excluded:
         with open(a.excluded, "w", newline="") as fh:
-            w = csv.writer(fh, delimiter="\t")
+            w = csv.writer(fh, delimiter="\t", lineterminator="\n")
             w.writerow(["cluster_id", "n", "reason"])
             for cid in sorted(dropped, key=lambda c: (-len(dropped[c]), str(c))):
                 w.writerow(["%s%s" % (a.prefix, cid), len(dropped[cid]),

@@ -278,7 +278,7 @@ def main():
     ]
 
     with args.output.open("w", newline="") as out:
-        writer = csv.DictWriter(out, fieldnames=fieldnames)
+        writer = csv.DictWriter(out, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
 
         for cid in cluster_ids:
