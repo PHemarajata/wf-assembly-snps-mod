@@ -197,6 +197,12 @@
                     "default": 2,
                     "description": "Minimum number of SNPs for Gubbins analysis."
                 },
+                "gubbins_seed": {
+                    "type": "integer",
+                    "default": 20260904,
+                    "description": "Seed passed to Gubbins as --seed. Required for reproducibility.",
+                    "help_text": "Gubbins passes this to RAxML as the parsimony seed -p. Left unset, Gubbins draws it from an unseeded randint(0, 10000): that value is 0 about 1 time in 10,001, RAxML rejects a non-positive seed, and the failure surfaces only as 'Unable to fit model to data', which points at the alignment rather than the seed. With errorStrategy 'ignore' the affected unit is dropped and the run still exits 0. Across a full panel the chance of losing at least one unit is about 16 percent. Set to null to restore the random draw and reintroduce both failure modes."
+                },
                 "iqtree_model": {
                     "type": "string",
                     "default": "GTR+ASC",
