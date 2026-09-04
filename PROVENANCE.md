@@ -58,6 +58,7 @@ without retagging a published release, so this file is the correction of record.
 | `v1.0.4-mod` | `0669624` | `graft_trees.py` | |
 | **`v1.0.5-mod`** | **`79ab645`** | **the reported analysis** | no — see above |
 | `v1.1.0-mod` | `git rev-list -n1 v1.1.0-mod` | determinism: `gubbins_seed`, `gubbins_deterministic`; first CI | yes, with `gubbins_deterministic = true` |
+| **`v1.2.0-mod`** | `git rev-list -n1 v1.2.0-mod` | Nextflow 26.x; determinism extended to IQ-TREE; `collectFile` ordering | yes, with `--deterministic true`, demonstrated end to end at smoke-test scale |
 
 The determinism work itself is `0543892` (`--seed`), `4fd7b22`
 (`gubbins_deterministic`) and `a49eac5` (the classic path); CI and this file are
@@ -77,6 +78,23 @@ referenced the tag while it stood, and **no pipeline code differs across any of
 those commits**; only CI and this file changed. Recorded because a moved tag
 nobody writes down is indistinguishable from a tag someone misread. Resolve the
 final placement from the tag, not from this paragraph.
+
+`v1.2.0-mod` was placed once, on a green build, and has not been moved. This
+table entry is therefore *newer* than the tag and is not inside it, for the same
+reason the `v1.1.0-mod` row is not: a tag cannot record the hash of the commit
+that records it. Resolve either from the tag, never from this table. It is
+four commits past `v1.1.0-mod`, three of which change behaviour: the 26.x config
+migration, the IQ-TREE determinism control, and the `collectFile` ordering fix.
+The fourth is CI only. A new tag rather than moving `v1.1.0-mod`, because moving
+a published tag twice is already recorded above as a mistake and doing it a third
+time would make the record worse.
+
+**What `v1.2.0-mod` does not establish.** Determinism is demonstrated end to end
+over two full workflow runs of 9 genomes in one cluster, 34 tasks each, with all
+ten scientific outputs byte-identical. That is smoke-test scale. It is not
+demonstrated at the 85-unit, 2,340-genome scale of the frozen basis, and the cost
+multiplier grows with taxa. `GLOBAL_ML_TREE` is untested, because it needs at
+least three cluster medoids and a single-cluster test yields one.
 
 **The manifest at `79ab645` self-reports `version = '1.0.3-mod'`**, so run logs
 from the reported analysis print that string while the `v1.0.3-mod` tag points at
