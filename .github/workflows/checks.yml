@@ -17,7 +17,17 @@ jobs:
       - uses: actions/checkout@v4
       - uses: nf-core/setup-nextflow@v2
       - name: config resolves
-        run: nextflow config . > /dev/null
+        # Not `> /dev/null`: Nextflow writes its errors to stdout, so discarding
+        # stdout turns a failure into an exit code with no message. The first
+        # run of this workflow failed here in 1.7s with nothing to read.
+        run: |
+          nextflow -version
+          if ! nextflow config . > /tmp/cfg.out 2> /tmp/cfg.err; then
+            echo "--- stdout ---"; cat /tmp/cfg.out
+            echo "--- stderr ---"; cat /tmp/cfg.err
+            exit 1
+          fi
+          echo "ok: config resolved, $(wc -l < /tmp/cfg.out) lines"
       - name: determinism parameters are present and sane
         # These two are the reason this repository has CI at all. gubbins_seed
         # removes a 1-in-10,001 draw that silently loses a unit; a zero or
