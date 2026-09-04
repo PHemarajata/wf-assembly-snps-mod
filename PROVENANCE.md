@@ -57,7 +57,15 @@ without retagging a published release, so this file is the correction of record.
 | `v1.0.3-mod` | `2b9557b` | first release | |
 | `v1.0.4-mod` | `0669624` | `graft_trees.py` | |
 | **`v1.0.5-mod`** | **`79ab645`** | **the reported analysis** | no — see above |
-| `v1.1.0-mod` | `a49eac5` | determinism: `gubbins_seed`, `gubbins_deterministic` | yes, with `gubbins_deterministic = true` |
+| `v1.1.0-mod` | `git rev-list -n1 v1.1.0-mod` | determinism: `gubbins_seed`, `gubbins_deterministic`; first CI | yes, with `gubbins_deterministic = true` |
+
+The determinism work itself is `0543892` (`--seed`), `4fd7b22`
+(`gubbins_deterministic`) and `a49eac5` (the classic path); CI and this file are
+`5089284`. The tag is placed after all four so the release carries the checks
+that keep the seed from going missing again. Its commit is deliberately not
+transcribed here: a tag cannot record the hash of the commit that records it,
+and a hand-copied SHA in a table is exactly the kind of number this project has
+had to correct too many times. Resolve it from the tag.
 
 **The manifest at `79ab645` self-reports `version = '1.0.3-mod'`**, so run logs
 from the reported analysis print that string while the `v1.0.3-mod` tag points at
