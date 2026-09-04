@@ -53,6 +53,22 @@ process GUBBINS_CLUSTER {
   // 30 genomes on a real SKA-mapped set, and default vs 100 produced DIFFERENT final
   // trees. Now explicit, and every exclusion is echoed into the diagnostics log.
   def filter_pct      = (params.gubbins_filter_percentage == null ? 25 : params.gubbins_filter_percentage) as double
+  // DETERMINISM, and a crash. Without --seed, Gubbins derives RAxML's parsimony
+  // seed from an unseeded randint(0, 10000): that is 0 about 1 time in 10,001,
+  // RAxML rejects it, and Gubbins reports only "Unable to fit model to data".
+  // ~16% chance per full panel of losing a unit while still exiting 0. See
+  // conf/params.config for the full note. null restores the old random draw.
+  //
+  // Zero is rejected explicitly rather than passed through. `--seed 0` is the
+  // precise value this parameter exists to make impossible, and setting it by
+  // hand would reproduce the failure deterministically instead of 1 time in
+  // 10,001 -- a worse outcome than leaving the parameter unset.
+  if (params.gubbins_seed != null && (params.gubbins_seed as int) <= 0) {
+    error("gubbins_seed must be a positive integer, or null. RAxML rejects a " +
+          "non-positive parsimony seed, which is the exact failure this " +
+          "parameter exists to prevent. Got: ${params.gubbins_seed}")
+  }
+  def seed_arg        = (params.gubbins_seed == null) ? '' : "--seed ${params.gubbins_seed}"
 
   """
   set -euo pipefail
@@ -80,7 +96,7 @@ process GUBBINS_CLUSTER {
     # NOTE: Gubbins' VERSION file reads 3.4.2 even on tag v3.4.3, so treat this as
     # indicative; the citation manifest (gubbins.log) is authoritative.
     echo "Container: gubbins \$(run_gubbins.py --version 2>&1 | tr -d '\\n') | CPUs: ${task.cpus}"
-    echo "Params: iterations=${iterations}, tree_builder=${tree_builder}, first_builder=${first_builder}, min_snps=${min_snps}, use_hybrid=${use_hybrid_flag}, filter_percentage=${filter_pct}"
+    echo "Params: iterations=${iterations}, tree_builder=${tree_builder}, first_builder=${first_builder}, min_snps=${min_snps}, use_hybrid=${use_hybrid_flag}, filter_percentage=${filter_pct}, seed=${params.gubbins_seed == null ? 'UNSET (random, see conf/params.config)' : params.gubbins_seed}"
   } >> "\${DIAG}"
 
   # Record the taxa GOING IN, so the post-run comparison can name any taxon that
@@ -148,6 +164,7 @@ END_VERSIONS
       --invariant-site-correction \\
       --filter-percentage ${filter_pct} \\
       --threads ${task.cpus} \\
+      ${seed_arg} \\
       ${args} \\
       "${alignment}" >> "\${DIAG}" 2>&1
     gubbins_exit_code=\$?
@@ -163,6 +180,7 @@ END_VERSIONS
         --invariant-site-correction \\
         --filter-percentage ${filter_pct} \\
         --threads ${task.cpus} \\
+        ${seed_arg} \\
         ${args} \\
         "${alignment}" >> "\${DIAG}" 2>&1
       gubbins_exit_code=\$?
@@ -176,6 +194,7 @@ END_VERSIONS
         --invariant-site-correction \\
         --filter-percentage ${filter_pct} \\
         --threads ${task.cpus} \\
+        ${seed_arg} \\
         ${args} \\
         "${alignment}" >> "\${DIAG}" 2>&1
       gubbins_exit_code=\$?

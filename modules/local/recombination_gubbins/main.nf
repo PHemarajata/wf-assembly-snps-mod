@@ -27,6 +27,27 @@ process RECOMBINATION_GUBBINS {
 
     msg "INFO: Performing recombination using Gubbins."
 
+    # DETERMINISM, and a crash. Without --seed Gubbins derives RAxML's parsimony
+    # seed from an unseeded randint(0, 10000). That is 0 about 1 time in 10,001,
+    # RAxML rejects a non-positive seed, and Gubbins reports it only as "Unable
+    # to fit model to data" -- ~16% chance per panel of losing a unit while still
+    # exiting 0. See conf/params.config. Setting gubbins_seed = null restores the
+    # old random draw and reintroduces both failure modes.
+    GUBBINS_SEED="!{params.gubbins_seed}"
+    SEED_ARG=""
+    if [ -n "${GUBBINS_SEED}" ] && [ "${GUBBINS_SEED}" != "null" ]; then
+      # Zero is refused rather than passed through: --seed 0 is the precise value
+      # this parameter exists to make impossible, and setting it by hand would
+      # reproduce the failure every run instead of 1 time in 10,001.
+      if [ "${GUBBINS_SEED}" -le 0 ] 2>/dev/null; then
+        msg "ERROR: gubbins_seed must be a positive integer, or null. RAxML rejects a non-positive parsimony seed. Got: ${GUBBINS_SEED}"
+        exit 1
+      fi
+      SEED_ARG="--seed ${GUBBINS_SEED}"
+    else
+      msg "WARN: gubbins_seed is unset; Gubbins will draw a random RAxML seed and this run is not reproducible."
+    fi
+
     # Build Gubbins command with hybrid tree builders if enabled
     if [[ "!{params.gubbins_use_hybrid}" == "true" ]]; then
         # Use hybrid approach with two tree builders
@@ -37,6 +58,7 @@ process RECOMBINATION_GUBBINS {
           --tree-builder "!{params.gubbins_tree_builder}" \
           --invariant-site-correction \
           --filter-percentage "!{params.gubbins_filter_percentage}" \
+          ${SEED_ARG} \
           "!{core_alignment_fasta}"
     else
         # Use single tree builder
@@ -46,6 +68,7 @@ process RECOMBINATION_GUBBINS {
           --tree-builder "!{params.gubbins_tree_builder}" \
           --invariant-site-correction \
           --filter-percentage "!{params.gubbins_filter_percentage}" \
+          ${SEED_ARG} \
           "!{core_alignment_fasta}"
     fi
 
