@@ -129,6 +129,30 @@ at a specific run. It is now explicit: allocated CPUs by default, 1 under
 
 ---
 
+## ⚠ Known incompatibility: Nextflow 26.x cannot parse this config
+
+`nextflow config .` fails outright on Nextflow **26.04.6**:
+
+```
+Error nextflow.config:363:14: Unexpected input: '('
+│ 363 | def check_max(obj, type) {
+```
+
+26.x ships a strict config parser that no longer allows function definitions in
+`nextflow.config`. `check_max` is the nf-core resource-capping helper and is
+used throughout the profile blocks, so this is not a one-line deletion; removing
+it changes how every profile's resource ceilings are computed, and those
+ceilings are already known to be sized for small units.
+
+**Nothing in this repository has been run on 26.x, and nothing should be until
+that is fixed.** Verified working: 24.10.5, 25.04.6 and 25.10.0, in both the
+working tree and a fresh clone. CI tests 25.04.6 and 25.10.0 specifically,
+because those are the two versions the reported results were produced on.
+
+This was found by CI on its first run, which is the argument for having it.
+
+---
+
 ## Pinned tool versions
 
 Pins that alter scientific output, and must not be bumped casually:

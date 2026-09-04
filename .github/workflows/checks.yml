@@ -13,9 +13,21 @@ jobs:
   nextflow-config:
     name: config resolves and the params are declared
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # The two versions the reported results were actually produced on:
+        # 25.04.6 for the reported run, 25.10.0 for the cross-hardware control.
+        # Not latest-stable, which is 26.x and does not parse this config at
+        # all -- see the known-incompatibility note in PROVENANCE.md. Testing
+        # against a version nothing was run on tells us nothing about the
+        # results; testing against these two says the pinned runs still resolve.
+        nxf: ["25.04.6", "25.10.0"]
     steps:
       - uses: actions/checkout@v4
       - uses: nf-core/setup-nextflow@v2
+        with:
+          version: ${{ matrix.nxf }}
       - name: config resolves
         # Not `> /dev/null`: Nextflow writes its errors to stdout, so discarding
         # stdout turns a failure into an exit code with no message. The first
