@@ -83,7 +83,8 @@ jobs:
                   if re.match(r'(if|for|while)\s*\(', s):
                       bad.append(f"{f}:{i}: control flow in config -- {s[:60]}")
                   for m in re.finditer(r'\$\{([A-Z][A-Z0-9_]{2,})\}', ln):
-                      bad.append(f"{f}:{i}: bare env var ${{{m.group(1)}}} -- use System.getenv()")
+                      dollar_brace = chr(36) + "{"
+                      bad.append(f"{f}:{i}: bare env var {dollar_brace}{m.group(1)}}} -- use System.getenv()")
           if checked < 10:
               sys.exit(f"REFUSING: only {checked} config files scanned; the glob is broken, not the code.")
           if bad:
@@ -177,6 +178,28 @@ jobs:
               || { echo "SYNTAX FAIL: $f"; fail=1; }
           done < <(find bin -name '*.py' 2>/dev/null; ls *.py 2>/dev/null)
           exit $fail
+      - name: workflow files carry no accidental Actions expression
+        # GitHub evaluates ${ {   } } anywhere in a workflow file, including inside a
+        # run: block. A Python f-string emitting that literal made this very
+        # workflow fail in 0s with no log and no annotation beyond "workflow file
+        # issue", which is the least debuggable failure CI can produce.
+        run: |
+          python3 - <<'PY'
+          import pathlib, re, sys
+          allowed = re.compile(r'(matrix|github|env|secrets|inputs|steps|needs|runner|job)\.')
+          bad, checked = [], 0
+          for f in sorted(pathlib.Path('.github/workflows').glob('*.yml')):
+              checked += 1
+              for i, ln in enumerate(f.read_text().splitlines(), 1):
+                  for m in re.finditer(re.escape(chr(36) + '{{') + r'(.*?)}}', ln):
+                      if not allowed.search(m.group(1)):
+                          bad.append(f"{f}:{i}: {ln.strip()[:70]}")
+          if checked < 1:
+              sys.exit("REFUSING: no workflow files scanned.")
+          if bad:
+              sys.exit("unintended Actions expression:\n  " + "\n  ".join(bad))
+          print(f"ok: {checked} workflow file(s), no unintended expression")
+          PY
       - name: shell parses
         run: |
           fail=0
