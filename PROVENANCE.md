@@ -69,7 +69,10 @@ had to correct too many times. Resolve it from the tag.
 
 `v1.1.0-mod` was moved forward more than once on the day it was created, first
 from `e9e7753`. That placement was on a red build: the workflow there installed
-`latest-stable`, which is 26.x, which cannot parse this config. Nothing
+`latest-stable`, which is 26.x, and 26.x could not then parse this config.
+It can now, as of 2026-09-04; the CI matrix pins versions rather than
+tracking `latest-stable`, so a future strict-parser change fails a named
+job instead of every job at once. Nothing
 referenced the tag while it stood, and **no pipeline code differs across any of
 those commits**; only CI and this file changed. Recorded because a moved tag
 nobody writes down is indistinguishable from a tag someone misread. Resolve the
@@ -137,27 +140,65 @@ at a specific run. It is now explicit: allocated CPUs by default, 1 under
 
 ---
 
-## ⚠ Known incompatibility: Nextflow 26.x cannot parse this config
+## Nextflow 26.x compatibility, and the six things that blocked it
 
-`nextflow config .` fails outright on Nextflow **26.04.6**:
+**Resolved 2026-09-04.** `nextflow config .` now succeeds on **24.10.5, 25.04.6,
+25.10.0 and 26.04.6**, across all eleven profiles: 44 combinations, all checked.
+CI tests all four versions.
 
-```
-Error nextflow.config:363:14: Unexpected input: '('
-│ 363 | def check_max(obj, type) {
-```
+26.x ships a strict config parser. It rejects function definitions, variable
+declarations, control flow, and bare environment variables in a config file.
+This repository had all four, and each was hidden behind the one before it, so
+the count went up as the work went on rather than down. In order:
 
-26.x ships a strict config parser that no longer allows function definitions in
-`nextflow.config`. `check_max` is the nf-core resource-capping helper and is
-used throughout the profile blocks, so this is not a one-line deletion; removing
-it changes how every profile's resource ceilings are computed, and those
-ceilings are already known to be sized for small units.
+| # | rejected | where | replaced with |
+|---|---|---|---|
+| 1 | `def check_max(obj, type)` | `nextflow.config` | the `resourceLimits` process directive, in `conf/base.config` and all six profiles |
+| 2 | nested `if`/`each` building the include list | `nextflow.config` | the five `includeConfig` lines it always resolved to |
+| 3 | `def trace_timestamp = ...` | `nextflow.config` | `params.trace_timestamp`, in `conf/params.config` |
+| 4 | `"${LAB_HOME}/..."` | `nextflow.config`, `conf/profiles.config` | `System.getenv('LAB_HOME')`, which behaves identically on all four versions |
+| 5 | `'parsnp' { description: ... }` | `conf/workflows.config` | unquoted scope names; `description:` was a Groovy label, never a key |
+| 6 | `sge_options = { ...task... }` | `conf/profiles/rosalind_hpc.config` | the same closure on `process.clusterOptions`, where `task` is defined |
 
-**Nothing in this repository has been run on 26.x, and nothing should be until
-that is fixed.** Verified working: 24.10.5, 25.04.6 and 25.10.0, in both the
-working tree and a fresh clone. CI tests 25.04.6 and 25.10.0 specifically,
-because those are the two versions the reported results were produced on.
+None of it changes what any profile allocates. That was measured, not assumed.
 
-This was found by CI on its first run, which is the argument for having it.
+### The one way this could have changed the science, and how it was caught
+
+`resourceLimits` written as a plain list is **bound once, when the file is
+parsed**. `check_max()` read `params.max_*` per task. So the obvious
+translation silently stops honouring a ceiling set in a later `-c` overlay:
+
+| ceiling set in a later config | old `check_max` | `resourceLimits = [ ... ]` | `resourceLimits = { [ ... ] }` |
+|---|---|---|---|
+| `max_cpus = 3`, `max_memory = '5.GB'` | 3 cpus, 5 GB | **12 cpus, 16 GB — ignored** | 3 cpus, 5 GB |
+
+The list form was written first and passed every check that had been run
+against it, because a command-line `--max_cpus` *is* honoured either way and
+that is what was tested. It was caught by a negative control: deliberately
+lowering the ceiling and confirming the measurement moved. It did not.
+
+**All seven declarations are closures, and CI asserts it.** This is the fourth
+member of the family in `HANDOFF_2026-09-04.md`: a check that passes because it
+was never able to fail.
+
+### How the equivalence was verified
+
+Not by reading the two implementations and finding them alike.
+
+- **Config output.** `nextflow config` on 25.04.6, ten profiles, against a clean
+  clone of `v1.1.0-mod`. Identical except the closure bodies, the added
+  `trace_timestamp`, and the clone's own path.
+- **Resolved resources.** A harness of seven processes, one per label, failing
+  twice so each runs at `task.attempt` 1, 2 and 3, printing the cpus, memory and
+  time it actually received. Five profiles, 21 measurements each, old against
+  new: **identical in all 105**. The ceiling demonstrably binds — under
+  `local_workstation`, `process_high` cpus go 6, 12, 12 against `max_cpus = 12`,
+  and `process_high_memory` goes 32, 64, 64 GB against `max_memory = '64.GB'`.
+- **Sensitivity.** The same harness with the ceiling lowered moves the numbers,
+  so it is not measuring a constant.
+
+Item 2 removed the only reader of `params.workflows`. The map is kept as the
+written-down module list, and the static includes are checked against it.
 
 ---
 

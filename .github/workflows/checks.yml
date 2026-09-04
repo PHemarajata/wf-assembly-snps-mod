@@ -16,13 +16,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # The two versions the reported results were actually produced on:
-        # 25.04.6 for the reported run, 25.10.0 for the cross-hardware control.
-        # Not latest-stable, which is 26.x and does not parse this config at
-        # all -- see the known-incompatibility note in PROVENANCE.md. Testing
-        # against a version nothing was run on tells us nothing about the
-        # results; testing against these two says the pinned runs still resolve.
-        nxf: ["25.04.6", "25.10.0"]
+        # 25.04.6 produced the reported run and 25.10.0 the cross-hardware
+        # control, so those two say the pinned runs still resolve. 24.10.5 is
+        # the oldest version this config is claimed to work on and 26.04.6 is
+        # latest-stable, which did not parse this config at all until the six
+        # strict-parser fixes recorded in PROVENANCE.md. Both ends are tested
+        # because the 26.x breakage was found by CI on its first run, and
+        # because a floor nothing tests is a floor nobody can rely on.
+        nxf: ["24.10.5", "25.04.6", "25.10.0", "26.04.6"]
     steps:
       - uses: actions/checkout@v4
       - uses: nf-core/setup-nextflow@v2
@@ -56,6 +57,62 @@ jobs:
           echo "$cfg" | grep -q 'gubbins_deterministic' \
             || { echo "REFUSING: gubbins_deterministic missing"; exit 1; }
           echo "ok: gubbins_seed = $seed, gubbins_deterministic declared"
+
+  strict-config:
+    name: config stays parseable by the strict parser
+    runs-on: ubuntu-latest
+    # Nextflow 26.x rejects function definitions, variable declarations, control
+    # flow and bare environment variables in config files. Each of those was
+    # present and each was fixed; this stops them coming back, and it fails
+    # without needing a 26.x download.
+    steps:
+      - uses: actions/checkout@v4
+      - name: no config-scope defs, control flow or bare env vars
+        run: |
+          python3 - <<'PY'
+          import pathlib, re, sys
+          bad, checked = [], 0
+          for f in sorted(list(pathlib.Path('conf').rglob('*.config')) + [pathlib.Path('nextflow.config')]):
+              checked += 1
+              for i, ln in enumerate(f.read_text().splitlines(), 1):
+                  s = ln.strip()
+                  if s.startswith('//') or s.startswith('*') or s.startswith('/*'):
+                      continue
+                  if re.match(r'(def|final)\s+\w+\s*[=(]', s):
+                      bad.append(f"{f}:{i}: config-scope definition -- {s[:60]}")
+                  if re.match(r'(if|for|while)\s*\(', s):
+                      bad.append(f"{f}:{i}: control flow in config -- {s[:60]}")
+                  for m in re.finditer(r'\$\{([A-Z][A-Z0-9_]{2,})\}', ln):
+                      bad.append(f"{f}:{i}: bare env var ${{{m.group(1)}}} -- use System.getenv()")
+          if checked < 10:
+              sys.exit(f"REFUSING: only {checked} config files scanned; the glob is broken, not the code.")
+          if bad:
+              sys.exit("strict-parser hazards:\n  " + "\n  ".join(bad))
+          print(f"ok: {checked} config files carry no strict-parser hazard")
+          PY
+      - name: resourceLimits is late-bound
+        # Written as a plain list, params.max_* is read once at parse time and a
+        # ceiling set in a later -c overlay is silently ignored. Measured: the
+        # list form caps at 12 where a later override says 4. The closure form
+        # caps at 4, which is what check_max() did. This is the one way the
+        # replacement can differ from what it replaced, so it is asserted.
+        run: |
+          python3 - <<'PY'
+          import pathlib, re, sys
+          bad, found = [], 0
+          for f in sorted(pathlib.Path('conf').rglob('*.config')):
+              for i, ln in enumerate(f.read_text().splitlines(), 1):
+                  if 'resourceLimits' not in ln or ln.strip().startswith('//'):
+                      continue
+                  found += 1
+                  if not re.search(r'resourceLimits\s*=\s*\{', ln):
+                      bad.append(f"{f}:{i}: not a closure -- {ln.strip()[:70]}")
+          if found < 7:
+              sys.exit(f"REFUSING: found {found} resourceLimits declarations, expected at least 7.")
+          if bad:
+              sys.exit("parse-time resourceLimits:\n  " + "\n  ".join(bad))
+          print(f"ok: all {found} resourceLimits declarations are closures")
+          PY
 
   every-gubbins-call-is-seeded:
     name: no run_gubbins.py call omits the seed
