@@ -67,12 +67,13 @@ transcribed here: a tag cannot record the hash of the commit that records it,
 and a hand-copied SHA in a table is exactly the kind of number this project has
 had to correct too many times. Resolve it from the tag.
 
-`v1.1.0-mod` was moved once, on the day it was created, from `e9e7753` to the
-commit that fixes CI. The first placement was on a red build: the workflow at
-`e9e7753` installed `latest-stable`, which is 26.x, which cannot parse this
-config. Nothing referenced the tag in the twenty minutes it stood, and no
-pipeline code differs between the two commits. Recorded because a moved tag
-that nobody writes down is indistinguishable from a tag someone misread.
+`v1.1.0-mod` was moved forward more than once on the day it was created, first
+from `e9e7753`. That placement was on a red build: the workflow there installed
+`latest-stable`, which is 26.x, which cannot parse this config. Nothing
+referenced the tag while it stood, and **no pipeline code differs across any of
+those commits**; only CI and this file changed. Recorded because a moved tag
+nobody writes down is indistinguishable from a tag someone misread. Resolve the
+final placement from the tag, not from this paragraph.
 
 **The manifest at `79ab645` self-reports `version = '1.0.3-mod'`**, so run logs
 from the reported analysis print that string while the `v1.0.3-mod` tag points at
