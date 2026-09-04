@@ -69,6 +69,15 @@ process GUBBINS_CLUSTER {
           "parameter exists to prevent. Got: ${params.gubbins_seed}")
   }
   def seed_arg        = (params.gubbins_seed == null) ? '' : "--seed ${params.gubbins_seed}"
+  // --seed alone does NOT give determinism: measured 5 of 10 unit pairs identical
+  // at --threads 4 with a fixed seed, against 3 of 3 identical at --threads 1.
+  // Thread count is the dominant source of run-to-run variation and the seed is
+  // necessary but not sufficient. See conf/params.config for the measurements
+  // and the cost. Default false: fast and non-deterministic, stated honestly.
+  def deterministic   = (params.gubbins_deterministic == null)
+                          ? false
+                          : params.gubbins_deterministic.toString().toLowerCase() in ['true','1','yes']
+  def gubbins_threads = deterministic ? 1 : task.cpus
 
   """
   set -euo pipefail
@@ -96,7 +105,7 @@ process GUBBINS_CLUSTER {
     # NOTE: Gubbins' VERSION file reads 3.4.2 even on tag v3.4.3, so treat this as
     # indicative; the citation manifest (gubbins.log) is authoritative.
     echo "Container: gubbins \$(run_gubbins.py --version 2>&1 | tr -d '\\n') | CPUs: ${task.cpus}"
-    echo "Params: iterations=${iterations}, tree_builder=${tree_builder}, first_builder=${first_builder}, min_snps=${min_snps}, use_hybrid=${use_hybrid_flag}, filter_percentage=${filter_pct}, seed=${params.gubbins_seed == null ? 'UNSET (random, see conf/params.config)' : params.gubbins_seed}"
+    echo "Params: iterations=${iterations}, tree_builder=${tree_builder}, first_builder=${first_builder}, min_snps=${min_snps}, use_hybrid=${use_hybrid_flag}, filter_percentage=${filter_pct}, threads=${gubbins_threads}, deterministic=${deterministic}, seed=${params.gubbins_seed == null ? 'UNSET (random, see conf/params.config)' : params.gubbins_seed}"
   } >> "\${DIAG}"
 
   # Record the taxa GOING IN, so the post-run comparison can name any taxon that
@@ -163,7 +172,7 @@ END_VERSIONS
       --min-snps ${min_snps} \\
       --invariant-site-correction \\
       --filter-percentage ${filter_pct} \\
-      --threads ${task.cpus} \\
+      --threads ${gubbins_threads} \\
       ${seed_arg} \\
       ${args} \\
       "${alignment}" >> "\${DIAG}" 2>&1
@@ -179,7 +188,7 @@ END_VERSIONS
         --min-snps ${min_snps} \\
         --invariant-site-correction \\
         --filter-percentage ${filter_pct} \\
-        --threads ${task.cpus} \\
+        --threads ${gubbins_threads} \\
         ${seed_arg} \\
         ${args} \\
         "${alignment}" >> "\${DIAG}" 2>&1
@@ -193,7 +202,7 @@ END_VERSIONS
         --min-snps ${min_snps} \\
         --invariant-site-correction \\
         --filter-percentage ${filter_pct} \\
-        --threads ${task.cpus} \\
+        --threads ${gubbins_threads} \\
         ${seed_arg} \\
         ${args} \\
         "${alignment}" >> "\${DIAG}" 2>&1

@@ -203,6 +203,12 @@
                     "description": "Seed passed to Gubbins as --seed. Required for reproducibility.",
                     "help_text": "Gubbins passes this to RAxML as the parsimony seed -p. Left unset, Gubbins draws it from an unseeded randint(0, 10000): that value is 0 about 1 time in 10,001, RAxML rejects a non-positive seed, and the failure surfaces only as 'Unable to fit model to data', which points at the alignment rather than the seed. With errorStrategy 'ignore' the affected unit is dropped and the run still exits 0. Across a full panel the chance of losing at least one unit is about 16 percent. Set to null to restore the random draw and reintroduce both failure modes."
                 },
+                "gubbins_deterministic": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Force Gubbins to a single thread so runs are byte-reproducible.",
+                    "help_text": "gubbins_seed alone does not give determinism. Measured over 10 units x 4 runs on real alignments: a fixed seed at 4 threads gave 5 of 10 identical pairs, barely better than the 4 of 10 with no seed at all, while a fixed seed at 1 thread gave 3 of 3 identical on exactly the units that had differed. Thread count is the dominant source of run-to-run variation; the seed is necessary but not sufficient. Cost measured at 1.28x on 8 taxa and 1.98x on 37 taxa, and units here reach 159. Default false: fast and non-deterministic. Set true when byte-level reproducibility must be demonstrable."
+                },
                 "iqtree_model": {
                     "type": "string",
                     "default": "GTR+ASC",
