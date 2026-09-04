@@ -140,6 +140,64 @@ at a specific run. It is now explicit: allocated CPUs by default, 1 under
 
 ---
 
+## Determinism covers IQ-TREE now, and did not before
+
+**2026-09-04.** `gubbins_deterministic` governed Gubbins. It never governed
+IQ-TREE. `conf/params.config` had claimed since the same day that "this project
+measured" the identical seed-and-threads effect for IQ-TREE, and it had. Nothing
+acted on it. All five IQ-TREE invocations ran unseeded and multi-threaded,
+including `IQTREE_ASC`, which builds the per-unit trees, and `GLOBAL_ML_TREE`,
+which builds the reported global one.
+
+That is the `gubbins_seed` defect again: a fact written down in six places and
+implemented in none. It would have surfaced as a failed end-to-end
+reproducibility test, for a reason already in the repository.
+
+### Measured, three real unit alignments of 24 to 34 taxa
+
+Two runs per configuration, production invocation (`GTR`, `-bb 1000 -alrt 1000`),
+comparing the treefile byte for byte.
+
+| configuration | aln1 | aln2 | aln3 |
+|---|---|---|---|
+| no seed, `-T 4` (the production configuration) | differs | differs | differs |
+| `-seed`, `-T 4` | differs | | |
+| no seed, `-T 1` | differs | | |
+| **`-seed`, `-T 1`** | **identical** | **identical** | **identical** |
+
+Both are required. That is sharper than the Gubbins result, where a seed at four
+threads still matched on the units that were stable anyway. Under `-seed` with
+`-T 1` the only remaining difference anywhere in the output is the `.iqtree`
+report's own timestamp and its two runtime lines.
+
+### What changed
+
+- `iqtree_seed = 20260904`, passed to every IQ-TREE invocation, always, the way
+  `gubbins_seed` is.
+- `deterministic = false`, which pins Gubbins **and** IQ-TREE to one thread.
+  `gubbins_deterministic` is honoured unchanged, so the reproduce recipe below
+  keeps working; either parameter turns determinism on.
+- `BUILD_INTEGRATED_TREE` also loses `-nt AUTO`, which sized IQ-TREE to the host
+  core count rather than to `task.cpus`, oversubscribing the machine under
+  `maxForks > 1` as well as being non-deterministic.
+
+CI asserts that all five invocations are seeded and thread-controlled, and
+refuses if it finds fewer than five. That guard earned its place twice while the
+check was being written: a narrow tool-name pattern matched an error message and
+missed the real `IQTREE_ASC` call, and a broader one matched `[ -s gml.iqtree ]`,
+where `-s` is the shell's file test and not IQ-TREE's input flag. Both were
+caught by the count, not by inspection. Verified failing on a removed seed, a
+reverted thread count, and a reintroduced `-nt AUTO`.
+
+**The reported analysis used none of this.** It ran unseeded and multi-threaded
+through both Gubbins and IQ-TREE, so it is not seed-reproducible, and re-running
+it under `--deterministic true` produces a different run rather than validating
+the pinned one. That was already true and is stated below; what has changed is
+that a future run can now be reproducible, which it could not have been on
+`gubbins_deterministic` alone.
+
+---
+
 ## Nextflow 26.x compatibility, and the six things that blocked it
 
 **Resolved 2026-09-04.** `nextflow config .` now succeeds on **24.10.5, 25.04.6,
@@ -227,7 +285,7 @@ SKA-mapped set, and default versus 100 produced **different final trees**.
 
 ```bash
 git checkout v1.1.0-mod          # or v1.0.5-mod for the reported basis
-nextflow run . -profile <profile> --gubbins_deterministic true \
+nextflow run . -profile <profile> --deterministic true \
         --input <samplesheet> --outdir <out>
 ```
 

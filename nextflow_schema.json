@@ -209,6 +209,18 @@
                     "description": "Force Gubbins to a single thread so runs are byte-reproducible.",
                     "help_text": "gubbins_seed alone does not give determinism. Measured over 10 units x 4 runs on real alignments: a fixed seed at 4 threads gave 5 of 10 identical pairs, barely better than the 4 of 10 with no seed at all, while a fixed seed at 1 thread gave 3 of 3 identical on exactly the units that had differed. Thread count is the dominant source of run-to-run variation; the seed is necessary but not sufficient. Cost measured at 1.28x on 8 taxa and 1.98x on 37 taxa, and units here reach 159. Default false: fast and non-deterministic. Set true when byte-level reproducibility must be demonstrable."
                 },
+                "deterministic": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Make the run byte-reproducible across every stochastic stage, not Gubbins alone.",
+                    "help_text": "Supersedes gubbins_deterministic, which is still honoured so existing commands keep working; either parameter turns determinism on. It pins Gubbins and all five IQ-TREE invocations to one thread, and IQ-TREE also receives iqtree_seed. Measured 2026-09-04 on three real unit alignments under the production invocation: unseeded at 4 threads differs, seeded at 4 threads differs, unseeded at 1 thread differs, and seeded at 1 thread is byte-identical. Both the seed and the single thread are required. Costs roughly 2x, so it is off by default and the default is honestly non-deterministic."
+                },
+                "iqtree_seed": {
+                    "type": "integer",
+                    "default": 20260904,
+                    "description": "Seed passed to every IQ-TREE invocation as -seed.",
+                    "help_text": "Always applied, the way gubbins_seed is. Necessary and not sufficient: a seed at 4 threads still produced a different tree on all three alignments tested. Set deterministic=true to pin threads as well. Set to null to restore IQ-TREE's own draw, which is what every run before 2026-09-04 used, including the reported one."
+                },
                 "iqtree_model": {
                     "type": "string",
                     "default": "GTR+ASC",

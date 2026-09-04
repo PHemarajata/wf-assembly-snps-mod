@@ -50,6 +50,15 @@ process GLOBAL_ML_TREE {
 
     script:
     def ufboot = (params.iqtree_ufboot ?: 1000) as int
+    // Determinism is governed by either parameter. `deterministic` is the current
+    // name; `gubbins_deterministic` predates it and is honoured so the recipe in
+    // PROVENANCE.md keeps working. Measured 2026-09-04 on three real unit
+    // alignments: -seed alone still gives a different tree, -T 1 alone still
+    // gives a different tree, and both together give an identical one.
+    def deterministic = [params.deterministic, params.gubbins_deterministic].any {
+        it != null && it.toString().toLowerCase() in ['true', '1', 'yes'] }
+    def iq_threads  = deterministic ? 1 : task.cpus
+    def iq_seed_arg = (params.iqtree_seed == null) ? '' : "-seed ${params.iqtree_seed}"
     def alrt   = (params.iqtree_alrt   ?: 1000) as int
     def model  = (params.global_ml_model ?: 'GTR+ASC').toString()
     """
@@ -66,7 +75,7 @@ process GLOBAL_ML_TREE {
     fi
 
     set +e
-    iqtree2 -s ${alignment} -st DNA -m ${model} -T ${task.cpus} \\
+    iqtree2 -s ${alignment} -st DNA -m ${model} -T ${iq_threads} ${iq_seed_arg} \\
             --prefix gml -bb ${ufboot} -alrt ${alrt} >> "\$LOG" 2>&1
     rc=\$?
     set -e
@@ -75,7 +84,7 @@ process GLOBAL_ML_TREE {
         echo "NOTE: ${model} rejected because the alignment holds invariant columns;" | tee -a "\$LOG"
         echo "      retrying on gml.varsites.phy (variable sites only)." | tee -a "\$LOG"
         set +e
-        iqtree2 -s gml.varsites.phy -st DNA -m ${model} -T ${task.cpus} \\
+        iqtree2 -s gml.varsites.phy -st DNA -m ${model} -T ${iq_threads} ${iq_seed_arg} \\
                 --prefix gml -bb ${ufboot} -alrt ${alrt} >> "\$LOG" 2>&1
         rc=\$?
         set -e

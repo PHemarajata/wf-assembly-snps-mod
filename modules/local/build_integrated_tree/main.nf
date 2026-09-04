@@ -23,6 +23,15 @@ process BUILD_INTEGRATED_TREE {
 
     script:
     def model = params.iqtree_model ?: 'GTR+ASC'
+    // Determinism is governed by either parameter. `deterministic` is the current
+    // name; `gubbins_deterministic` predates it and is honoured so the recipe in
+    // PROVENANCE.md keeps working. Measured 2026-09-04 on three real unit
+    // alignments: -seed alone still gives a different tree, -T 1 alone still
+    // gives a different tree, and both together give an identical one.
+    def deterministic = [params.deterministic, params.gubbins_deterministic].any {
+        it != null && it.toString().toLowerCase() in ['true', '1', 'yes'] }
+    def iq_threads  = deterministic ? 1 : task.cpus
+    def iq_seed_arg = (params.iqtree_seed == null) ? '' : "-seed ${params.iqtree_seed}"
     """
     echo "Checking integrated alignment file: ${integrated_alignment}"
     
@@ -66,7 +75,8 @@ process BUILD_INTEGRATED_TREE {
             -m MFP \\
             -bb 1000 \\
             -alrt 1000 \\
-            -nt AUTO \\
+            -T ${iq_threads} \\
+            ${iq_seed_arg} \\
             --prefix integrated_core_snps \\
             || {
             echo "WARNING: IQ-TREE failed. Creating empty output files."

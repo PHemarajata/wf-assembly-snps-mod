@@ -55,6 +55,15 @@ process IQTREE_FAST {
 
     script:
     def args    = task.ext.args ?: ''
+    // Determinism is governed by either parameter. `deterministic` is the current
+    // name; `gubbins_deterministic` predates it and is honoured so the recipe in
+    // PROVENANCE.md keeps working. Measured 2026-09-04 on three real unit
+    // alignments: -seed alone still gives a different tree, -T 1 alone still
+    // gives a different tree, and both together give an identical one.
+    def deterministic = [params.deterministic, params.gubbins_deterministic].any {
+        it != null && it.toString().toLowerCase() in ['true', '1', 'yes'] }
+    def iq_threads  = deterministic ? 1 : task.cpus
+    def iq_seed_arg = (params.iqtree_seed == null) ? '' : "-seed ${params.iqtree_seed}"
     // Cheap FIXED model. This tree is a throwaway Gubbins seed; ModelFinder (-m MFP)
     // tested up to 968 models here and picked JC anyway.
     def model   = (params.iqtree_starting_model ?: 'GTR+G').toString().trim()
@@ -91,7 +100,8 @@ END_VERSIONS
             -st DNA \\
             -m ${model} \\
             --fast \\
-            -T ${task.cpus} \\
+            -T ${iq_threads} \\
+            ${iq_seed_arg} \\
             --prefix ${cluster_id} \\
             ${args}
         ;;

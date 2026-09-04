@@ -85,6 +85,15 @@ process IQTREE_ASC {
 
   script:
     def args     = (task.ext.args ?: '').toString().trim()
+    // Determinism is governed by either parameter. `deterministic` is the current
+    // name; `gubbins_deterministic` predates it and is honoured so the recipe in
+    // PROVENANCE.md keeps working. Measured 2026-09-04 on three real unit
+    // alignments: -seed alone still gives a different tree, -T 1 alone still
+    // gives a different tree, and both together give an identical one.
+    def deterministic = [params.deterministic, params.gubbins_deterministic].any {
+        it != null && it.toString().toLowerCase() in ['true', '1', 'yes'] }
+    def iq_threads  = deterministic ? 1 : task.cpus
+    def iq_seed_arg = (params.iqtree_seed == null) ? '' : "-seed ${params.iqtree_seed}"
     def model    = (params.iqtree_asc_model ?: 'GTR+ASC').toString().trim()
     // User-supplied constant-site counts still win over the preflight's own counts.
     def fconst   = (params.iqtree_fconst ?: '').toString().trim()
@@ -157,12 +166,14 @@ process IQTREE_ASC {
       echo "Branch support DISABLED (params.iqtree_support=false); no -bb / -alrt"
     fi
 
-    # -T \${task.cpus}, never -nt AUTO.
+    # -T \${task.cpus}, never -nt AUTO. Under determinism, -T 1 and a fixed seed:
+    # measured, each alone still gives a different tree and both give the same one.
     "\$IQTREE" \\
       -s "\$IQ_ALIGNMENT" \\
       -st DNA \\
       -m "\$IQ_MODEL" \\
-      -T ${task.cpus} \\
+      -T ${iq_threads} \\
+      ${iq_seed_arg} \\
       --prefix ${cluster_id}.final \\
       \${EXTRA}
 

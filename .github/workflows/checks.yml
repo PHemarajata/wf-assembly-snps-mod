@@ -162,6 +162,70 @@ jobs:
           print(f"ok: all {found} run_gubbins.py invocations pass a seed")
           PY
 
+  every-iqtree-call-is-seeded:
+    name: no IQ-TREE call omits the seed or the thread control
+    runs-on: ubuntu-latest
+    # The defect this closes is the gubbins_seed defect, in a second place.
+    # gubbins_deterministic governed Gubbins and never governed IQ-TREE, while
+    # conf/params.config asserted the same measurement for IQ-TREE and nothing
+    # acted on it. All five IQ-TREE invocations ran unseeded and multi-threaded,
+    # including the one that builds the reported global ML tree.
+    steps:
+      - uses: actions/checkout@v4
+      - name: each invocation is seeded and thread-controlled
+        run: |
+          python3 - <<'PY'
+          import pathlib, re, sys
+          EXPECT = 5   # iqtree_asc 1, iqtree_fast 1, global_ml_tree 2, build_integrated_tree 1
+          bad, found = [], 0
+          # Deliberately loose. The narrow version missed the real IQTREE_ASC
+          # call: that one is written as an escaped shell variable, so the
+          # character before the dollar is a backslash, which was not in the
+          # allowed set. It matched an echo of an error message instead, and the
+          # count guard is what caught that. Match anything naming the tool and
+          # let the -s requirement decide, which is a positive test rather than a
+          # list of things to skip.
+          call = re.compile(r'(?:iqtree2?|IQTREE)')
+          for f in sorted(pathlib.Path('modules').rglob('main.nf')):
+              lines = f.read_text().splitlines()
+              for i, ln in enumerate(lines):
+                  if not call.search(ln):
+                      continue
+                  # --version probes and the versions.yml lines are not analyses
+                  if '--version' in ln or 'versions.yml' in ln or 'command -v' in ln:
+                      continue
+                  block, j = [ln], i + 1
+                  while j < len(lines) and len(block) < 14:
+                      block.append(lines[j])
+                      if not lines[j].rstrip().endswith('\\'):
+                          break
+                      j += 1
+                  text = '\n'.join(block)
+                  # An invocation writes output under a prefix. Two narrower
+                  # tests were tried and both produced false positives that a
+                  # reader would learn to ignore: matching the tool name alone
+                  # caught `if [ -z "$IQTREE" ]` and an echo of an error
+                  # message, and additionally requiring '-s ' caught
+                  # `[ -s gml.iqtree ]`, where -s is the shell's file test.
+                  # --prefix appears in all five real invocations and in no
+                  # shell test.
+                  if '--prefix' not in text:
+                      continue
+                  found += 1
+                  if 'iq_seed_arg' not in text and '-seed' not in text:
+                      bad.append(f"{f}:{i+1}: no seed")
+                  if 'iq_threads' not in text:
+                      bad.append(f"{f}:{i+1}: threads not under the determinism control")
+                  if '-nt AUTO' in text:
+                      bad.append(f"{f}:{i+1}: -nt AUTO sizes to the host, not to task.cpus")
+          if found < EXPECT:
+              sys.exit(f"REFUSING: found {found} IQ-TREE invocations, expected at least "
+                       f"{EXPECT}. The detector is broken, not the code.")
+          if bad:
+              sys.exit("IQ-TREE invocations not under determinism control:\n  " + "\n  ".join(bad))
+          print(f"ok: all {found} IQ-TREE invocations are seeded and thread-controlled")
+          PY
+
   syntax:
     name: python and shell parse
     runs-on: ubuntu-latest

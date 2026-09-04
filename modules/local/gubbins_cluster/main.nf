@@ -74,9 +74,11 @@ process GUBBINS_CLUSTER {
   // Thread count is the dominant source of run-to-run variation and the seed is
   // necessary but not sufficient. See conf/params.config for the measurements
   // and the cost. Default false: fast and non-deterministic, stated honestly.
-  def deterministic   = (params.gubbins_deterministic == null)
-                          ? false
-                          : params.gubbins_deterministic.toString().toLowerCase() in ['true','1','yes']
+  // Either parameter turns it on. `deterministic` is the current name and covers
+  // IQ-TREE as well; `gubbins_deterministic` predates it and is honoured so the
+  // recipe in PROVENANCE.md keeps working unchanged.
+  def deterministic   = [params.deterministic, params.gubbins_deterministic].any {
+      it != null && it.toString().toLowerCase() in ['true', '1', 'yes'] }
   def gubbins_threads = deterministic ? 1 : task.cpus
 
   """

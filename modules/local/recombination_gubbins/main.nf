@@ -45,8 +45,11 @@ process RECOMBINATION_GUBBINS {
     # workflow produced the reported analysis. This is wired for consistency, so
     # that one parameter governs determinism everywhere rather than two paths
     # behaving differently for reasons nobody wrote down.
+    # Either parameter turns it on: `deterministic` is the current name and covers
+    # IQ-TREE too, `gubbins_deterministic` predates it and still works.
     GUBBINS_DETERMINISTIC="!{params.gubbins_deterministic}"
-    if [ "${GUBBINS_DETERMINISTIC}" = "true" ]; then
+    DETERMINISTIC="!{params.deterministic}"
+    if [ "${GUBBINS_DETERMINISTIC}" = "true" ] || [ "${DETERMINISTIC}" = "true" ]; then
       GUBBINS_THREADS=1
     else
       GUBBINS_THREADS="!{task.cpus}"
