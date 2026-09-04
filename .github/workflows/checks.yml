@@ -1,0 +1,129 @@
+name: checks
+
+# Four jobs, none of which needs isolate data. The analysis repository
+# (bp-recombination-aware-snps) has had CI since 2026-09-02; this one had none,
+# which is how a documented fix that never existed survived for weeks. These
+# check the things that can be checked without a run.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  nextflow-config:
+    name: config resolves and the params are declared
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: nf-core/setup-nextflow@v2
+      - name: config resolves
+        run: nextflow config . > /dev/null
+      - name: determinism parameters are present and sane
+        # These two are the reason this repository has CI at all. gubbins_seed
+        # removes a 1-in-10,001 draw that silently loses a unit; a zero or
+        # missing value reinstates it. gubbins_deterministic is what actually
+        # buys byte-reproducibility. A rename or an accidental deletion should
+        # fail the build rather than be discovered in a run.
+        run: |
+          cfg=$(nextflow config .)
+          echo "$cfg" | grep -qE 'gubbins_seed *= *[0-9]+' \
+            || { echo "REFUSING: gubbins_seed missing or not an integer"; exit 1; }
+          seed=$(echo "$cfg" | grep -oE 'gubbins_seed *= *[0-9]+' | grep -oE '[0-9]+$')
+          [ "$seed" -gt 0 ] \
+            || { echo "REFUSING: gubbins_seed must be positive; RAxML rejects a non-positive parsimony seed"; exit 1; }
+          echo "$cfg" | grep -q 'gubbins_deterministic' \
+            || { echo "REFUSING: gubbins_deterministic missing"; exit 1; }
+          echo "ok: gubbins_seed = $seed, gubbins_deterministic declared"
+
+  every-gubbins-call-is-seeded:
+    name: no run_gubbins.py call omits the seed
+    runs-on: ubuntu-latest
+    # The defect this closes: --seed was absent from every call site for the
+    # life of the repository while six documents recorded it as fixed. A new
+    # call site added without it would silently reintroduce a ~16% per-panel
+    # chance of losing a unit while exiting 0.
+    steps:
+      - uses: actions/checkout@v4
+      - name: each invocation passes a seed
+        # Verified to fail: deleting one seed line makes this exit 1. Two earlier
+        # drafts did not, and both passed the positive test, so neither would
+        # have caught anything:
+        #   1. A fixed 25-line window spans two adjacent call sites and finds
+        #      the neighbour's seed.
+        #   2. Matching a single trailing backslash matches nothing at all. The
+        #      Groovy script block writes the shell continuation as '\\', so the
+        #      check found zero invocations and passed over an empty set.
+        # Hence EXPECT below: an assertion over an empty set is not an assertion.
+        run: |
+          python3 - <<'PY'
+          import pathlib, re, sys
+          EXPECT = 5   # 3 in gubbins_cluster, 2 in recombination_gubbins
+          bad, found = [], 0
+          for f in sorted(pathlib.Path('modules').rglob('main.nf')):
+              lines = f.read_text().splitlines()
+              for i, ln in enumerate(lines):
+                  if not re.search(r'run_gubbins\.py\s*\\+\s*$', ln):
+                      continue
+                  found += 1
+                  # the invocation runs while lines end with a continuation
+                  block, j = [ln], i + 1
+                  while j < len(lines):
+                      block.append(lines[j])
+                      if not lines[j].rstrip().endswith('\\'):
+                          break
+                      j += 1
+                  if not any(re.search(r'seed_arg|SEED_ARG|--seed', b) for b in block):
+                      bad.append(f"{f}:{i+1}")
+          if found < EXPECT:
+              sys.exit(f"REFUSING: found {found} run_gubbins.py invocations, expected at "
+                       f"least {EXPECT}. The detector is broken, not the code.")
+          if bad:
+              sys.exit("UNSEEDED run_gubbins.py invocation(s):\n  " + "\n  ".join(bad))
+          print(f"ok: all {found} run_gubbins.py invocations pass a seed")
+          PY
+
+  syntax:
+    name: python and shell parse
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: python parses
+        run: |
+          fail=0
+          while IFS= read -r f; do
+            python3 -c "import ast,sys; ast.parse(open(sys.argv[1]).read())" "$f" \
+              || { echo "SYNTAX FAIL: $f"; fail=1; }
+          done < <(find bin -name '*.py' 2>/dev/null; ls *.py 2>/dev/null)
+          exit $fail
+      - name: shell parses
+        run: |
+          fail=0
+          while IFS= read -r f; do
+            bash -n "$f" || { echo "PARSE FAIL: $f"; fail=1; }
+          done < <(find . -name '*.sh' -not -path './work/*' -not -path './.git/*')
+          exit $fail
+
+  schema:
+    name: nextflow_schema.json is valid and matches params
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: schema parses and declares the determinism parameters
+        run: |
+          python3 - <<'PY'
+          import json, sys
+          d = json.load(open('nextflow_schema.json'))
+          props = {}
+          for grp in d.get('definitions', {}).values():
+              props.update(grp.get('properties', {}))
+          missing = [p for p in ('gubbins_seed', 'gubbins_deterministic') if p not in props]
+          if missing:
+              sys.exit(f"REFUSING: not declared in schema: {missing}")
+          print("ok: schema valid;", len(props), "parameters declared")
+          PY
