@@ -33,6 +33,25 @@ process RECOMBINATION_GUBBINS {
     # to fit model to data" -- ~16% chance per panel of losing a unit while still
     # exiting 0. See conf/params.config. Setting gubbins_seed = null restores the
     # old random draw and reintroduces both failure modes.
+    # THREADS. This module previously passed no --threads at all, so Gubbins used
+    # its own default of 1. The path was therefore single-threaded, and with a
+    # seed it was accidentally deterministic, while being allocated
+    # process_medium CPUs it never used. That is an implicit behaviour nobody
+    # chose -- the same class of defect as a default pointing at the wrong run --
+    # so it is now explicit and governed by the same parameter as the clustered
+    # path. Default: use the allocated CPUs. gubbins_deterministic = true: 1.
+    #
+    # NOTE FOR THE RECORD: no reported result came from this path. The clustered
+    # workflow produced the reported analysis. This is wired for consistency, so
+    # that one parameter governs determinism everywhere rather than two paths
+    # behaving differently for reasons nobody wrote down.
+    GUBBINS_DETERMINISTIC="!{params.gubbins_deterministic}"
+    if [ "${GUBBINS_DETERMINISTIC}" = "true" ]; then
+      GUBBINS_THREADS=1
+    else
+      GUBBINS_THREADS="!{task.cpus}"
+    fi
+
     GUBBINS_SEED="!{params.gubbins_seed}"
     SEED_ARG=""
     if [ -n "${GUBBINS_SEED}" ] && [ "${GUBBINS_SEED}" != "null" ]; then
@@ -58,6 +77,7 @@ process RECOMBINATION_GUBBINS {
           --tree-builder "!{params.gubbins_tree_builder}" \
           --invariant-site-correction \
           --filter-percentage "!{params.gubbins_filter_percentage}" \
+          --threads "${GUBBINS_THREADS}" \
           ${SEED_ARG} \
           "!{core_alignment_fasta}"
     else
@@ -68,6 +88,7 @@ process RECOMBINATION_GUBBINS {
           --tree-builder "!{params.gubbins_tree_builder}" \
           --invariant-site-correction \
           --filter-percentage "!{params.gubbins_filter_percentage}" \
+          --threads "${GUBBINS_THREADS}" \
           ${SEED_ARG} \
           "!{core_alignment_fasta}"
     fi
