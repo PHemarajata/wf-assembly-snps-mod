@@ -61,11 +61,18 @@ without retagging a published release, so this file is the correction of record.
 
 The determinism work itself is `0543892` (`--seed`), `4fd7b22`
 (`gubbins_deterministic`) and `a49eac5` (the classic path); CI and this file are
-`5089284`. The tag is placed after all four so the release carries the checks
+`5089284`. The tag is placed after all of it so the release carries the checks
 that keep the seed from going missing again. Its commit is deliberately not
 transcribed here: a tag cannot record the hash of the commit that records it,
 and a hand-copied SHA in a table is exactly the kind of number this project has
 had to correct too many times. Resolve it from the tag.
+
+`v1.1.0-mod` was moved once, on the day it was created, from `e9e7753` to the
+commit that fixes CI. The first placement was on a red build: the workflow at
+`e9e7753` installed `latest-stable`, which is 26.x, which cannot parse this
+config. Nothing referenced the tag in the twenty minutes it stood, and no
+pipeline code differs between the two commits. Recorded because a moved tag
+that nobody writes down is indistinguishable from a tag someone misread.
 
 **The manifest at `79ab645` self-reports `version = '1.0.3-mod'`**, so run logs
 from the reported analysis print that string while the `v1.0.3-mod` tag points at
