@@ -66,9 +66,9 @@ process CORE_GENOME_ALIGNMENT_PARSNP {
 
     gzip -9f Parsnp.SNPs.fa
 
-    cat <<-END_VERSIONS > versions.yml
-    "!{task.process}":
-        parsnp: $(parsnp --version | sed 's/^/    /')
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"!{task.process}":
+    parsnp: $(parsnp --version | sed 's/^/    /')
+END_VERSIONS
     '''
 }

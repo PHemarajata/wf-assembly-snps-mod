@@ -237,12 +237,12 @@ EOF
     echo "Integration process completed. Final output files:"
     ls -la integrated_core_snps.fa sample_cluster_mapping.tsv integrated_snp_positions.tsv core_snp_summary.txt
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version | sed 's/Python //')
-        biopython: \$(python -c "import Bio; print(Bio.__version__)")
-        pandas: \$(python -c "import pandas; print(pandas.__version__)")
-        numpy: \$(python -c "import numpy; print(numpy.__version__)")
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"${task.process}":
+    python: \$(python --version | sed 's/Python //')
+    biopython: \$(python -c "import Bio; print(Bio.__version__)")
+    pandas: \$(python -c "import pandas; print(pandas.__version__)")
+    numpy: \$(python -c "import numpy; print(numpy.__version__)")
+END_VERSIONS
     """
 }

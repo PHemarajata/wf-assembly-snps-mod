@@ -136,10 +136,10 @@ process SPLIT_REFERENCE_REPLICONS {
     echo "Wrote \$(ls replicons/ | wc -l) replicon file(s):" >&2
     ls -1 replicons/ >&2
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        awk: \$(awk --version 2>&1 | head -1 | sed 's/^/    /' || echo "    gawk")
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"${task.process}":
+    awk: \$(awk --version 2>&1 | head -1 | sed 's/^/    /' || echo "    gawk")
+END_VERSIONS
     """
 
     stub:
@@ -160,9 +160,9 @@ process SPLIT_REFERENCE_REPLICONS {
         }
         { print \$0 > out }
     ' "${reference}"
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        awk: stub
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"${task.process}":
+    awk: stub
+END_VERSIONS
     """
 }

@@ -97,10 +97,10 @@ process MASH_SKETCH_BATCH {
     fi
     echo "Sketched \$n_out assemblies in batch ${batch_index}"
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        mash: \$(mash --version 2>&1 | sed 's/^/    /')
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"${task.process}":
+    mash: \$(mash --version 2>&1 | sed 's/^/    /')
+END_VERSIONS
     """
 }
 
@@ -152,9 +152,9 @@ process MASH_SKETCH_BATCH_PER_SAMPLE {
         mash sketch -o "\${base}" -s ${sketch_size} -k ${kmer_size} -p ${task.cpus} "\$f"
     done
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        mash: \$(mash --version 2>&1 | sed 's/^/    /')
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"${task.process}":
+    mash: \$(mash --version 2>&1 | sed 's/^/    /')
+END_VERSIONS
     """
 }

@@ -29,9 +29,9 @@ process MASK_RECOMBINANT_POSITIONS_BIOPYTHON {
       --tree "!{meta.snp_package}-!{meta.recombination}.labelled_tree.tree" \
       > "!{meta.snp_package}-!{meta.recombination}.masked_recombination.fasta"
 
-    cat <<-END_VERSIONS > versions.yml
-    "!{task.process}":
-        python: $(python --version)
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"!{task.process}":
+    python: $(python --version)
+END_VERSIONS
     '''
 }

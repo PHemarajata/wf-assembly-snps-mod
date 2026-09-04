@@ -42,10 +42,10 @@ process CONVERT_TSV_TO_EXCEL_PYTHON {
     END_PYTHON
 
     # Get process version information
-    cat <<-END_VERSIONS > versions.yml
-    "!{task.process}":
-        python: $(python3 --version 2>&1 | awk '{print $2}')
-        ubuntu: $(awk -F ' ' '{print $2, $3}' /etc/issue | tr -d '\\n')
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"!{task.process}":
+    python: $(python3 --version 2>&1 | awk '{print $2}')
+    ubuntu: $(awk -F ' ' '{print $2, $3}' /etc/issue | tr -d '\\n')
+END_VERSIONS
     '''
 }

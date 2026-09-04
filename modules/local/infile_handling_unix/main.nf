@@ -55,9 +55,9 @@ process INFILE_HANDLING_UNIX {
       fi
     done
 
-    cat <<-END_VERSIONS > versions.yml
-    "!{task.process}":
-      ubuntu: $(awk -F ' ' '{print $2,$3}' /etc/issue | tr -d '\\n')
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"!{task.process}":
+  ubuntu: $(awk -F ' ' '{print $2,$3}' /etc/issue | tr -d '\\n')
+END_VERSIONS
     '''
 }

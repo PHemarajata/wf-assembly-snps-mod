@@ -81,9 +81,9 @@ process GLOBAL_CORE_ALIGNMENT {
         exit 1
     fi
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        parsnp: \$(parsnp --version 2>&1 | head -1)
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"${task.process}":
+    parsnp: \$(parsnp --version 2>&1 | head -1)
+END_VERSIONS
     """
 }

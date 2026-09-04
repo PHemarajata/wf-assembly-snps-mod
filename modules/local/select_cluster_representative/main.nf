@@ -91,11 +91,11 @@ process SELECT_CLUSTER_REPRESENTATIVE {
     cp "\$REP_SRC" ${cluster_id}.rep.fa
     echo "Representative for ${cluster_id}: \$REP_ID (\$REP_SRC)"
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python3 --version | sed 's/Python //')
-        pandas: \$(python3 -c "import pandas; print(pandas.__version__)")
-        numpy: \$(python3 -c "import numpy; print(numpy.__version__)")
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"${task.process}":
+    python: \$(python3 --version | sed 's/Python //')
+    pandas: \$(python3 -c "import pandas; print(pandas.__version__)")
+    numpy: \$(python3 -c "import numpy; print(numpy.__version__)")
+END_VERSIONS
     """
 }

@@ -284,7 +284,18 @@ workflow ASSEMBLY_SNPS_SCALABLE {
                             name:       "Summary.QC_File_Checks.tsv",
                             keepHeader: true,
                             storeDir:   "${params.outdir}/Summaries",
-                            sort:       'index'
+                            // sort by filename, not 'index'. 'index' is the order the
+                            // chunks arrived on the channel, which is task completion
+                            // order and varies run to run, so two identical runs
+                            // produced the same rows in a different order. The chunks
+                            // are <sample>.Initial_Input_File.tsv, so the name sorts
+                            // by sample and is stable. Measured over 3 runs of an
+                            // 8-task harness with randomised completion order:
+                            // 'index', true, and the default all differ between runs;
+                            // { it.name } is identical. Content is the same either
+                            // way -- one header, every row -- so this changes order
+                            // only.
+                            sort:       { it.name }
                         )
 
     ch_output_summary_files = ch_output_summary_files.mix(ch_qc_filecheck.collect())
@@ -300,7 +311,21 @@ workflow ASSEMBLY_SNPS_SCALABLE {
         .unique()
         .collectFile(
             name:     "software_versions.yml",
-            storeDir: params.tracedir
+            storeDir: params.tracedir,
+            // Every chunk here is named versions.yml, so sorting by name ties and
+            // leaves arrival order showing through. Sort by content instead, which
+            // is stable and puts the process blocks in a fixed order. Measured over
+            // 3 runs of a harness emitting identically-named chunks in randomised
+            // order: unsorted differs between runs, { it.text } is identical.
+            //
+            // NOTE: .unique() above does nothing. It deduplicates Path objects, and
+            // every task writes its own versions.yml at its own work path, so no two
+            // are ever equal. That is why this file carries the same tool three
+            // times over. Deduplicating on content instead of path
+            // (.map{ it.text }.unique()) fixes it and was verified to, but it
+            // removes lines from a published provenance file, which is a change of
+            // output rather than of ordering, so it is left for a decision.
+            sort:     { it.text }
         )
 }
 

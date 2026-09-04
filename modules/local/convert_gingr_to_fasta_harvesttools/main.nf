@@ -48,9 +48,9 @@ process CONVERT_GINGR_TO_FASTA_HARVESTTOOLS {
       echo -e "NaN\t!{meta.snp_package} Gingr to FastA File\tFAIL" >> "!{meta.snp_package}.Gingr_to_FastA_File.tsv"
     fi
 
-    cat <<-END_VERSIONS > versions.yml
-    "!{task.process}":
-        harvesttools: $(harvesttools --version)
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"!{task.process}":
+    harvesttools: $(harvesttools --version)
+END_VERSIONS
     '''
 }

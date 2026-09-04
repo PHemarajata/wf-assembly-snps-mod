@@ -32,9 +32,9 @@ process RECOMBINATION_CLONALFRAMEML {
       "!{meta.snp_package}-ClonalFrameML.labelled_tree.newick" \
       "!{meta.snp_package}-ClonalFrameML.labelled_tree.tree"
 
-    cat <<-END_VERSIONS > versions.yml
-    "!{task.process}":
-        clonalframeml: $(ClonalFrameML -version | sed 's/^/    /')
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"!{task.process}":
+    clonalframeml: $(ClonalFrameML -version | sed 's/^/    /')
+END_VERSIONS
     '''
 }

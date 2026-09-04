@@ -30,9 +30,9 @@ process MASH_DIST {
         combined.msh \
         combined.msh > mash_distances.tsv
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        mash: \$(mash --version 2>&1 | sed 's/^/    /')
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"${task.process}":
+    mash: \$(mash --version 2>&1 | sed 's/^/    /')
+END_VERSIONS
     """
 }

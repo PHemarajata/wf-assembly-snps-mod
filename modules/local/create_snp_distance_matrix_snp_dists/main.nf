@@ -32,9 +32,9 @@ process CREATE_SNP_DISTANCE_MATRIX_SNP_DISTS {
       "!{meta.snp_package}.SNPs.fa.gz" \
       > "!{meta.snp_package}.SNP_Distances_Matrix.tsv"
 
-    cat <<-END_VERSIONS > versions.yml
-    "!{task.process}":
-        snp-dists: $(snp-dists -v | awk '{print $2}')
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"!{task.process}":
+    snp-dists: $(snp-dists -v | awk '{print $2}')
+END_VERSIONS
     '''
 }

@@ -89,13 +89,13 @@ process CLUSTER_GENOMES {
 
     cat cluster_summary.txt
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python3 --version | sed 's/Python //')
-        pandas: \$(python3 -c "import pandas; print(pandas.__version__)")
-        numpy: \$(python3 -c "import numpy; print(numpy.__version__)")
-        scipy: \$(python3 -c "import scipy; print(scipy.__version__)")
-        cluster_split_method: ${split_method}
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"${task.process}":
+    python: \$(python3 --version | sed 's/Python //')
+    pandas: \$(python3 -c "import pandas; print(pandas.__version__)")
+    numpy: \$(python3 -c "import numpy; print(numpy.__version__)")
+    scipy: \$(python3 -c "import scipy; print(scipy.__version__)")
+    cluster_split_method: ${split_method}
+END_VERSIONS
     """
 }

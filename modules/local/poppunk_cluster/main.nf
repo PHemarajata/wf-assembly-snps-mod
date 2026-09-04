@@ -154,12 +154,12 @@ process POPPUNK_CLUSTER {
 
     cat cluster_summary.txt
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        poppunk: \$(poppunk --version 2>&1 | sed 's/^poppunk //')
-        poppunk_fit: bgmm${do_refine ? '+refine' : ''}
-        min_cluster_size: ${min_size}
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"${task.process}":
+    poppunk: \$(poppunk --version 2>&1 | sed 's/^poppunk //')
+    poppunk_fit: bgmm${do_refine ? '+refine' : ''}
+    min_cluster_size: ${min_size}
+END_VERSIONS
     """
 
     stub:
@@ -180,9 +180,9 @@ process POPPUNK_CLUSTER {
       i=\$(( i + 1 ))
     done
     echo "stub: \$(( i )) genomes into 2 clusters" > cluster_summary.txt
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        poppunk: 2.7.6
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"${task.process}":
+    poppunk: 2.7.6
+END_VERSIONS
     """
 }

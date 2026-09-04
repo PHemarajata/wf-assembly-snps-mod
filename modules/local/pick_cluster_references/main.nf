@@ -74,12 +74,12 @@ process PICK_CLUSTER_REFERENCES {
         --out cluster_references.tsv \\
         --report reference_selection.tsv
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python3 --version | sed 's/Python //')
-        max_contigs: ${max_contigs}
-        reference_pool: ${params.reference_pool ?: 'all_complete_genomes'}
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"${task.process}":
+    python: \$(python3 --version | sed 's/Python //')
+    max_contigs: ${max_contigs}
+    reference_pool: ${params.reference_pool ?: 'all_complete_genomes'}
+END_VERSIONS
     """
 
     stub:
@@ -109,9 +109,9 @@ process PICK_CLUSTER_REFERENCES {
       printf '%s\\t%s/stub_reference.fasta\\n' "\$c" "\$PWD"     >> cluster_references.tsv
       printf '%s\\t%s\\tstub_reference\\tinternal\\n' "\$c" "\$bestn" >> reference_selection.tsv
     done
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: 3.10.0
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"${task.process}":
+    python: 3.10.0
+END_VERSIONS
     """
 }

@@ -264,6 +264,80 @@ jobs:
               sys.exit("unintended Actions expression:\n  " + "\n  ".join(bad))
           print(f"ok: {checked} workflow file(s), no unintended expression")
           PY
+      - name: no Groovy comment inside a shell script block
+        # A `//` comment inside the triple-quoted script string is not a comment.
+        # Nextflow emits it into .command.sh verbatim and bash tries to run it,
+        # which fails with "//: Is a directory" and exit 126, after the real work
+        # in the task has already succeeded. Nothing about the line looks wrong.
+        # Cost one full smoke-test pair to find. Shell comments are '#'.
+        run: |
+          python3 - <<'PY'
+          import pathlib, re, sys
+          bad, blocks = [], 0
+          for f in sorted(pathlib.Path('modules').rglob('main.nf')):
+              txt = f.read_text()
+              for m in re.finditer(r'"""(.*?)"""', txt, re.S):
+                  blocks += 1
+                  start = txt[:m.start()].count('\n') + 1
+                  for k, ln in enumerate(m.group(1).splitlines()):
+                      if ln.strip().startswith('//'):
+                          bad.append(f"{f}:{start+k+1}: {ln.strip()[:70]}")
+          if blocks < 20:
+              sys.exit(f"REFUSING: found {blocks} script blocks, expected at least 20. "
+                       f"The detector is broken, not the code.")
+          if bad:
+              sys.exit("Groovy comments inside shell script blocks:\n  " + "\n  ".join(bad))
+          print(f"ok: {blocks} script blocks, no Groovy comment inside any of them")
+          PY
+      - name: no heredoc can swallow its own terminator
+        # `<<-` strips leading TABS only. A space-indented terminator is not
+        # recognised, bash closes the heredoc at end-of-file with a warning, and
+        # the terminator line is written into the file as content. That reached
+        # the published software_versions.yml as a stray "    END_VERSIONS".
+        #
+        # It bites only where Nextflow does not dedent the script block, and
+        # Nextflow dedents by the block's MINIMUM indentation, so one wrapped
+        # error message starting at column 0 silently arms every heredoc in that
+        # process. 43 of 44 sites in this repository work for that reason alone.
+        # The rule below is what actually holds: a terminator at column 0 is
+        # recognised whether or not the block is dedented.
+        run: |
+          python3 - <<'PY'
+          import pathlib, re, sys
+          bad, found = [], 0
+          for f in sorted(pathlib.Path('modules').rglob('main.nf')):
+              lines = f.read_text().splitlines()
+              for i, ln in enumerate(lines):
+                  # Both forms occur: `cat <<TERM > file` and `cat > file <<TERM`.
+                  # The first version of this pattern only matched the former and
+                  # silently skipped 5 sites, which is how the published
+                  # software_versions.yml kept its mixed indentation after a fix
+                  # that was supposed to make it uniform.
+                  m = re.search(r"cat\b[^<>\n]*(?:>\s*\S+\s*)?<<(-?)\s*(['\"]?)(\w+)\2", ln)
+                  if not m:
+                      continue
+                  found += 1
+                  dash, term = m.group(1), m.group(3)
+                  # 400, not 60: graft_subtrees writes a 240-line bash script
+                  # through a heredoc, and a 60-line window reported it as
+                  # unterminated when its terminator was fine.
+                  for j in range(i + 1, min(i + 400, len(lines))):
+                      if lines[j].strip() != term:
+                          continue
+                      indent = lines[j][:len(lines[j]) - len(lines[j].lstrip())]
+                      if indent and not (dash == '-' and '\t' in indent):
+                          bad.append(f"{f}:{j+1}: terminator {term} is indented "
+                                     f"{len(indent)} spaces; put it at column 0")
+                      break
+                  else:
+                      bad.append(f"{f}:{i+1}: no terminator {term} within 400 lines")
+          if found < 20:
+              sys.exit(f"REFUSING: found {found} heredocs, expected at least 20. "
+                       f"The detector is broken, not the code.")
+          if bad:
+              sys.exit("heredocs that can swallow their terminator:\n  " + "\n  ".join(bad))
+          print(f"ok: all {found} heredoc terminators are at column 0")
+          PY
       - name: shell parses
         run: |
           fail=0

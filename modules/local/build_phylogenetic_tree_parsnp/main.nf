@@ -60,10 +60,10 @@ process BUILD_PHYLOGENETIC_TREE_PARSNP {
       echo -e "!{meta.recombination}\tFinal Tree Output\tFAIL" >> "!{meta.snp_package}-!{meta.recombination}.Tree_Output_File.tsv"
     fi
 
-    cat <<-END_VERSIONS > versions.yml
-    "!{task.process}":
-        fasttree: $(fasttree -expert &> tmp.txt; head -1 tmp.txt | sed 's/^/    /')
-        raxml: $(raxmlHPC-PTHREADS -v | sed 's/^/    /')
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"!{task.process}":
+    fasttree: $(fasttree -expert &> tmp.txt; head -1 tmp.txt | sed 's/^/    /')
+    raxml: $(raxmlHPC-PTHREADS -v | sed 's/^/    /')
+END_VERSIONS
     '''
 }

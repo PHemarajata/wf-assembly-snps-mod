@@ -100,9 +100,9 @@ process GLOBAL_ML_TREE {
     [ -s gml.iqtree ] && cp gml.iqtree global_ml_tree.iqtree || true
     echo "NOT recombination-corrected -- do not derive r/m from this tree" | tee -a "\$LOG"
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        iqtree: \$(iqtree2 --version 2>&1 | head -1)
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"${task.process}":
+    iqtree: \$(iqtree2 --version 2>&1 | head -1)
+END_VERSIONS
     """
 }

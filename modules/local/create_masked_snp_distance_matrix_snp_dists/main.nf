@@ -33,9 +33,9 @@ process CREATE_MASKED_SNP_DISTANCE_MATRIX_SNP_DISTS {
       "!{masked_alignment}" \
       > "!{meta.snp_package}-!{meta.recombination}.Masked_SNP_Distances_Matrix.tsv"
 
-    cat <<-END_VERSIONS > versions.yml
-    "!{task.process}":
-        snp-dists: $(snp-dists -v | awk '{print $2}')
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"!{task.process}":
+    snp-dists: $(snp-dists -v | awk '{print $2}')
+END_VERSIONS
     '''
 }

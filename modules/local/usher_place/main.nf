@@ -26,9 +26,9 @@ process USHER_PLACE {
         -o ${prefix}.pb \\
         $args
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        usher: \$(usher --version 2>&1 | head -n1 | sed 's/^/    /')
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"${task.process}":
+    usher: \$(usher --version 2>&1 | head -n1 | sed 's/^/    /')
+END_VERSIONS
     """
 }

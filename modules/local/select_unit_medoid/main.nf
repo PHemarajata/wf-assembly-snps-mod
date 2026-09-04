@@ -135,9 +135,9 @@ print("%s: medoid %s of %d members, mean SNP distance %.3f"
       % (cluster, medoid, len(names), mean_d))
 PY
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python3 --version | sed 's/Python //')
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"${task.process}":
+    python: \$(python3 --version | sed 's/Python //')
+END_VERSIONS
     """
 }

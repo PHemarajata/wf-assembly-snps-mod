@@ -35,9 +35,9 @@ process SKA_ALIGN {
         touch ${cluster_id}.aln.fa
     fi
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        ska: \$(ska --version 2>&1 | head -n1 | sed 's/^/    /')
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"${task.process}":
+    ska: \$(ska --version 2>&1 | head -n1 | sed 's/^/    /')
+END_VERSIONS
     """
 }

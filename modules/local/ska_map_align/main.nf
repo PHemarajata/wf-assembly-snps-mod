@@ -127,10 +127,10 @@ process SKA_BUILD_SAMPLE {
         exit 1
     fi
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        ska: \$(ska --version 2>&1 | head -n1 | sed 's/^ska //')
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"${task.process}":
+    ska: \$(ska --version 2>&1 | head -n1 | sed 's/^ska //')
+END_VERSIONS
     """
 }
 
@@ -227,9 +227,9 @@ ${cluster_id}.core.full.aln; Gubbins will reject it" >&2
         exit 1
     fi
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        ska: \$(ska --version 2>&1 | head -n1 | sed 's/^ska //')
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"${task.process}":
+    ska: \$(ska --version 2>&1 | head -n1 | sed 's/^ska //')
+END_VERSIONS
     """
 }

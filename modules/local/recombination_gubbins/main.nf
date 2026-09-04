@@ -103,9 +103,9 @@ process RECOMBINATION_GUBBINS {
     mv "!{meta.snp_package}-Gubbins.node_labelled.final_tree.tre" \
       "!{meta.snp_package}-Gubbins.labelled_tree.tree"
 
-    cat <<-END_VERSIONS > versions.yml
-    "!{task.process}":
-        gubbins: $(run_gubbins.py --version | sed 's/^/    /')
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"!{task.process}":
+    gubbins: $(run_gubbins.py --version | sed 's/^/    /')
+END_VERSIONS
     '''
 }

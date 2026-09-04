@@ -38,9 +38,9 @@ process CALCULATE_PAIRWISE_DISTANCES_SNP_DISTS {
 
     sed -i '1i Sample\tSample\tNumber_core_SNPs_apart' "!{meta.snp_package}.SNP_Distances_Pairs.tsv"
 
-    cat <<-END_VERSIONS > versions.yml
-    "!{task.process}":
-        snp-dists: $(snp-dists -v | awk '{print $2}')
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"!{task.process}":
+    snp-dists: $(snp-dists -v | awk '{print $2}')
+END_VERSIONS
     '''
 }

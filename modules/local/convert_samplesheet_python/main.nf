@@ -38,10 +38,10 @@ process CONVERT_SAMPLESHEET_PYTHON {
     df.to_csv('samplesheet.tsv', sep='\\t', encoding='utf-8', index=False)
     END_PYTHON
 
-    cat <<-END_VERSIONS > versions.yml
-    "!{task.process}":
-      python: $(python3 --version 2>&1 | awk '{print $2}')
-      ubuntu: $(awk -F ' ' '{print $2, $3}' /etc/issue | tr -d '\\n')
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"!{task.process}":
+  python: $(python3 --version 2>&1 | awk '{print $2}')
+  ubuntu: $(awk -F ' ' '{print $2, $3}' /etc/issue | tr -d '\\n')
+END_VERSIONS
     '''
 }

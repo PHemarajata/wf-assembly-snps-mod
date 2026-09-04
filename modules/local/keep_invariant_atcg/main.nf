@@ -89,10 +89,10 @@ process KEEP_INVARIANT_ATCG {
         exit 1
     fi
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python3 --version | sed 's/Python //')
-        numpy: \$(python3 -c "import numpy; print(numpy.__version__)")
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"${task.process}":
+    python: \$(python3 --version | sed 's/Python //')
+    numpy: \$(python3 -c "import numpy; print(numpy.__version__)")
+END_VERSIONS
     """
 }

@@ -27,9 +27,9 @@ process SNP_SITES {
         -o ${prefix}.vcf \\
         $alignment
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        snp-sites: \$(snp-sites -V 2>&1 | sed 's/snp-sites //')
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"${task.process}":
+    snp-sites: \$(snp-sites -V 2>&1 | sed 's/snp-sites //')
+END_VERSIONS
     """
 }

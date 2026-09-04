@@ -83,10 +83,19 @@ process SNIPPY_SCATTER {
         exit 1
     fi
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        snippy: \$(snippy --version 2>&1 | head -n1 | sed 's/^.*snippy //')
-    END_VERSIONS
+    # Column 0 deliberately. Nextflow dedents a script block by its minimum
+    # indentation, and SNIPPY_CORE_GATHER's block contains wrapped error-message
+    # lines starting at column 0, so nothing is stripped there. <<- then cannot
+    # find a space-indented terminator, because it strips leading TABS only. Bash
+    # closed the heredoc at end-of-file with a warning and wrote the literal line
+    # "    END_VERSIONS" into versions.yml, which reached the published
+    # software_versions.yml. Column 0 works whether or not the block is dedented.
+    # This comment is '#', not '//': it is inside the script string, so a Groovy
+    # comment here is emitted into .command.sh and bash tries to run it.
+cat <<-END_VERSIONS > versions.yml
+"${task.process}":
+    snippy: \$(snippy --version 2>&1 | head -n1 | sed 's/^.*snippy //')
+END_VERSIONS
     """
 }
 
@@ -198,10 +207,19 @@ alignment). Gubbins cannot use a SNP-only alignment, so no substitution is made.
         exit 1
     fi
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        snippy: \$(snippy --version 2>&1 | head -n1 | sed 's/^.*snippy //')
-    END_VERSIONS
+    # Column 0 deliberately. Nextflow dedents a script block by its minimum
+    # indentation, and SNIPPY_CORE_GATHER's block contains wrapped error-message
+    # lines starting at column 0, so nothing is stripped there. <<- then cannot
+    # find a space-indented terminator, because it strips leading TABS only. Bash
+    # closed the heredoc at end-of-file with a warning and wrote the literal line
+    # "    END_VERSIONS" into versions.yml, which reached the published
+    # software_versions.yml. Column 0 works whether or not the block is dedented.
+    # This comment is '#', not '//': it is inside the script string, so a Groovy
+    # comment here is emitted into .command.sh and bash tries to run it.
+cat <<-END_VERSIONS > versions.yml
+"${task.process}":
+    snippy: \$(snippy --version 2>&1 | head -n1 | sed 's/^.*snippy //')
+END_VERSIONS
     """
 }
 

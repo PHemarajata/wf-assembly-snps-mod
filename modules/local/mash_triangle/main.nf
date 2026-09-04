@@ -72,13 +72,13 @@ process MASH_TRIANGLE {
         mash_distances.phylip \\
         mash_distances_matrix.tsv
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        mash: \$(mash --version 2>&1 | sed 's/^/    /')
-        python: \$(python3 --version | sed 's/Python //')
-        pandas: \$(python3 -c "import pandas; print(pandas.__version__)")
-        numpy: \$(python3 -c "import numpy; print(numpy.__version__)")
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"${task.process}":
+    mash: \$(mash --version 2>&1 | sed 's/^/    /')
+    python: \$(python3 --version | sed 's/Python //')
+    pandas: \$(python3 -c "import pandas; print(pandas.__version__)")
+    numpy: \$(python3 -c "import numpy; print(numpy.__version__)")
+END_VERSIONS
     """
 }
 
@@ -127,9 +127,9 @@ process MASH_DIST_COMPAT {
         combined.msh \\
         combined.msh > mash_distances.tsv
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        mash: \$(mash --version 2>&1 | sed 's/^/    /')
-    END_VERSIONS
+cat <<-END_VERSIONS > versions.yml
+"${task.process}":
+    mash: \$(mash --version 2>&1 | sed 's/^/    /')
+END_VERSIONS
     """
 }
